@@ -13,7 +13,7 @@
     <mapping class="com.poly.datn.entity.Blog"/>
     <mapping class="com.poly.datn.entity.BlogDetails"/>
     <mapping class="com.poly.datn.entity.Category"/>
-    <mapping class="com.poly.datn.entity.CategoryType"/>
+    <mapping class="com.poly.datn.entity.Category_type"/>
     <mapping class="com.poly.datn.entity.Color"/>
     <mapping class="com.poly.datn.entity.Comment"/>
     <mapping class="com.poly.datn.entity.Customer"/>

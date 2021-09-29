@@ -1,21 +1,23 @@
 package com.poly.datn.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Category_type", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
-public class CategoryType {
-    private int id;
+public class CategoryType implements Serializable {
+    private Integer id;
     private String name;
 
     @Id
     @Column(name = "id", nullable = false)
-    public int getId() {
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

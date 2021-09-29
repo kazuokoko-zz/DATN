@@ -1,7 +1,7 @@
 package com.poly.datn.service;
 
 
-import com.poly.datn.entities.Category_type;
+import com.poly.datn.entity.CategoryType;
 import com.poly.datn.repository.CategoryTypeRepository;
 import com.poly.datn.vo.CategoryTypeVO;
 import org.springframework.beans.BeanUtils;
@@ -22,8 +22,8 @@ public class CategoryTypeService implements ICategoryTypeService{
     @Override
     public List<CategoryTypeVO> realAll() {
         List<CategoryTypeVO> voCategoryType = new ArrayList<CategoryTypeVO>();
-        List<Category_type> entities = categoryTypeRepository.findAll();
-        for(Category_type entity : entities){
+        List<CategoryType> entities = categoryTypeRepository.findAll();
+        for(CategoryType entity : entities){
             CategoryTypeVO vo = new CategoryTypeVO();
             BeanUtils.copyProperties(entity, vo);
             voCategoryType.add(vo);
@@ -34,17 +34,17 @@ public class CategoryTypeService implements ICategoryTypeService{
 
     @Override
     public CategoryTypeVO create(CategoryTypeVO voCategoryType) {
-        Category_type entity = new Category_type();
+        CategoryType entity = new CategoryType();
         BeanUtils.copyProperties(voCategoryType, entity);
-          categoryTypeRepository.save(entity);
+         entity = categoryTypeRepository.save(entity);
         voCategoryType.setId(entity.getId());
         return voCategoryType;
     }
     @Override
     public CategoryTypeVO update(CategoryTypeVO voCategoryType) {
-        Optional<Category_type> optionalCategory_type = categoryTypeRepository.findById(voCategoryType.getId());
+        Optional<CategoryType> optionalCategory_type = categoryTypeRepository.findById(voCategoryType.getId());
         if(optionalCategory_type.isPresent()){
-            Category_type entity = optionalCategory_type.get();
+            CategoryType entity = optionalCategory_type.get();
             BeanUtils.copyProperties(voCategoryType, entity);
             categoryTypeRepository.save(entity);
         }
@@ -54,9 +54,9 @@ public class CategoryTypeService implements ICategoryTypeService{
     @Override
     public CategoryTypeVO delete(Integer id) {
         CategoryTypeVO voCategoryType = new CategoryTypeVO();
-        Optional<Category_type> optionalCategory_type = categoryTypeRepository.findById(id);
+        Optional<CategoryType> optionalCategory_type = categoryTypeRepository.findById(id);
         if(optionalCategory_type.isPresent()){
-            Category_type entity = optionalCategory_type.get();
+            CategoryType entity = optionalCategory_type.get();
             BeanUtils.copyProperties(entity,voCategoryType );
             categoryTypeRepository.delete(  entity);
         }
