@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_details", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Product_details", schema = "bhoddvjk1na7d8a0xtlr")
 public class ProductDetails {
-    private long id;
-    private int productId;
+    private Long id;
+    private Integer productId;
     private String propertyName;
     private String propertyValue;
 
@@ -51,16 +51,9 @@ public class ProductDetails {
         this.propertyValue = propertyValue;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductDetails that = (ProductDetails) o;
-        return id == that.id && productId == that.productId && Objects.equals(propertyName, that.propertyName) && Objects.equals(propertyValue, that.propertyValue);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, productId, propertyName, propertyValue);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 }

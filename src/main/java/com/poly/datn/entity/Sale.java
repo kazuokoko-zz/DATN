@@ -1,20 +1,18 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class Sale {
-    private int id;
-    private int productId;
-    private double discount;
+    private Integer id;
+    private Integer productId;
+    private Double discount;
     private Timestamp startTime;
     private Timestamp endTime;
     private Integer quantity;
+    private String status;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -76,16 +74,20 @@ public class Sale {
         this.quantity = quantity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sale sale = (Sale) o;
-        return id == sale.id && productId == sale.productId && Double.compare(sale.discount, discount) == 0 && Objects.equals(startTime, sale.startTime) && Objects.equals(endTime, sale.endTime) && Objects.equals(quantity, sale.quantity);
+
+    @Basic
+    @Column(name = "status", nullable = false, length = 20)
+    public String getStatus() {
+        return status;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, productId, discount, startTime, endTime, quantity);
+    public void setStatus(String status) {
+        this.status = status;
     }
+
+
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 }

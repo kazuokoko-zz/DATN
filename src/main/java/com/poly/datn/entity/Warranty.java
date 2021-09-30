@@ -1,20 +1,17 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
 @Entity
 public class Warranty {
-    private int id;
-    private int orderId;
+    private Integer id;
+    private Integer orderId;
     private String productSeri;
-    private int productId;
+    private Integer productId;
     private Date expiredDate;
-    private byte status;
+    private Boolean status;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -68,24 +65,17 @@ public class Warranty {
 
     @Basic
     @Column(name = "status", nullable = false)
-    public byte getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Warranty warranty = (Warranty) o;
-        return id == warranty.id && orderId == warranty.orderId && productId == warranty.productId && status == warranty.status && Objects.equals(productSeri, warranty.productSeri) && Objects.equals(expiredDate, warranty.expiredDate);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, orderId, productSeri, productId, expiredDate, status);
-    }
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    Orders orders;
 }

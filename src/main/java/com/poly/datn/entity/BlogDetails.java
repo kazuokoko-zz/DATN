@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Blog_details", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Blog_details", schema = "bhoddvjk1na7d8a0xtlr")
 public class BlogDetails {
-    private long id;
-    private int blogId;
-    private byte type;
-    private short ordinal;
+    private Long id;
+    private Integer blogId;
+    private Short type;
+    private Short ordinal;
     private String content;
 
     @Id
@@ -34,11 +34,11 @@ public class BlogDetails {
 
     @Basic
     @Column(name = "type", nullable = false)
-    public byte getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(byte type) {
+    public void setType(Short type) {
         this.type = type;
     }
 
@@ -62,16 +62,8 @@ public class BlogDetails {
         this.content = content;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BlogDetails that = (BlogDetails) o;
-        return id == that.id && blogId == that.blogId && type == that.type && ordinal == that.ordinal && Objects.equals(content, that.content);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, blogId, type, ordinal, content);
-    }
+    @ManyToOne
+    @JoinColumn(name = "blog_id")
+    Blog blog;
 }

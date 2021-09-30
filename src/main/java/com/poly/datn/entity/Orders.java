@@ -1,19 +1,17 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Orders {
-    private int id;
+    private Integer id;
     private Timestamp dateCreated;
     private String username;
-    private long customerId;
-    private double sumprice;
+    private Long customerId;
+    private Double sumprice;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -65,16 +63,20 @@ public class Orders {
         this.sumprice = sumprice;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Orders orders = (Orders) o;
-        return id == orders.id && customerId == orders.customerId && Double.compare(orders.sumprice, sumprice) == 0 && Objects.equals(dateCreated, orders.dateCreated) && Objects.equals(username, orders.username);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, dateCreated, username, customerId, sumprice);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "username")
+    Account account;
+
+    @OneToOne
+    @JoinColumn(name = "customer_id")
+    Customer customer;
+
+    @OneToMany(mappedBy = "orders")
+    List<OrderManagement> orderManagements;
+    @OneToMany(mappedBy = "orders")
+    List<OrderDetails> orderDetails;
+    @OneToOne(mappedBy = "orders")
+    Warranty warranty;
 }

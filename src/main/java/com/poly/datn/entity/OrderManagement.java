@@ -1,16 +1,13 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class OrderManagement {
-    private long id;
-    private int orderId;
+    private Long id;
+    private Integer orderId;
     private Timestamp timeChange;
     private String changedBy;
     private String status;
@@ -65,16 +62,12 @@ public class OrderManagement {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderManagement that = (OrderManagement) o;
-        return id == that.id && orderId == that.orderId && Objects.equals(timeChange, that.timeChange) && Objects.equals(changedBy, that.changedBy) && Objects.equals(status, that.status);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, orderId, timeChange, changedBy, status);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "changed_by")
+    Account account;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    Orders  orders;
 }

@@ -1,21 +1,21 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Account {
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private String fullname;
     private String email;
     private String phone;
     private String address;
-    private byte userStatus;
+    private Boolean userStatus;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -89,24 +89,24 @@ public class Account {
 
     @Basic
     @Column(name = "user_status", nullable = false)
-    public byte getUserStatus() {
+    public Boolean getUserStatus() {
         return userStatus;
     }
 
-    public void setUserStatus(byte userStatus) {
+    public void setUserStatus(Boolean userStatus) {
         this.userStatus = userStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return id == account.id && userStatus == account.userStatus && Objects.equals(username, account.username) && Objects.equals(password, account.password) && Objects.equals(fullname, account.fullname) && Objects.equals(email, account.email) && Objects.equals(phone, account.phone) && Objects.equals(address, account.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, fullname, email, phone, address, userStatus);
-    }
+    @OneToMany(mappedBy = "account")
+    List<Orders> orders;
+    @OneToMany(mappedBy = "account")
+    List<Blog> blogs;
+    @OneToMany(mappedBy = "account")
+    List<AccountRole> accountRoles;
+    @OneToMany(mappedBy = "account")
+    List<OrderManagement> orderManagements;
+    @OneToMany(mappedBy = "account")
+    List<QuantityManagerment> quantityManagerments;
+    @OneToMany(mappedBy = "account")
+    List<CartDetail> cartDetails;
 }

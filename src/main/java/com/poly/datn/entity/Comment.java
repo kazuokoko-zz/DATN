@@ -1,22 +1,20 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Comment {
-    private long id;
-    private int blogId;
+    private Long id;
+    private Integer blogId;
     private Byte rate;
     private Timestamp timeCreated;
     private Long repliedTo;
     private String name;
     private String email;
-    private byte status;
+    private Boolean status;
     private String comment;
 
     @Id
@@ -91,11 +89,11 @@ public class Comment {
 
     @Basic
     @Column(name = "status", nullable = false)
-    public byte getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -109,16 +107,16 @@ public class Comment {
         this.comment = comment;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment1 = (Comment) o;
-        return id == comment1.id && blogId == comment1.blogId && status == comment1.status && Objects.equals(rate, comment1.rate) && Objects.equals(timeCreated, comment1.timeCreated) && Objects.equals(repliedTo, comment1.repliedTo) && Objects.equals(name, comment1.name) && Objects.equals(email, comment1.email) && Objects.equals(comment, comment1.comment);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, blogId, rate, timeCreated, repliedTo, name, email, status, comment);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "blog_id")
+    Blog blog;
+
+    @OneToMany(mappedBy = "reComment")
+    List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name ="id")
+    Comment reComment;
 }

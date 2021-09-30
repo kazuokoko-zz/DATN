@@ -1,21 +1,19 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Blog {
-    private int id;
+    private Integer id;
     private String title;
     private Timestamp timeCreated;
     private String createdBy;
-    private byte type;
-    private int productId;
-    private byte status;
+    private Integer type;
+    private Integer productId;
+    private Boolean status;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -59,11 +57,11 @@ public class Blog {
 
     @Basic
     @Column(name = "type", nullable = false)
-    public byte getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(byte type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -79,24 +77,25 @@ public class Blog {
 
     @Basic
     @Column(name = "status", nullable = false)
-    public byte getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Blog blog = (Blog) o;
-        return id == blog.id && type == blog.type && productId == blog.productId && status == blog.status && Objects.equals(title, blog.title) && Objects.equals(timeCreated, blog.timeCreated) && Objects.equals(createdBy, blog.createdBy);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, timeCreated, createdBy, type, productId, status);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    Account account;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
+
+    @OneToMany(mappedBy = "blog")
+    List<Comment> comments;
+    @OneToMany(mappedBy = "blog")
+    List<BlogDetails> blogDetails;
 }
