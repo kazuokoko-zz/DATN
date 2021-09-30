@@ -1,17 +1,15 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Category {
-    private int id;
+    private Integer id;
     private String name;
-    private int type;
-    private byte status;
+    private Integer type;
+    private Boolean status;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -45,24 +43,18 @@ public class Category {
 
     @Basic
     @Column(name = "status", nullable = false)
-    public byte getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return id == category.id && type == category.type && status == category.status && Objects.equals(name, category.name);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, type, status);
-    }
+    @ManyToOne
+    @JoinColumn(name = "type")
+    CategoryType categoryType;
+    @OneToMany(mappedBy = "category")
+    List<ProductCategory> productCategory;
 }

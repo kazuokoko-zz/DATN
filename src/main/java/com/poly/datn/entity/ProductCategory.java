@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_category", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Product_category", schema = "bhoddvjk1na7d8a0xtlr")
 public class ProductCategory {
-    private long id;
-    private int productId;
-    private int categoryId;
+    private Long id;
+    private Integer productId;
+    private Integer categoryId;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -40,16 +40,12 @@ public class ProductCategory {
         this.categoryId = categoryId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductCategory that = (ProductCategory) o;
-        return id == that.id && productId == that.productId && categoryId == that.categoryId;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, productId, categoryId);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 }

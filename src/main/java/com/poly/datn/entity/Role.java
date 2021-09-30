@@ -1,14 +1,12 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Role {
-    private int id;
+    private Integer id;
     private String roleName;
 
     @Id
@@ -31,16 +29,8 @@ public class Role {
         this.roleName = roleName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id == role.id && Objects.equals(roleName, role.roleName);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, roleName);
-    }
+
+    @OneToMany(mappedBy = "role")
+    List<AccountRole> accountRole;
 }

@@ -1,12 +1,13 @@
 package com.poly.datn.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Category_type", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Category_type", schema = "bhoddvjk1na7d8a0xtlr")
 public class CategoryType {
-    private int id;
+    private Integer id;
     private String name;
 
     @Id
@@ -29,16 +30,7 @@ public class CategoryType {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CategoryType that = (CategoryType) o;
-        return id == that.id && Objects.equals(name, that.name);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
+    @OneToMany(mappedBy =  "categoryType")
+    List<Category> categories;
 }

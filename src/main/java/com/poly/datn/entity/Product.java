@@ -1,14 +1,12 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Product {
-    private int id;
+    private Integer id;
     private String name;
     private Double price;
     private String status;
@@ -53,16 +51,21 @@ public class Product {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id == product.id && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(status, product.status);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, status);
-    }
+
+    @OneToMany(mappedBy = "product")
+    List<OrderDetails> orderDetails;
+    @OneToMany(mappedBy = "product")
+    List<Blog> blogs;
+    @OneToMany(mappedBy = "product")
+    List<ProductCategory> productCategories;
+    @OneToMany(mappedBy = "product")
+    List<Sale> sales;
+    @OneToMany(mappedBy = "product")
+    List<ProductColor> productColors;
+    @OneToMany(mappedBy = "product")
+    List<CartDetail> cartDetails;
+    @OneToMany(mappedBy = "product")
+    List<ProductDetails> productDetails;
+
 }

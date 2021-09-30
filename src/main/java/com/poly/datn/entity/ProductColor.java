@@ -1,15 +1,16 @@
 package com.poly.datn.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_color", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Product_color", schema = "bhoddvjk1na7d8a0xtlr")
 public class ProductColor {
-    private int id;
-    private int productId;
-    private int colorId;
-    private int quantity;
+    private Integer id;
+    private Integer productId;
+    private Integer colorId;
+    private Integer quantity;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -51,16 +52,15 @@ public class ProductColor {
         this.quantity = quantity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductColor that = (ProductColor) o;
-        return id == that.id && productId == that.productId && colorId == that.colorId && quantity == that.quantity;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, productId, colorId, quantity);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    Color color;
+
+    @OneToMany(mappedBy = "productColor")
+    List<QuantityManagerment> quantityManagerments;
 }

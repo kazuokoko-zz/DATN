@@ -1,14 +1,12 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Color {
-    private int id;
+    private Integer id;
     private String colorName;
 
     @Id
@@ -31,16 +29,8 @@ public class Color {
         this.colorName = colorName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Color color = (Color) o;
-        return id == color.id && Objects.equals(colorName, color.colorName);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, colorName);
-    }
+
+    @OneToMany(mappedBy = "color")
+    List<ProductColor> productColors;
 }

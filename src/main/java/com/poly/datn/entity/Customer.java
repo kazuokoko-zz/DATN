@@ -1,14 +1,11 @@
 package com.poly.datn.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Customer {
-    private long id;
+    private Long id;
     private String fullname;
     private String email;
     private String phone;
@@ -75,16 +72,8 @@ public class Customer {
         this.note = note;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return id == customer.id && Objects.equals(fullname, customer.fullname) && Objects.equals(email, customer.email) && Objects.equals(phone, customer.phone) && Objects.equals(address, customer.address) && Objects.equals(note, customer.note);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullname, email, phone, address, note);
-    }
+
+    @OneToOne(mappedBy = "customer")
+    Orders orders;
 }

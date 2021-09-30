@@ -5,11 +5,11 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Quantity_Managerment", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Quantity_Managerment", schema = "bhoddvjk1na7d8a0xtlr")
 public class QuantityManagerment {
-    private int id;
-    private int productColorId;
-    private int changedBy;
+    private Integer id;
+    private Integer productColorId;
+    private Integer changedBy;
     private Timestamp timeChanged;
     private String note;
 
@@ -63,16 +63,12 @@ public class QuantityManagerment {
         this.note = note;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QuantityManagerment that = (QuantityManagerment) o;
-        return id == that.id && productColorId == that.productColorId && changedBy == that.changedBy && Objects.equals(timeChanged, that.timeChanged) && Objects.equals(note, that.note);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, productColorId, changedBy, timeChanged, note);
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "changed_by")
+    Account account;
+    @ManyToOne
+    @JoinColumn(name = "product_color_id")
+    ProductColor productColor;
 }

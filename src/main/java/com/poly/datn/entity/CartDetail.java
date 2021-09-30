@@ -4,13 +4,13 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cart_detail", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "cart_detail", schema = "bhoddvjk1na7d8a0xtlr")
 public class CartDetail {
-    private int id;
+    private Integer id;
     private String username;
-    private int productId;
-    private int quantity;
-    private double price;
+    private Integer productId;
+    private Integer quantity;
+    private Double price;
     private Integer saleId;
 
     @Id
@@ -73,16 +73,11 @@ public class CartDetail {
         this.saleId = saleId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CartDetail that = (CartDetail) o;
-        return id == that.id && productId == that.productId && quantity == that.quantity && Double.compare(that.price, price) == 0 && Objects.equals(username, that.username) && Objects.equals(saleId, that.saleId);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, productId, quantity, price, saleId);
-    }
+    @ManyToOne
+    @JoinColumn(name = "username")
+    Account account;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 }

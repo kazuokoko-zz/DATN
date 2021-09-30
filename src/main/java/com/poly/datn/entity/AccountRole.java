@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Account_role", schema = "bhoddvjk1na7d8a0xtlr", catalog = "")
+@Table(name = "Account_role", schema = "bhoddvjk1na7d8a0xtlr")
 public class AccountRole {
-    private int id;
-    private int accountId;
-    private int roleId;
+    private Integer id;
+    private Integer accountId;
+    private Integer roleId;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -40,16 +40,13 @@ public class AccountRole {
         this.roleId = roleId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AccountRole that = (AccountRole) o;
-        return id == that.id && accountId == that.accountId && roleId == that.roleId;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, accountId, roleId);
-    }
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
+
 }
