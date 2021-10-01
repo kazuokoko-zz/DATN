@@ -1,10 +1,13 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Color")
 public class Color {
     @Id
     @Column(name = "id", nullable = false)
@@ -14,9 +17,6 @@ public class Color {
     @Column(name = "color_name", nullable = false, length = 15)
     private String colorName;
 
-    @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

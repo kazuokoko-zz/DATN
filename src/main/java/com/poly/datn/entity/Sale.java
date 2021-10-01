@@ -1,10 +1,13 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Sale")
 public class Sale {
     @Id
     @Column(name = "id", nullable = false)
@@ -88,7 +91,8 @@ public class Sale {
 
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Product product;
 
     public Product getProduct() {

@@ -1,10 +1,13 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "OrderManagement")
 public class OrderManagement {
     @Id
     @Column(name = "id", nullable = false)
@@ -66,10 +69,12 @@ public class OrderManagement {
 
 
     @ManyToOne
-    @JoinColumn(name = "changed_by")
+    @JoinColumn(name = "changed_by", insertable = false ,updatable  = false)
+    @JsonIgnore
     Account account;
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Orders  orders;
 
     public Account getAccount() {

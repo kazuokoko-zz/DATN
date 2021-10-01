@@ -1,5 +1,7 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -67,10 +69,12 @@ public class QuantityManagerment {
 
 
     @ManyToOne
-    @JoinColumn(name = "changed_by")
+    @JoinColumn(name = "changed_by", insertable = false ,updatable  = false)
+    @JsonIgnore
     Account account;
     @ManyToOne
-    @JoinColumn(name = "product_color_id")
+    @JoinColumn(name = "product_color_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     ProductColor productColor;
 
     public Account getAccount() {

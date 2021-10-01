@@ -1,5 +1,7 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -44,10 +46,10 @@ public class ProductCategory {
 
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", insertable = false ,updatable  = false)
     Category category;
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
     Product product;
 
     public Category getCategory() {

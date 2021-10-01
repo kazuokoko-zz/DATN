@@ -1,5 +1,7 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -56,10 +58,12 @@ public class ProductColor {
 
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Product product;
     @ManyToOne
-    @JoinColumn(name = "color_id")
+    @JoinColumn(name = "color_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Color color;
 
     @OneToMany(mappedBy = "productColor")

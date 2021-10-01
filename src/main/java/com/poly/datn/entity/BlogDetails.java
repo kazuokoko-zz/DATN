@@ -1,5 +1,7 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -65,7 +67,8 @@ public class BlogDetails {
 
 
     @ManyToOne
-    @JoinColumn(name = "blog_id")
+    @JoinColumn(name = "blog_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Blog blog;
 
     public Blog getBlog() {

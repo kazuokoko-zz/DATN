@@ -1,9 +1,12 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Customer")
 public class Customer {
     @Id
     @Column(name = "id", nullable = false)

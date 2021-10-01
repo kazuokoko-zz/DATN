@@ -1,5 +1,7 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -76,10 +78,12 @@ public class CartDetail {
 
 
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "username", insertable = false ,updatable  = false)
+    @JsonIgnore
     Account account;
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Product product;
 
     public Account getAccount() {
