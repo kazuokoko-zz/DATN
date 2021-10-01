@@ -51,10 +51,26 @@ public class Category {
         this.status = status;
     }
 
+    @OneToMany(mappedBy = "category")
+    List<Category> categories;
 
     @ManyToOne
     @JoinColumn(name = "type")
-    CategoryType categoryType;
+    Category category;
     @OneToMany(mappedBy = "category")
     List<ProductCategory> productCategory;
+
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public List<ProductCategory> getProductCategory() {
+        return productCategory;
+    }
+
 }
