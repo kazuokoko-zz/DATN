@@ -4,14 +4,19 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_category", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Product_category")
 public class ProductCategory {
-    private Long id;
-    private Integer productId;
-    private Integer categoryId;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "category_id", nullable = false)
+    private Integer categoryId;
+
     public long getId() {
         return id;
     }
@@ -20,8 +25,6 @@ public class ProductCategory {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -30,8 +33,6 @@ public class ProductCategory {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "category_id", nullable = false)
     public int getCategoryId() {
         return categoryId;
     }
@@ -48,4 +49,12 @@ public class ProductCategory {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }

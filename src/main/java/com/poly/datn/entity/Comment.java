@@ -7,18 +7,35 @@ import java.util.Objects;
 
 @Entity
 public class Comment {
-    private Long id;
-    private Integer blogId;
-    private Byte rate;
-    private Timestamp timeCreated;
-    private Long repliedTo;
-    private String name;
-    private String email;
-    private Boolean status;
-    private String comment;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "blog_id", nullable = false)
+    private Integer blogId;
+    @Basic
+    @Column(name = "rate", nullable = true)
+    private Byte rate;
+    @Basic
+    @Column(name = "time_created", nullable = false)
+    private Timestamp timeCreated;
+    @Basic
+    @Column(name = "replied_to", nullable = true)
+    private Long repliedTo;
+    @Basic
+    @Column(name = "name", nullable = false, length = 30)
+    private String name;
+    @Basic
+    @Column(name = "email", nullable = true, length = 50)
+    private String email;
+    @Basic
+    @Column(name = "status", nullable = false)
+    private Boolean status;
+    @Basic
+    @Column(name = "comment", nullable = false, length = -1)
+    private String comment;
+
     public long getId() {
         return id;
     }
@@ -27,8 +44,6 @@ public class Comment {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "blog_id", nullable = false)
     public int getBlogId() {
         return blogId;
     }
@@ -37,8 +52,6 @@ public class Comment {
         this.blogId = blogId;
     }
 
-    @Basic
-    @Column(name = "rate", nullable = true)
     public Byte getRate() {
         return rate;
     }
@@ -47,8 +60,6 @@ public class Comment {
         this.rate = rate;
     }
 
-    @Basic
-    @Column(name = "time_created", nullable = false)
     public Timestamp getTimeCreated() {
         return timeCreated;
     }
@@ -57,8 +68,6 @@ public class Comment {
         this.timeCreated = timeCreated;
     }
 
-    @Basic
-    @Column(name = "replied_to", nullable = true)
     public Long getRepliedTo() {
         return repliedTo;
     }
@@ -67,8 +76,6 @@ public class Comment {
         this.repliedTo = repliedTo;
     }
 
-    @Basic
-    @Column(name = "name", nullable = false, length = 30)
     public String getName() {
         return name;
     }
@@ -77,8 +84,6 @@ public class Comment {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "email", nullable = true, length = 50)
     public String getEmail() {
         return email;
     }
@@ -87,8 +92,6 @@ public class Comment {
         this.email = email;
     }
 
-    @Basic
-    @Column(name = "status", nullable = false)
     public Boolean getStatus() {
         return status;
     }
@@ -97,8 +100,6 @@ public class Comment {
         this.status = status;
     }
 
-    @Basic
-    @Column(name = "comment", nullable = false, length = -1)
     public String getComment() {
         return comment;
     }
@@ -106,7 +107,6 @@ public class Comment {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
 
 
     @ManyToOne
@@ -117,6 +117,18 @@ public class Comment {
     List<Comment> comments;
 
     @ManyToOne
-    @JoinColumn(name ="id")
+    @JoinColumn(name = "id")
     Comment reComment;
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Comment getReComment() {
+        return reComment;
+    }
 }

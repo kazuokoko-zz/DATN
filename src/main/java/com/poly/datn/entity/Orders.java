@@ -7,14 +7,23 @@ import java.util.Objects;
 
 @Entity
 public class Orders {
-    private Integer id;
-    private Timestamp dateCreated;
-    private String username;
-    private Long customerId;
-    private Double sumprice;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "date_created", nullable = false)
+    private Timestamp dateCreated;
+    @Basic
+    @Column(name = "username", nullable = true, length = 30)
+    private String username;
+    @Basic
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
+    @Basic
+    @Column(name = "sumprice", nullable = false, precision = 0)
+    private Double sumprice;
+
     public int getId() {
         return id;
     }
@@ -23,8 +32,6 @@ public class Orders {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "date_created", nullable = false)
     public Timestamp getDateCreated() {
         return dateCreated;
     }
@@ -33,8 +40,6 @@ public class Orders {
         this.dateCreated = dateCreated;
     }
 
-    @Basic
-    @Column(name = "username", nullable = true, length = 30)
     public String getUsername() {
         return username;
     }
@@ -43,8 +48,6 @@ public class Orders {
         this.username = username;
     }
 
-    @Basic
-    @Column(name = "customer_id", nullable = false)
     public long getCustomerId() {
         return customerId;
     }
@@ -53,8 +56,6 @@ public class Orders {
         this.customerId = customerId;
     }
 
-    @Basic
-    @Column(name = "sumprice", nullable = false, precision = 0)
     public double getSumprice() {
         return sumprice;
     }
@@ -79,4 +80,24 @@ public class Orders {
     List<OrderDetails> orderDetails;
     @OneToOne(mappedBy = "orders")
     Warranty warranty;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public List<OrderManagement> getOrderManagements() {
+        return orderManagements;
+    }
+
+    public List<OrderDetails> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public Warranty getWarranty() {
+        return warranty;
+    }
 }

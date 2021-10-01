@@ -6,11 +6,14 @@ import java.util.Objects;
 
 @Entity
 public class Role {
-    private Integer id;
-    private String roleName;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "role_name", nullable = false, length = 20)
+    private String roleName;
+
     public int getId() {
         return id;
     }
@@ -19,8 +22,6 @@ public class Role {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "role_name", nullable = false, length = 20)
     public String getRoleName() {
         return roleName;
     }
@@ -33,4 +34,8 @@ public class Role {
 
     @OneToMany(mappedBy = "role")
     List<AccountRole> accountRole;
+
+    public List<AccountRole> getAccountRole() {
+        return accountRole;
+    }
 }

@@ -6,14 +6,23 @@ import java.util.Objects;
 
 @Entity
 public class OrderManagement {
-    private Long id;
-    private Integer orderId;
-    private Timestamp timeChange;
-    private String changedBy;
-    private String status;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "order_id", nullable = false)
+    private Integer orderId;
+    @Basic
+    @Column(name = "time_change", nullable = false)
+    private Timestamp timeChange;
+    @Basic
+    @Column(name = "changed_by", nullable = false, length = 30)
+    private String changedBy;
+    @Basic
+    @Column(name = "status", nullable = false, length = 40)
+    private String status;
+
     public long getId() {
         return id;
     }
@@ -22,8 +31,6 @@ public class OrderManagement {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "order_id", nullable = false)
     public int getOrderId() {
         return orderId;
     }
@@ -32,8 +39,6 @@ public class OrderManagement {
         this.orderId = orderId;
     }
 
-    @Basic
-    @Column(name = "time_change", nullable = false)
     public Timestamp getTimeChange() {
         return timeChange;
     }
@@ -42,8 +47,6 @@ public class OrderManagement {
         this.timeChange = timeChange;
     }
 
-    @Basic
-    @Column(name = "changed_by", nullable = false, length = 30)
     public String getChangedBy() {
         return changedBy;
     }
@@ -52,8 +55,6 @@ public class OrderManagement {
         this.changedBy = changedBy;
     }
 
-    @Basic
-    @Column(name = "status", nullable = false, length = 40)
     public String getStatus() {
         return status;
     }
@@ -70,4 +71,12 @@ public class OrderManagement {
     @ManyToOne
     @JoinColumn(name = "order_id")
     Orders  orders;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Orders getOrders() {
+        return orders;
+    }
 }

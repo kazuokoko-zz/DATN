@@ -6,13 +6,20 @@ import java.util.Objects;
 
 @Entity
 public class Product {
-    private Integer id;
-    private String name;
-    private Double price;
-    private String status;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+    @Basic
+    @Column(name = "price", nullable = true, precision = 0)
+    private Double price;
+    @Basic
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
     public int getId() {
         return id;
     }
@@ -21,8 +28,6 @@ public class Product {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name", nullable = false, length = 100)
     public String getName() {
         return name;
     }
@@ -31,8 +36,6 @@ public class Product {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "price", nullable = true, precision = 0)
     public Double getPrice() {
         return price;
     }
@@ -41,8 +44,6 @@ public class Product {
         this.price = price;
     }
 
-    @Basic
-    @Column(name = "status", nullable = false, length = 20)
     public String getStatus() {
         return status;
     }

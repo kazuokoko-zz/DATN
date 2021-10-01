@@ -4,16 +4,25 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Blog_details", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Blog_details")
 public class BlogDetails {
-    private Long id;
-    private Integer blogId;
-    private Short type;
-    private Short ordinal;
-    private String content;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "blog_id", nullable = false)
+    private Integer blogId;
+    @Basic
+    @Column(name = "type", nullable = false)
+    private Short type;
+    @Basic
+    @Column(name = "ordinal", nullable = false)
+    private Short ordinal;
+    @Basic
+    @Column(name = "content", nullable = false, length = -1)
+    private String content;
+
     public long getId() {
         return id;
     }
@@ -22,8 +31,6 @@ public class BlogDetails {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "blog_id", nullable = false)
     public int getBlogId() {
         return blogId;
     }
@@ -32,8 +39,6 @@ public class BlogDetails {
         this.blogId = blogId;
     }
 
-    @Basic
-    @Column(name = "type", nullable = false)
     public Short getType() {
         return type;
     }
@@ -42,8 +47,6 @@ public class BlogDetails {
         this.type = type;
     }
 
-    @Basic
-    @Column(name = "ordinal", nullable = false)
     public short getOrdinal() {
         return ordinal;
     }
@@ -52,8 +55,6 @@ public class BlogDetails {
         this.ordinal = ordinal;
     }
 
-    @Basic
-    @Column(name = "content", nullable = false, length = -1)
     public String getContent() {
         return content;
     }
@@ -66,4 +67,8 @@ public class BlogDetails {
     @ManyToOne
     @JoinColumn(name = "blog_id")
     Blog blog;
+
+    public Blog getBlog() {
+        return blog;
+    }
 }

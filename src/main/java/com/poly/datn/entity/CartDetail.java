@@ -4,17 +4,28 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cart_detail", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "cart_detail")
 public class CartDetail {
-    private Integer id;
-    private String username;
-    private Integer productId;
-    private Integer quantity;
-    private Double price;
-    private Integer saleId;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "username", nullable = false, length = 30)
+    private String username;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+    @Basic
+    @Column(name = "price", nullable = false, precision = 0)
+    private Double price;
+    @Basic
+    @Column(name = "sale_id", nullable = true)
+    private Integer saleId;
+
     public int getId() {
         return id;
     }
@@ -23,8 +34,6 @@ public class CartDetail {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "username", nullable = false, length = 30)
     public String getUsername() {
         return username;
     }
@@ -33,8 +42,6 @@ public class CartDetail {
         this.username = username;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -43,8 +50,6 @@ public class CartDetail {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "quantity", nullable = false)
     public int getQuantity() {
         return quantity;
     }
@@ -53,8 +58,6 @@ public class CartDetail {
         this.quantity = quantity;
     }
 
-    @Basic
-    @Column(name = "price", nullable = false, precision = 0)
     public double getPrice() {
         return price;
     }
@@ -63,8 +66,6 @@ public class CartDetail {
         this.price = price;
     }
 
-    @Basic
-    @Column(name = "sale_id", nullable = true)
     public Integer getSaleId() {
         return saleId;
     }
@@ -80,4 +81,12 @@ public class CartDetail {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }

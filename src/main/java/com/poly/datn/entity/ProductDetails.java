@@ -4,15 +4,22 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_details", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Product_details")
 public class ProductDetails {
-    private Long id;
-    private Integer productId;
-    private String propertyName;
-    private String propertyValue;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "property_name", nullable = false, length = 30)
+    private String propertyName;
+    @Basic
+    @Column(name = "property_value", nullable = false, length = 150)
+    private String propertyValue;
+
     public long getId() {
         return id;
     }
@@ -21,8 +28,6 @@ public class ProductDetails {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -31,8 +36,6 @@ public class ProductDetails {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "property_name", nullable = false, length = 30)
     public String getPropertyName() {
         return propertyName;
     }
@@ -41,8 +44,6 @@ public class ProductDetails {
         this.propertyName = propertyName;
     }
 
-    @Basic
-    @Column(name = "property_value", nullable = false, length = 150)
     public String getPropertyValue() {
         return propertyValue;
     }
@@ -56,4 +57,8 @@ public class ProductDetails {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    public Product getProduct() {
+        return product;
+    }
 }
