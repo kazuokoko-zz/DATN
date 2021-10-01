@@ -4,17 +4,28 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Order_details", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Order_details")
 public class OrderDetails {
-    private Long id;
-    private Integer orderId;
-    private Integer productId;
-    private Integer quantity;
-    private Double price;
-    private Double discount;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "order_id", nullable = false)
+    private Integer orderId;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+    @Basic
+    @Column(name = "price", nullable = false, precision = 0)
+    private Double price;
+    @Basic
+    @Column(name = "discount", nullable = false, precision = 0)
+    private Double discount;
+
     public long getId() {
         return id;
     }
@@ -23,8 +34,6 @@ public class OrderDetails {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "order_id", nullable = false)
     public int getOrderId() {
         return orderId;
     }
@@ -33,8 +42,6 @@ public class OrderDetails {
         this.orderId = orderId;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -43,8 +50,6 @@ public class OrderDetails {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "quantity", nullable = false)
     public int getQuantity() {
         return quantity;
     }
@@ -53,8 +58,6 @@ public class OrderDetails {
         this.quantity = quantity;
     }
 
-    @Basic
-    @Column(name = "price", nullable = false, precision = 0)
     public double getPrice() {
         return price;
     }
@@ -63,8 +66,6 @@ public class OrderDetails {
         this.price = price;
     }
 
-    @Basic
-    @Column(name = "discount", nullable = false, precision = 0)
     public double getDiscount() {
         return discount;
     }
@@ -81,4 +82,12 @@ public class OrderDetails {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    public Orders getOrders() {
+        return orders;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }

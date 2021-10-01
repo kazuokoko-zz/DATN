@@ -5,15 +5,22 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Product_color", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Product_color")
 public class ProductColor {
-    private Integer id;
-    private Integer productId;
-    private Integer colorId;
-    private Integer quantity;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "color_id", nullable = false)
+    private Integer colorId;
+    @Basic
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
     public int getId() {
         return id;
     }
@@ -22,8 +29,6 @@ public class ProductColor {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -32,8 +37,6 @@ public class ProductColor {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "color_id", nullable = false)
     public int getColorId() {
         return colorId;
     }
@@ -42,8 +45,6 @@ public class ProductColor {
         this.colorId = colorId;
     }
 
-    @Basic
-    @Column(name = "quantity", nullable = false)
     public int getQuantity() {
         return quantity;
     }
@@ -63,4 +64,16 @@ public class ProductColor {
 
     @OneToMany(mappedBy = "productColor")
     List<QuantityManagerment> quantityManagerments;
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public List<QuantityManagerment> getQuantityManagerments() {
+        return quantityManagerments;
+    }
 }

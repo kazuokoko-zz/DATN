@@ -1,17 +1,24 @@
 package com.poly.datn.entity;
 
+import org.springframework.web.bind.annotation.GetMapping;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Account_role", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Account_role")
 public class AccountRole {
-    private Integer id;
-    private Integer accountId;
-    private Integer roleId;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "account_id", nullable = false)
+    private Integer accountId;
+    @Basic
+    @Column(name = "role_id", nullable = false)
+    private Integer roleId;
+
     public int getId() {
         return id;
     }
@@ -20,8 +27,6 @@ public class AccountRole {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "account_id", nullable = false)
     public int getAccountId() {
         return accountId;
     }
@@ -30,8 +35,6 @@ public class AccountRole {
         this.accountId = accountId;
     }
 
-    @Basic
-    @Column(name = "role_id", nullable = false)
     public int getRoleId() {
         return roleId;
     }

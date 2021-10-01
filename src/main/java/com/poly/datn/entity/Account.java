@@ -8,17 +8,32 @@ import java.util.Objects;
 
 @Entity
 public class Account {
-    private Integer id;
-    private String username;
-    private String password;
-    private String fullname;
-    private String email;
-    private String phone;
-    private String address;
-    private Boolean userStatus;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "username", nullable = false, length = 30)
+    private String username;
+    @Basic
+    @Column(name = "password", nullable = false, length = 30)
+    private String password;
+    @Basic
+    @Column(name = "fullname", nullable = false, length = 30)
+    private String fullname;
+    @Basic
+    @Column(name = "email", nullable = false, length = 50)
+    private String email;
+    @Basic
+    @Column(name = "phone", nullable = false, length = 16)
+    private String phone;
+    @Basic
+    @Column(name = "address", nullable = false, length = 255)
+    private String address;
+    @Basic
+    @Column(name = "user_status", nullable = false)
+    private Boolean userStatus;
+
     public int getId() {
         return id;
     }
@@ -27,8 +42,6 @@ public class Account {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "username", nullable = false, length = 30)
     public String getUsername() {
         return username;
     }
@@ -37,8 +50,6 @@ public class Account {
         this.username = username;
     }
 
-    @Basic
-    @Column(name = "password", nullable = false, length = 30)
     public String getPassword() {
         return password;
     }
@@ -47,8 +58,6 @@ public class Account {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "fullname", nullable = false, length = 30)
     public String getFullname() {
         return fullname;
     }
@@ -57,8 +66,6 @@ public class Account {
         this.fullname = fullname;
     }
 
-    @Basic
-    @Column(name = "email", nullable = false, length = 50)
     public String getEmail() {
         return email;
     }
@@ -67,8 +74,6 @@ public class Account {
         this.email = email;
     }
 
-    @Basic
-    @Column(name = "phone", nullable = false, length = 16)
     public String getPhone() {
         return phone;
     }
@@ -77,8 +82,6 @@ public class Account {
         this.phone = phone;
     }
 
-    @Basic
-    @Column(name = "address", nullable = false, length = 255)
     public String getAddress() {
         return address;
     }
@@ -87,8 +90,6 @@ public class Account {
         this.address = address;
     }
 
-    @Basic
-    @Column(name = "user_status", nullable = false)
     public Boolean getUserStatus() {
         return userStatus;
     }

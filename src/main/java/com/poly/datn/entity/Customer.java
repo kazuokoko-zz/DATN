@@ -5,15 +5,26 @@ import java.util.Objects;
 
 @Entity
 public class Customer {
-    private Long id;
-    private String fullname;
-    private String email;
-    private String phone;
-    private String address;
-    private String note;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Basic
+    @Column(name = "fullname", nullable = false, length = 30)
+    private String fullname;
+    @Basic
+    @Column(name = "email", nullable = true, length = 50)
+    private String email;
+    @Basic
+    @Column(name = "phone", nullable = false, length = 16)
+    private String phone;
+    @Basic
+    @Column(name = "address", nullable = false, length = 100)
+    private String address;
+    @Basic
+    @Column(name = "note", nullable = true, length = 255)
+    private String note;
+
     public long getId() {
         return id;
     }
@@ -22,8 +33,6 @@ public class Customer {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "fullname", nullable = false, length = 30)
     public String getFullname() {
         return fullname;
     }
@@ -32,8 +41,6 @@ public class Customer {
         this.fullname = fullname;
     }
 
-    @Basic
-    @Column(name = "email", nullable = true, length = 50)
     public String getEmail() {
         return email;
     }
@@ -42,8 +49,6 @@ public class Customer {
         this.email = email;
     }
 
-    @Basic
-    @Column(name = "phone", nullable = false, length = 16)
     public String getPhone() {
         return phone;
     }
@@ -52,8 +57,6 @@ public class Customer {
         this.phone = phone;
     }
 
-    @Basic
-    @Column(name = "address", nullable = false, length = 100)
     public String getAddress() {
         return address;
     }
@@ -62,8 +65,6 @@ public class Customer {
         this.address = address;
     }
 
-    @Basic
-    @Column(name = "note", nullable = true, length = 255)
     public String getNote() {
         return note;
     }
@@ -76,4 +77,8 @@ public class Customer {
 
     @OneToOne(mappedBy = "customer")
     Orders orders;
+
+    public Orders getOrders() {
+        return orders;
+    }
 }

@@ -6,16 +6,29 @@ import java.util.Objects;
 
 @Entity
 public class Sale {
-    private Integer id;
-    private Integer productId;
-    private Double discount;
-    private Timestamp startTime;
-    private Timestamp endTime;
-    private Integer quantity;
-    private String status;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
+    @Basic
+    @Column(name = "discount", nullable = false, precision = 0)
+    private Double discount;
+    @Basic
+    @Column(name = "start_time", nullable = false)
+    private Timestamp startTime;
+    @Basic
+    @Column(name = "end_time", nullable = false)
+    private Timestamp endTime;
+    @Basic
+    @Column(name = "quantity", nullable = true)
+    private Integer quantity;
+    @Basic
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
     public int getId() {
         return id;
     }
@@ -24,8 +37,6 @@ public class Sale {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "product_id", nullable = false)
     public int getProductId() {
         return productId;
     }
@@ -34,8 +45,6 @@ public class Sale {
         this.productId = productId;
     }
 
-    @Basic
-    @Column(name = "discount", nullable = false, precision = 0)
     public double getDiscount() {
         return discount;
     }
@@ -44,8 +53,6 @@ public class Sale {
         this.discount = discount;
     }
 
-    @Basic
-    @Column(name = "start_time", nullable = false)
     public Timestamp getStartTime() {
         return startTime;
     }
@@ -54,8 +61,6 @@ public class Sale {
         this.startTime = startTime;
     }
 
-    @Basic
-    @Column(name = "end_time", nullable = false)
     public Timestamp getEndTime() {
         return endTime;
     }
@@ -64,8 +69,6 @@ public class Sale {
         this.endTime = endTime;
     }
 
-    @Basic
-    @Column(name = "quantity", nullable = true)
     public Integer getQuantity() {
         return quantity;
     }
@@ -74,9 +77,6 @@ public class Sale {
         this.quantity = quantity;
     }
 
-
-    @Basic
-    @Column(name = "status", nullable = false, length = 20)
     public String getStatus() {
         return status;
     }
@@ -90,4 +90,8 @@ public class Sale {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    public Product getProduct() {
+        return product;
+    }
 }

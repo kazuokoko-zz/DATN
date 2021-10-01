@@ -6,13 +6,20 @@ import java.util.Objects;
 
 @Entity
 public class Category {
-    private Integer id;
-    private String name;
-    private Integer type;
-    private Boolean status;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "name", nullable = false, length = 30)
+    private String name;
+    @Basic
+    @Column(name = "type", nullable = false)
+    private Integer type;
+    @Basic
+    @Column(name = "status", nullable = false)
+    private Boolean status;
+
     public int getId() {
         return id;
     }
@@ -21,8 +28,6 @@ public class Category {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name", nullable = false, length = 30)
     public String getName() {
         return name;
     }
@@ -31,8 +36,6 @@ public class Category {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "type", nullable = false)
     public int getType() {
         return type;
     }
@@ -41,8 +44,6 @@ public class Category {
         this.type = type;
     }
 
-    @Basic
-    @Column(name = "status", nullable = false)
     public boolean getStatus() {
         return status;
     }

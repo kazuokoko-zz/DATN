@@ -5,16 +5,25 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Quantity_Managerment", schema = "bhoddvjk1na7d8a0xtlr")
+@Table(name = "Quantity_Managerment")
 public class QuantityManagerment {
-    private Integer id;
-    private Integer productColorId;
-    private Integer changedBy;
-    private Timestamp timeChanged;
-    private String note;
-
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "product_color_id", nullable = false)
+    private Integer productColorId;
+    @Basic
+    @Column(name = "changed_by", nullable = false)
+    private Integer changedBy;
+    @Basic
+    @Column(name = "time_changed", nullable = false)
+    private Timestamp timeChanged;
+    @Basic
+    @Column(name = "note", nullable = false, length = 30)
+    private String note;
+
     public int getId() {
         return id;
     }
@@ -23,8 +32,6 @@ public class QuantityManagerment {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "product_color_id", nullable = false)
     public int getProductColorId() {
         return productColorId;
     }
@@ -33,8 +40,6 @@ public class QuantityManagerment {
         this.productColorId = productColorId;
     }
 
-    @Basic
-    @Column(name = "changed_by", nullable = false)
     public int getChangedBy() {
         return changedBy;
     }
@@ -43,8 +48,6 @@ public class QuantityManagerment {
         this.changedBy = changedBy;
     }
 
-    @Basic
-    @Column(name = "time_changed", nullable = false)
     public Timestamp getTimeChanged() {
         return timeChanged;
     }
@@ -53,8 +56,6 @@ public class QuantityManagerment {
         this.timeChanged = timeChanged;
     }
 
-    @Basic
-    @Column(name = "note", nullable = false, length = 30)
     public String getNote() {
         return note;
     }
@@ -71,4 +72,12 @@ public class QuantityManagerment {
     @ManyToOne
     @JoinColumn(name = "product_color_id")
     ProductColor productColor;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public ProductColor getProductColor() {
+        return productColor;
+    }
 }

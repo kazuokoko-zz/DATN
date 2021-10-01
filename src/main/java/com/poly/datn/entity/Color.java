@@ -6,11 +6,17 @@ import java.util.Objects;
 
 @Entity
 public class Color {
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Integer id;
+    @Basic
+    @Column(name = "color_name", nullable = false, length = 15)
     private String colorName;
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -19,8 +25,6 @@ public class Color {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "color_name", nullable = false, length = 15)
     public String getColorName() {
         return colorName;
     }
@@ -33,4 +37,8 @@ public class Color {
 
     @OneToMany(mappedBy = "color")
     List<ProductColor> productColors;
+
+    public List<ProductColor> getProductColors() {
+        return productColors;
+    }
 }
