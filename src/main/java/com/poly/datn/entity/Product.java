@@ -68,4 +68,31 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<ProductDetails> productDetails;
 
+    public List<OrderDetails> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public List<Blog> getBlogs() {
+        return blogs;
+    }
+
+    public List<ProductCategory> getProductCategories() {
+        return productCategories;
+    }
+
+    public List<Sale> getSales() {
+        return sales;
+    }
+
+    public List<ProductColor> getProductColors() {
+        return productColors;
+    }
+
+    public List<CartDetail> getCartDetails() {
+        return cartDetails;
+    }
+
+    public List<ProductDetails> getProductDetails() {
+        return productDetails;
+    }
 }

@@ -49,4 +49,11 @@ public class AccountRole {
     @JoinColumn(name = "role_id")
     Role role;
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public Role getRole() {
+        return role;
+    }
 }

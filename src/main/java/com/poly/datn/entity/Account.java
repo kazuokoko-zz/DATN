@@ -109,4 +109,28 @@ public class Account {
     List<QuantityManagerment> quantityManagerments;
     @OneToMany(mappedBy = "account")
     List<CartDetail> cartDetails;
+
+    public List<Orders> getOrders() {
+        return orders;
+    }
+
+    public List<Blog> getBlogs() {
+        return blogs;
+    }
+
+    public List<AccountRole> getAccountRoles() {
+        return accountRoles;
+    }
+
+    public List<OrderManagement> getOrderManagements() {
+        return orderManagements;
+    }
+
+    public List<QuantityManagerment> getQuantityManagerments() {
+        return quantityManagerments;
+    }
+
+    public List<CartDetail> getCartDetails() {
+        return cartDetails;
+    }
 }
