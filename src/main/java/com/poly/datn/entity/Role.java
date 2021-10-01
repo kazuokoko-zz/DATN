@@ -1,10 +1,13 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Role")
 public class Role {
     @Id
     @Column(name = "id", nullable = false)

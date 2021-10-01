@@ -1,11 +1,14 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Orders")
 public class Orders {
     @Id
     @Column(name = "id", nullable = false)
@@ -67,11 +70,13 @@ public class Orders {
 
 
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "username", insertable = false ,updatable  = false)
+    @JsonIgnore
     Account account;
 
     @OneToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Customer customer;
 
     @OneToMany(mappedBy = "orders")

@@ -1,5 +1,6 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
@@ -45,11 +46,13 @@ public class AccountRole {
 
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Account account;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", insertable = false ,updatable  = false)
+    @JsonIgnore
     Role role;
 
     public Account getAccount() {

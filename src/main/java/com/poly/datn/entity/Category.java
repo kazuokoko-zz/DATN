@@ -1,10 +1,13 @@
 package com.poly.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "category")
 public class Category {
     @Id
     @Column(name = "id", nullable = false)
@@ -56,8 +59,13 @@ public class Category {
     List<Category> categories;
 
     @ManyToOne
-    @JoinColumn(name = "type")
+    @JoinColumn(name = "type", insertable = false ,updatable  = false)
+    @JsonIgnore
     Category category;
+
+
+
+
     @OneToMany(mappedBy = "category")
     List<ProductCategory> productCategory;
 
