@@ -2,14 +2,14 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.CartDetailDao;
 import com.poly.datn.entity.CartDetail;
-import com.poly.datn.service.CartService;
+import com.poly.datn.service.CartDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CartServiceImpl implements CartService{
+public class CartDetailServiceImpl implements CartDetailService {
     @Autowired
     CartDetailDao cartDao;
 
@@ -21,7 +21,7 @@ public class CartServiceImpl implements CartService{
 //    }
 
             @Override
-            public List<CartDetail> findCartByUsername(Integer id) {
-                return cartDao.findCartDetailsByUsername(id);
+            public List<CartDetail> findCartByUsername(String username) {
+                return cartDao.findCartDetailsByUsername(username);
                 }
 }

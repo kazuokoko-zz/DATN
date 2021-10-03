@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CartDetailDao extends JpaRepository<CartDetail, Integer>{
-    @Query("select  c from CartDetail  c where c.id = :id")
-    List<CartDetail> findCartDetailsByUsername(@Param("id") Integer id);
+    @Query("select  c from CartDetail  c where c.username = :username")
+    List<CartDetail> findCartDetailsByUsername(@Param("username") String username);
 }
