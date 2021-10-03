@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 public interface AccountService {
 
-    Account findById(String username);
+    Account findByUsername(String username);
 }
