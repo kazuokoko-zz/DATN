@@ -22,6 +22,6 @@ public class CartDetailServiceImpl implements CartDetailService {
 
             @Override
             public List<CartDetail> findCartByUsername(String username) {
-                return cartDao.findCartDetailsByUsername(username);
+                return cartDao.getCartDetailsByUsername(username);
                 }
 }
