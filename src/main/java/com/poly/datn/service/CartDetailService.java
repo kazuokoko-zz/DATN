@@ -1,10 +1,10 @@
 package com.poly.datn.service;
 
-import com.poly.datn.entity.CartDetail;
+import com.poly.datn.VO.CartDetailVO;
 
 import java.util.List;
 
 public interface CartDetailService {
-    List<CartDetail>  findCartByUsername(String username);
+    List<CartDetailVO>  findCartByUsername(String username);
 //    CartDetail getById(Integer id);
 }
