@@ -18,4 +18,8 @@ public class CartDetailsRest {
     public List<CartDetail> getList(@RequestParam("username") String username) {
         return cartService.findCartByUsername(username);
     }
+    @PutMapping("update")
+    public CartDetail updateCartDetail(@RequestBody CartDetail cartDetail) {
+        return cartService.getCartDetailById(cartDetail);
+    }
 }
