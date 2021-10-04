@@ -1,9 +1,6 @@
 package com.poly.datn.rest.controler.customer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poly.datn.entity.Category;
+import com.poly.datn.VO.CategoryVO;
 import com.poly.datn.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +16,7 @@ public class CategoryRest {
     CategoryService categoryService;
 
     @GetMapping
-    public List<Category> getCategories() {
+    public List<CategoryVO> getCategories() {
         return categoryService.getCategories();
     }
 

@@ -1,11 +1,17 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.Utils.StringFind;
+import com.poly.datn.VO.ProductColorVO;
+import com.poly.datn.VO.ProductDetailsVO;
+import com.poly.datn.VO.ProductVO;
 import com.poly.datn.dao.ProductCategoryDAO;
+import com.poly.datn.dao.ProductColorDAO;
 import com.poly.datn.dao.ProductDAO;
+import com.poly.datn.dao.ProductDetailsDAO;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,21 +28,52 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductCategoryDAO productCategoryDAO;
 
+    @Autowired
+    ProductColorDAO productColorDAO;
+
+    @Autowired
+    ProductDetailsDAO productDetailsDAO;
+
     @Override
-    public List<Product> getList(Optional<Integer> cate, Optional<String> find) {
+    public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
+        List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
-            List<Product> products = getListByCate(cate.get());
+            products = getListByCate(cate.get());
             products = StringFind.getMatch(products, find.get());
-            return products;
+
         } else if (cate.isPresent()) {
-            return getListByCate(cate.get());
+            products = getListByCate(cate.get());
         } else if (find.isPresent()) {
-            List<Product> products = productDAO.findAll();
+            products = productDAO.findAll();
             products = StringFind.getMatch(products, find.get());
-            return products;
+
         } else {
-            return productDAO.findAll();
+            products = productDAO.findAll();
         }
+
+        List<ProductVO> productVOS = new ArrayList<>();
+        products.forEach(product -> {
+            ProductVO productVO = new ProductVO();
+            BeanUtils.copyProperties(product, productVO);
+            List<ProductColorVO> productColorVOS = new ArrayList<>();
+            productColorDAO.getByProductId(product.getId()).forEach(productColor -> {
+                ProductColorVO productColorVO = new ProductColorVO();
+                BeanUtils.copyProperties(productColor, productColorVO);
+                productColorVOS.add(productColorVO);
+            });
+            productVO.setProductColors(productColorVOS);
+            List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
+            productDetailsDAO.getByProductId(product.getId()).forEach(productDetails -> {
+                ProductDetailsVO productDetailsVO = new ProductDetailsVO();
+                BeanUtils.copyProperties(productDetails, productDetailsVO);
+                productDetailsVOS.add(productDetailsVO);
+            });
+            productVO.setProductDetails(productDetailsVOS);
+
+            productVOS.add(productVO);
+        });
+
+        return productVOS;
     }
 
     @Override

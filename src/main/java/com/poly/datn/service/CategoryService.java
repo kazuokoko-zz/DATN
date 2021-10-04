@@ -1,9 +1,9 @@
 package com.poly.datn.service;
 
-import com.poly.datn.entity.Category;
+import com.poly.datn.VO.CategoryVO;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<Category> getCategories();
+    List<CategoryVO> getCategories();
 }

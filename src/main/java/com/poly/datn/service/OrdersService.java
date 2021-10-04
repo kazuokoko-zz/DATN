@@ -1,11 +1,11 @@
 package com.poly.datn.service;
 
-import com.poly.datn.entity.Orders;
+import com.poly.datn.VO.OrdersVO;
 
 import java.util.List;
 
 public interface OrdersService {
-    List<Orders> getByUsername(String username);
+    List<OrdersVO> getByUsername(String username);
 
-    Orders getById(Integer id);
+    OrdersVO getById(Integer id);
 }
