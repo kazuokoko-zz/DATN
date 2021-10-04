@@ -7,9 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CartDetailDao extends JpaRepository<CartDetail, Integer> {
+public interface CartDetailDAO extends JpaRepository<CartDetail, Integer> {
 
-    @Query(value = "select  c from CartDetail c where c.account.username=?1")
+    @Query(value = "select  c from CartDetail  c where c.account.username=?1")
     List<CartDetail> getCartDetailsByUsername(String username);
     CartDetail getCartById(Integer id);
 }

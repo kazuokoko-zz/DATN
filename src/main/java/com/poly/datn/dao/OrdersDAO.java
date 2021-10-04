@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface OrdersDAO extends JpaRepository<Orders, Integer> {
 
-    @Query("select  o from Orders  o where o.username = :username")
+    @Query("select  o from Orders   o where o.username = :username")
     List<Orders> getByUsername(@Param("username") String username);
 }

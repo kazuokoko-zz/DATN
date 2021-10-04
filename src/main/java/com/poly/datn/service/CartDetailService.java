@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CartDetailService {
     List<CartDetail>  findCartByUsername(String username);
-    CartDetail getCartDetailById(CartDetail cartDetail);
+//    CartDetail getById(Integer id);
 }

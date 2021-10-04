@@ -1,6 +1,6 @@
 package com.poly.datn.rest.controler.customer;
 
-import com.poly.datn.entity.Product;
+import com.poly.datn.VO.ProductVO;
 import com.poly.datn.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +19,10 @@ public class ProductRest {
     ProductService productService;
 
     @GetMapping
-    public List<Product> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find")Optional<String> find){
-        List<Product> products = productService.getList(cate, find);
-        products.forEach(product -> {
-            product.getProductDetails();
-            product.getProductColors();
-        });
-     return products;
+    public List<ProductVO> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
+        return productService.getList(cate, find);
+
+
     }
 
 

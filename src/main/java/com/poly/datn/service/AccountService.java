@@ -1,10 +1,9 @@
 package com.poly.datn.service;
 
-import com.poly.datn.entity.Account;
-import org.springframework.stereotype.Service;
 
+import com.poly.datn.VO.AccountVO;
 
 public interface AccountService {
 
-    Account findByUsername(String username);
+    AccountVO findByUsername(String username);
 }
