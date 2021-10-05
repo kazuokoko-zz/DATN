@@ -69,11 +69,6 @@ public class Orders {
 
 
 
-    @ManyToOne
-    @JoinColumn(name = "username", insertable = false ,updatable  = false)
-    @JsonIgnore
-    Account account;
-
     @OneToOne
     @JoinColumn(name = "customer_id", insertable = false ,updatable  = false)
     @JsonIgnore
@@ -86,9 +81,7 @@ public class Orders {
     @OneToOne(mappedBy = "orders")
     Warranty warranty;
 
-    public Account getAccount() {
-        return account;
-    }
+
 
     public Customer getCustomer() {
         return customer;

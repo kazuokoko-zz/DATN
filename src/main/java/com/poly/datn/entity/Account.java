@@ -101,8 +101,6 @@ public class Account {
     }
 
     @OneToMany(mappedBy = "account")
-    List<Orders> orders;
-    @OneToMany(mappedBy = "account")
     List<Blog> blogs;
     @OneToMany(mappedBy = "account")
     List<AccountRole> accountRoles;
@@ -113,9 +111,7 @@ public class Account {
     @OneToMany(mappedBy = "account")
     List<CartDetail> cartDetails;
 
-    public List<Orders> getOrders() {
-        return orders;
-    }
+
 
     public List<Blog> getBlogs() {
         return blogs;
