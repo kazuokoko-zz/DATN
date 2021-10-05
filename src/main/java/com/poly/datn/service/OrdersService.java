@@ -7,5 +7,5 @@ import java.util.List;
 public interface OrdersService {
     List<OrdersVO> getByUsername(String username);
 
-    OrdersVO getById(Integer id);
+    OrdersVO getByIdAndUserName(Integer id,String username) throws Exception;
 }

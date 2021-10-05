@@ -1,9 +1,14 @@
 package com.poly.datn.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.VO.AccountVO;
+
+import java.security.Principal;
 
 public interface AccountService {
 
-    AccountVO findByUsername(String username);
+     AccountVO updateAccount(JsonNode jsonNode, Principal principal);
+
+    AccountVO findByUsername(Principal principal);
 }
