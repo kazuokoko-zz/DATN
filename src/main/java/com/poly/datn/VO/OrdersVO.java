@@ -1,9 +1,12 @@
 package com.poly.datn.VO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -18,10 +21,8 @@ public class OrdersVO {
 
     private Long customerId;
 
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER,pattern = "##.##")
     private Double sumprice;
-
-
-    AccountVO account;
 
 
     CustomerVO customer;

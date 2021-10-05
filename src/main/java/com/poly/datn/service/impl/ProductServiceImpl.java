@@ -34,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductDetailsDAO productDetailsDAO;
 
+    // Begin code of MA
+
     @Override
     public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
         List<Product> products;
@@ -53,23 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductVO> productVOS = new ArrayList<>();
         products.forEach(product -> {
-            ProductVO productVO = new ProductVO();
-            BeanUtils.copyProperties(product, productVO);
-            List<ProductColorVO> productColorVOS = new ArrayList<>();
-            productColorDAO.getByProductId(product.getId()).forEach(productColor -> {
-                ProductColorVO productColorVO = new ProductColorVO();
-                BeanUtils.copyProperties(productColor, productColorVO);
-                productColorVOS.add(productColorVO);
-            });
-            productVO.setProductColors(productColorVOS);
-            List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
-            productDetailsDAO.getByProductId(product.getId()).forEach(productDetails -> {
-                ProductDetailsVO productDetailsVO = new ProductDetailsVO();
-                BeanUtils.copyProperties(productDetails, productDetailsVO);
-                productDetailsVOS.add(productDetailsVO);
-            });
-            productVO.setProductDetails(productDetailsVOS);
-
+            ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
         });
 
@@ -88,5 +74,34 @@ public class ProductServiceImpl implements ProductService {
         }
         return products;
     }
+
+    @Override
+    public ProductVO getById(Integer id) throws Exception {
+        Product product = productDAO.findById(id).orElseThrow(() -> new Exception("Product not found with id: " + String.valueOf(id)));
+        return convertToVO(product);
+    }
+
+    private ProductVO convertToVO(Product product) {
+        ProductVO productVO = new ProductVO();
+        BeanUtils.copyProperties(product, productVO);
+        List<ProductColorVO> productColorVOS = new ArrayList<>();
+        productColorDAO.getByProductId(productVO.getId()).forEach(productColor -> {
+            ProductColorVO productColorVO = new ProductColorVO();
+            BeanUtils.copyProperties(productColor, productColorVO);
+            productColorVOS.add(productColorVO);
+        });
+        productVO.setProductColors(productColorVOS);
+        List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
+        productDetailsDAO.getByProductId(productVO.getId()).forEach(productDetails -> {
+            ProductDetailsVO productDetailsVO = new ProductDetailsVO();
+            BeanUtils.copyProperties(productDetails, productDetailsVO);
+            productDetailsVOS.add(productDetailsVO);
+        });
+        productVO.setProductDetails(productDetailsVOS);
+        return productVO;
+    }
+
+
+    // End code of MA
 
 }

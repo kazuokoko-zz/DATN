@@ -1,5 +1,6 @@
 package com.poly.datn.rest.controler.customer;
 
+import com.poly.datn.Utils.Jwt;
 import com.poly.datn.VO.OrdersVO;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,13 +20,13 @@ public class OrdersRest {
     @Autowired
     OrdersService ordersService;
 
-    @GetMapping("{id}/account/{u}")
-    public List<OrdersVO> getList(@PathVariable("id") Integer id, @PathVariable("u") String u) {
-        return ordersService.getByUsername(u);
+    @GetMapping
+    public List<OrdersVO> getList(Principal principal) {
+        return ordersService.getByUsername(principal.getName());
     }
 
-    @GetMapping("{id}/cutomer/{u}/{oid}")
-    public OrdersVO getOrders(@PathVariable("id") Integer id, @PathVariable("u") String u, @PathVariable("oid") Integer oid) {
-        return ordersService.getById(oid);
+    @GetMapping("{id}")
+    public OrdersVO getOrders(Principal principal, @PathVariable("id") Integer id) throws Exception {
+        return ordersService.getByIdAndUserName(id, principal.getName());
     }
 }

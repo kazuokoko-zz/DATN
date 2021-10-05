@@ -23,8 +23,9 @@ public class OrdersServicesImpl implements OrdersService {
     CustomerDAO customerDAO;
 
     @Override
-    public OrdersVO getById(Integer id) {
-        Orders orders = ordersDAO.findById(id).get();
+    public OrdersVO getByIdAndUserName(Integer id, String username) throws Exception {
+        Orders orders = ordersDAO.findByIdAndUsername(id, username).orElseThrow(() -> new Exception("Not your order"));
+
         Customer customer = customerDAO.findById(orders.getCustomerId()).get();
         OrdersVO ordersVO = new OrdersVO();
         CustomerVO vo = new CustomerVO();

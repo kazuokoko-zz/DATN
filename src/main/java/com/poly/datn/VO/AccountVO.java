@@ -16,7 +16,6 @@ public class AccountVO {
 
 
 
-    List<OrdersVO> orders;
     List<BlogVO> blogs;
     List<AccountRoleVO> accountRoles;
     List<OrderManagementVO> orderManagements;
