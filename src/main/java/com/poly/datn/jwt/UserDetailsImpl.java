@@ -2,6 +2,7 @@ package com.poly.datn.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poly.datn.entity.Account;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Data
 public class UserDetailsImpl implements UserDetails {
 
     private Integer id;
