@@ -18,12 +18,15 @@ public class ProductRest {
     @Autowired
     ProductService productService;
 
+    // Mah code
     @GetMapping
     public List<ProductVO> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
         return productService.getList(cate, find);
-
-
     }
+
+
+
+    //End MAH CODE
 
 
 }
