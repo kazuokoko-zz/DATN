@@ -1,13 +1,16 @@
 package com.poly.datn.service;
 
 import com.poly.datn.VO.CartDetailVO;
+import com.poly.datn.VO.ProductVO;
 import com.poly.datn.entity.CartDetail;
+import com.poly.datn.entity.Product;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface CartDetailService {
-    List<CartDetailVO>  findCartByUsername(String username);
-    CartDetailVO getCartDetailById(CartDetailVO cartDetail);
-    CartDetailVO deleteCartDetaiilById(Integer id);
-    CartDetailVO newCartDetaiilByUsername(Integer id, String username);
+    List<CartDetailVO>  findCartByUsername(Principal principal);
+    CartDetailVO getCartDetailById(CartDetailVO cartDetail,Principal principal);
+    CartDetailVO deleteCartDetaiilById(Integer id,Principal principal);
+    CartDetailVO newCartDetaiilByUsername(Integer idProduct, Principal principal);
 }
