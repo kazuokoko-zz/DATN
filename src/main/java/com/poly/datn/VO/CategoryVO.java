@@ -14,17 +14,7 @@ public class CategoryVO {
     private Integer type;
 
     private Boolean status;
-
-
-
     List<CategoryVO> categories;
-
-
     CategoryVO category;
-
-
     List<ProductCategoryVO> productCategory;
-
-
-
 }

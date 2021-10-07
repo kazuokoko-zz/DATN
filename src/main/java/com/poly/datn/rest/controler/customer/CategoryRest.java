@@ -3,10 +3,9 @@ package com.poly.datn.rest.controler.customer;
 import com.poly.datn.VO.CategoryVO;
 import com.poly.datn.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -19,6 +18,7 @@ public class CategoryRest {
     public List<CategoryVO> getCategories() {
         return categoryService.getCategories();
     }
+
 
 //    @GetMapping
 //    public JsonNode getCategories() throws JsonProcessingException {
