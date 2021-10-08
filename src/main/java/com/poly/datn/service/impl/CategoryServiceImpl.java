@@ -8,8 +8,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -32,5 +34,55 @@ public class CategoryServiceImpl implements CategoryService {
             categories.add(categoryVO);
         });
         return categories;
+    }
+
+    @Override
+    public CategoryVO createCategory(CategoryVO categoryVO, Principal principal){
+        if(principal == null){
+            System.out.println("bạn chưa đăng nhập");
+            return null;
+        }
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryVO, category);
+        category = categoryDAO.save(category);
+        categoryVO.setId(category.getId());
+        return  categoryVO;
+
+    }
+
+    @Override
+    public CategoryVO deleteCategory(Integer id, Principal principal) {
+        if(principal == null){
+            System.out.println("bạn chưa đăng nhập");
+            return null;
+        }
+        CategoryVO categoryVO = new CategoryVO();
+        Optional<Category> optionalCategory = categoryDAO.findById(id);
+        if(optionalCategory.isPresent()){
+            Category category = optionalCategory.get();
+            categoryDAO.findChildCategories(id).forEach(categoryes -> {
+                categoryes.setStatus(false);
+                categoryDAO.save(categoryes);
+            });
+           category.setStatus(false);
+            BeanUtils.copyProperties(category, categoryVO);
+            categoryDAO.save(category);
+        }
+        return categoryVO;
+    }
+
+    @Override
+    public CategoryVO updateCategory(CategoryVO categoryVO, Principal principal) {
+        if(principal == null){
+            System.out.println("bạn chưa đăng nhập");
+            return null;
+        }
+       Optional<Category> optionalCategory = categoryDAO.findById(categoryVO.getId());
+         if(optionalCategory.isPresent()){
+             Category entityCategory = new Category();
+             BeanUtils.copyProperties(categoryVO,entityCategory);
+             categoryDAO.save(entityCategory);
+         }
+        return  categoryVO;
     }
 }
