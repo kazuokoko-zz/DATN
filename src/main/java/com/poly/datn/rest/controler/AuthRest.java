@@ -46,4 +46,11 @@ public class AuthRest {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
     }
+
+    @GetMapping("/logout")
+    public Boolean unAuthenticateUser() {
+        return true;
+    }
+
+
 }
