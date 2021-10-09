@@ -36,14 +36,14 @@ public class CartDetailsRest {
     }
     @PutMapping("update")
     public CartDetailVO updateCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
-        return cartDetailService.getCartDetailById(cartDetailVO, principal);
+        return cartDetailService.save(cartDetailVO, principal);
     }
     @DeleteMapping("delete/{id}")
-    public CartDetailVO deleteCartDetail(@PathVariable Integer id, Principal principal) {
+    public boolean deleteCartDetail(@PathVariable Integer id, Principal principal) {
         return cartDetailService.deleteCartDetaiilById(id, principal);
     }
-    @PostMapping("{idProduct}/addtocart/username")
-    public CartDetailVO addToCartDetail(@PathVariable Integer idProduct, Principal principal) {
-            return cartDetailService.newCartDetaiilByUsername(idProduct, principal);
+    @PostMapping("new")
+    public CartDetailVO addToCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
+        return cartDetailService.save(cartDetailVO, principal);
     }
 }
