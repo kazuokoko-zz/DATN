@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CartDetailService {
     List<CartDetailVO>  findCartByUsername(Principal principal);
-    CartDetailVO getCartDetailById(CartDetailVO cartDetail,Principal principal);
-    CartDetailVO deleteCartDetaiilById(Integer id,Principal principal);
-    CartDetailVO newCartDetaiilByUsername(Integer idProduct, Principal principal);
+    CartDetailVO save(CartDetailVO cartDetail,Principal principal);
+    boolean deleteCartDetaiilById(Integer id,Principal principal);
+//    CartDetailVO newCartDetaiilByUsername(Integer idProduct, Principal principal);
 }

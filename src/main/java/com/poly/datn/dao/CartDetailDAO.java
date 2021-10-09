@@ -15,8 +15,9 @@ public interface CartDetailDAO extends JpaRepository<CartDetail, Integer> {
 
     @Query(value = "select  c from CartDetail  c where c.account.username=?1")
     List<CartDetail> getCartDetailsByUsername(String username);
-    @Query(value = "select  c from CartDetail  c where c.product.id=?1 and c.account.id=?1")
-    Optional<CartDetail> getInfoCartByIDProductAndUsername(Integer id, String username);
+
+//    @Query(value = "select  c from CartDetail  c where c.product.id=?1 and c.account.id=?1")
+//    Optional<CartDetail> getById(Integer id, String username);
 
 //    Optional<CartDetail> getInfoProductByID(int id);
 //    Optional<CartDetail> getCartDetailsByUsernames(String username);

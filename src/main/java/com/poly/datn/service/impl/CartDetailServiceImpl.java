@@ -13,6 +13,7 @@ import com.poly.datn.service.CartDetailService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             System.out.println("bạn chưa đăng nhập");
             return null;
         }
@@ -66,10 +67,11 @@ public class CartDetailServiceImpl implements CartDetailService {
 
 
     @Override
-    public CartDetailVO deleteCartDetaiilById(Integer id, Principal principal) {
+    @Transactional
+    public boolean deleteCartDetaiilById(Integer id, Principal principal) {
         if (principal == null) {
             System.out.println("bạn chưa đăng nhập");
-            return null;
+            return false;
         }
         CartDetailVO cartDetailVO = new CartDetailVO();
         Optional<CartDetail> optionalCartDetail = cartDao.findById(id);
@@ -77,88 +79,107 @@ public class CartDetailServiceImpl implements CartDetailService {
             CartDetail entity = optionalCartDetail.get();
             BeanUtils.copyProperties(entity, cartDetailVO);
             cartDao.delete(entity);
+            return true;
         }
-        return cartDetailVO;
+        return false;
     }
 
 
     @Override
-    public CartDetailVO getCartDetailById(CartDetailVO cartDetailVO, Principal principal) {
-        if(principal == null){
+    @Transactional
+    public CartDetailVO save(CartDetailVO cartDetailVO, Principal principal) {
+        if (principal == null) {
             System.out.println("bạn chưa đăng nhập");
             return null;
         }
-        Optional<CartDetail> optionalCartDetail = cartDao.findById(cartDetailVO.getId());
-        if(optionalCartDetail.isPresent()){
-            Integer checkquantity = cartDetailVO.getQuantity();
-            if(checkquantity >0) {
-                CartDetail entity = optionalCartDetail.get();
-                BeanUtils.copyProperties(cartDetailVO, entity);
-                cartDao.save(entity);
-            } else {
-                CartDetail entity = optionalCartDetail.get();
-                BeanUtils.copyProperties(cartDetailVO, entity);
-                cartDao.delete(entity);
-            }
-        }
-        return  cartDetailVO;
-    }
-    @Override
-    public CartDetailVO newCartDetaiilByUsername(Integer idProduct, Principal principal) {
+        CartDetail cartDetail = new CartDetail();
+        if (cartDetailVO.getId() == null) {
+            BeanUtils.copyProperties(cartDetailVO, cartDetail);
+            cartDetail.setUserId(accountDAO.findAccountByUsername(principal.getName()).getId());
+            cartDetail = cartDetailDAO.save(cartDetail);
 
-        if(principal == null){
-            System.out.println("bạn chưa đăng nhập");
+        } else if (cartDetailVO.getQuantity() <= 0) {
+            cartDetailDAO.deleteById(cartDetailVO.getId());
             return null;
-        }
-        Optional<Product> oProduct = productDAO.findById(idProduct);
-//        Optional<CartDetail> optionalCartDetail = cartDao.findById(idProduct);
-//        if (optionalCartDetail.get() == null) {
-//
-//        }
-        Optional<Account> optionalAccount = accountDAO.findByUsername(principal.getName());
-        CartDetail cartDetail;
-        // cái này là getcartbyidproduct, lười sửa nên comment vào đây.
-        // à sửa r
-        Optional<CartDetail> oCart = cartDao.getInfoCartByIDProductAndUsername(oProduct.get().getId(), optionalAccount.get().getUsername());
-        if (oCart.isPresent()) {
-            cartDetail = oCart.get();
         } else {
-            cartDetail = new CartDetail();
-            cartDetail.setUserId(optionalAccount.get().getId());
-            Product product1 = productDAO.getById(idProduct);
-            cartDetail.setProductId(product1.getId());
-            cartDetail.setQuantity(1);
-            cartDetail.setPrice(111.00);
-            cartDetail.setSaleId(1);
+            cartDetail = cartDetailDAO.getById(cartDetailVO.getId());
+            cartDetail.setQuantity(cartDetailVO.getQuantity());
+            cartDetailDAO.save(cartDetail);
         }
-//        cartDetail.setQuantity((int) (cartDetail.getQuantity() + oProduct.get().getPrice()));
-        cartDetailDAO.save(cartDetail);
-        System.out.println("done");
-        return null;
-//        CartDetail cartDetail = new CartDetail();
-//        Optional<CartDetail> optionalCartDetail = cartDao.getInfoProductByID(id, principal);
-//        if(optionalCartDetail == null){
-//            System.out.println("chưa có sản phẩm này trong giỏ hàng");
-//        } else {
-//            if(optionalCartDetail.isPresent()) {
-//                System.out.println("đã có sản phẩm này trong giỏ hàng");
+        BeanUtils.copyProperties(cartDetail, cartDetailVO);
+        return cartDetailVO;
+
+//        Optional<CartDetail> optionalCartDetail = cartDao.findById(cartDetailVO.getId());
+
+//        if (optionalCartDetail.isPresent()) {
+//            Integer checkquantity = cartDetailVO.getQuantity();
+//            if (checkquantity > 0) {
 //                CartDetail entity = optionalCartDetail.get();
-//               BeanUtils.copyProperties(cartDetailVO, entity);
+//                BeanUtils.copyProperties(cartDetailVO, entity);
 //                cartDao.save(entity);
+//            } else {
+//                CartDetail entity = optionalCartDetail.get();
+//                BeanUtils.copyProperties(cartDetailVO, entity);
+//                cartDao.delete(entity);
 //            }
 //        }
-
-//        CartDetail cartDetail = new CartDetail();
-//        Product product = new Product();
-//                 CartDetail cartDetail = cartDao.getInfoProductByID(id, principal).orElseThrow(()
-//                         ->
-//                         CartDetail ca = new CartDetail();
-//
-//                         );
-
-
-//        return  null;
     }
+//    @Override
+//    public CartDetailVO newCartDetaiilByUsername(Integer idProduct, Principal principal) {
+//
+//        if(principal == null){
+//            System.out.println("bạn chưa đăng nhập");
+//            return null;
+//        }
+//        Optional<Product> oProduct = productDAO.findById(idProduct);
+////        Optional<CartDetail> optionalCartDetail = cartDao.findById(idProduct);
+////        if (optionalCartDetail.get() == null) {
+////
+////        }
+//        Optional<Account> optionalAccount = accountDAO.findByUsername(principal.getName());
+//        CartDetail cartDetail;
+//        // cái này là getcartbyidproduct, lười sửa nên comment vào đây.
+//        // à sửa r
+//        Optional<CartDetail> oCart = cartDao.getInfoCartByIDProductAndUsername(oProduct.get().getId(), optionalAccount.get().getUsername());
+//        if (oCart.isPresent()) {
+//            cartDetail = oCart.get();
+//        } else {
+//            cartDetail = new CartDetail();
+//            cartDetail.setUserId(optionalAccount.get().getId());
+//            Product product1 = productDAO.getById(idProduct);
+//            cartDetail.setProductId(product1.getId());
+//            cartDetail.setQuantity(1);
+//            cartDetail.setPrice(111.00);
+//            cartDetail.setSaleId(1);
+//        }
+////        cartDetail.setQuantity((int) (cartDetail.getQuantity() + oProduct.get().getPrice()));
+//        cartDetailDAO.save(cartDetail);
+//        System.out.println("done");
+//        return null;
+////        CartDetail cartDetail = new CartDetail();
+////        Optional<CartDetail> optionalCartDetail = cartDao.getInfoProductByID(id, principal);
+////        if(optionalCartDetail == null){
+////            System.out.println("chưa có sản phẩm này trong giỏ hàng");
+////        } else {
+////            if(optionalCartDetail.isPresent()) {
+////                System.out.println("đã có sản phẩm này trong giỏ hàng");
+////                CartDetail entity = optionalCartDetail.get();
+////               BeanUtils.copyProperties(cartDetailVO, entity);
+////                cartDao.save(entity);
+////            }
+////        }
+//
+////        CartDetail cartDetail = new CartDetail();
+////        Product product = new Product();
+////                 CartDetail cartDetail = cartDao.getInfoProductByID(id, principal).orElseThrow(()
+////                         ->
+////                         CartDetail ca = new CartDetail();
+////
+////                         );
+//
+//
+////        return  null;
+//    }
 
 
 }
