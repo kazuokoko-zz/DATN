@@ -1,5 +1,6 @@
 package com.poly.datn.rest.controler;
 
+import com.poly.datn.common.Constant;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.RoleDAO;
 import com.poly.datn.jwt.DTO.JwtResponse;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin("*")
+
 @RestController
+@CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/authentication")
 public class AuthRest {
     @Autowired
