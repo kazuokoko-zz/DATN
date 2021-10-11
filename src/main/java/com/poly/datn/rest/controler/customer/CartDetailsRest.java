@@ -3,6 +3,7 @@ package com.poly.datn.rest.controler.customer;
 import com.poly.datn.VO.AccountVO;
 import com.poly.datn.VO.CartDetailVO;
 import com.poly.datn.VO.ProductVO;
+import com.poly.datn.common.Constant;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CartDetailDAO;
 import com.poly.datn.dao.ProductDAO;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/customer/cart")
 public class CartDetailsRest {
 

@@ -2,18 +2,17 @@ package com.poly.datn.rest.controler.customer;
 
 import com.poly.datn.Utils.Jwt;
 import com.poly.datn.VO.OrdersVO;
+import com.poly.datn.common.Constant;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/customer/orders")
 public class OrdersRest {
 
