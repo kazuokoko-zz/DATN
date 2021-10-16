@@ -36,6 +36,7 @@ public class CartDetailsRest {
     public List<CartDetailVO> getList(Principal principal) {
         return cartDetailService.findCartByUsername(principal);
     }
+
     @PutMapping("update")
     public CartDetailVO updateCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
         return cartDetailService.save(cartDetailVO, principal);
