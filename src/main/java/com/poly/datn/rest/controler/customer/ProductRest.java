@@ -28,8 +28,8 @@ public class ProductRest {
     }
 
     @GetMapping("{id}")
-    public ProductVO getDetail(@PathVariable("id") Integer id) throws Exception {
-        return productService.getById(id);
+    public ResponseEntity<ResponseDTO> getDetail(@PathVariable("id") Integer id) throws Exception {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getById(id)).build());
     }
 
     //End MAH CODE

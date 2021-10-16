@@ -2,9 +2,11 @@ package com.poly.datn.rest.controler.customer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.VO.AccountVO;
+import com.poly.datn.VO.ResponseDTO;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -19,13 +21,13 @@ public class AccountRest {
     //Begin code of MA
 
     @GetMapping
-    public AccountVO getAccount(Principal principal) {
-        return accountService.findByUsername(principal);
+    public ResponseEntity<ResponseDTO> getAccount(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.findByUsername(principal)).build());
     }
 
     @PutMapping("update")
-    public AccountVO updateAccount(@RequestBody JsonNode jsonNode, Principal principal) {
-        return accountService.updateAccount(jsonNode, principal);
+    public ResponseEntity<ResponseDTO> updateAccount(@RequestBody JsonNode jsonNode, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.updateAccount(jsonNode, principal)).build());
     }
 
     //End code of MA
