@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,10 +93,15 @@ public class ProductServiceImpl implements ProductService {
         });
         productVO.setProductColors(productColorVOS);
         List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
+        List<String> photos = new ArrayList<>();
         productDetailsDAO.getByProductId(productVO.getId()).forEach(productDetails -> {
             ProductDetailsVO productDetailsVO = new ProductDetailsVO();
-            BeanUtils.copyProperties(productDetails, productDetailsVO);
-            productDetailsVOS.add(productDetailsVO);
+            if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
+                Arrays.stream(productDetails.getPropertyValue().split(",")).forEach(photo -> photos.add(photo.trim()));
+            } else {
+                BeanUtils.copyProperties(productDetails, productDetailsVO);
+                productDetailsVOS.add(productDetailsVO);
+            }
         });
         productVO.setProductDetails(productDetailsVOS);
         return productVO;

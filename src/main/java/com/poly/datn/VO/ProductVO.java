@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
- @Data
+@Data
 public class ProductVO {
 
     private Integer id;
@@ -14,8 +14,9 @@ public class ProductVO {
 
     private Double price;
 
-    private String status;
+    private List<String> photos;
 
+    private String status;
 
 
     List<OrderDetailsVO> orderDetails;

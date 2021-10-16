@@ -22,6 +22,7 @@ public class CartDetailsRest {
     public ResponseEntity<ResponseDTO> getList(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.findCartByUsername(principal)).build()) ;
     }
+
     @PutMapping("update")
     public ResponseEntity<ResponseDTO> updateCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.save(cartDetailVO, principal)).build());
