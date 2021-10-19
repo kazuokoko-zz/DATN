@@ -1,8 +1,9 @@
 package com.poly.datn.rest.controler.customer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.poly.datn.VO.AccountVO;
-import com.poly.datn.VO.ResponseDTO;
+
+import com.poly.datn.vo.AccountVO;
+
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;

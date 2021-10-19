@@ -1,15 +1,17 @@
-package com.poly.datn.Utils;
+package com.poly.datn.utils;
 
 import com.poly.datn.entity.Product;
 
 import java.util.List;
 
 public class StringFind {
+    private StringFind() {
+    }
 
 
     public static List<Product> getMatch(List<Product> products, String sentences) {
 
-        String[] words = sentences.trim().replaceAll("\\.|\\_|\\-", " ").split(" ");
+        String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
 
         products.forEach(product -> {
             Boolean found = false;
@@ -19,7 +21,7 @@ public class StringFind {
                     break;
                 }
             }
-            if (!found) {
+            if (Boolean.FALSE.equals(found)) {
                 products.remove(product);
             }
         });

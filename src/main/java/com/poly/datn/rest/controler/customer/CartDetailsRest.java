@@ -1,14 +1,15 @@
 package com.poly.datn.rest.controler.customer;
 
-import com.poly.datn.VO.CartDetailVO;
-import com.poly.datn.VO.ResponseDTO;
+
+import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.CartDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
+
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)

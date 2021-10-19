@@ -1,6 +1,6 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.VO.ProductCategoryVO;
+import com.poly.datn.vo.ProductCategoryVO;
 import com.poly.datn.dao.ProductCategoryDAO;
 import com.poly.datn.service.ProductCategoryService;
 import org.springframework.beans.BeanUtils;

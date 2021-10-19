@@ -1,9 +1,12 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.VO.CategoryVO;
+import com.poly.datn.common.Constant;
+import com.poly.datn.vo.CategoryVO;
 import com.poly.datn.dao.CategoryDAO;
 import com.poly.datn.entity.Category;
 import com.poly.datn.service.CategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     @Autowired
     CategoryDAO categoryDAO;
 
@@ -39,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryVO createCategory(CategoryVO categoryVO, Principal principal){
         if(principal == null){
-            System.out.println("bạn chưa đăng nhập");
+            log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
         Category category = new Category();
@@ -53,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryVO deleteCategory(Integer id, Principal principal) {
         if(principal == null){
-            System.out.println("bạn chưa đăng nhập");
+            log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
         CategoryVO categoryVO = new CategoryVO();
@@ -74,13 +80,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryVO updateCategory(CategoryVO categoryVO, Principal principal) {
         if(principal == null){
-            System.out.println("bạn chưa đăng nhập");
+            log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
        Optional<Category> optionalCategory = categoryDAO.findById(categoryVO.getId());
          if(optionalCategory.isPresent()){
              Category entityCategory = new Category();
-             BeanUtils.copyProperties(categoryVO,entityCategory);
+             BeanUtils.copyProperties(categoryVO, entityCategory);
              categoryDAO.save(entityCategory);
          }
         return  categoryVO;

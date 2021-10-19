@@ -1,7 +1,4 @@
-package com.poly.datn.jwt.DTO;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
+package com.poly.datn.jwt.dto;
 
 import java.util.List;
 
@@ -16,7 +13,6 @@ public class JwtResponse {
 
     public JwtResponse(String token, Integer id, String username, String email, List<String> roles) {
         this.token = token;
-        this.type = type;
         this.id = id;
         this.username = username;
         this.email = email;

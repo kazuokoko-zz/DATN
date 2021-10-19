@@ -1,4 +1,4 @@
-package com.poly.datn.VO;
+package com.poly.datn.vo;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,10 +1,8 @@
 package com.poly.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "Account_role")

@@ -1,12 +1,10 @@
-package com.poly.datn.Utils;
+package com.poly.datn.utils;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class NoPassEncoder implements PasswordEncoder {
     private static final PasswordEncoder INSTANCE = new NoPassEncoder();
 
-    public NoPassEncoder() {
-    }
 
     public String encode(CharSequence rawPassword) {
         return rawPassword.toString();
