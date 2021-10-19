@@ -3,8 +3,8 @@ package com.poly.datn.rest.controler;
 import com.poly.datn.common.Constant;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.RoleDAO;
-import com.poly.datn.jwt.DTO.JwtResponse;
-import com.poly.datn.jwt.DTO.LoginRequest;
+import com.poly.datn.jwt.dto.JwtResponse;
+import com.poly.datn.jwt.dto.LoginRequest;
 import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class AuthRest {
     JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -44,7 +45,7 @@ public class AuthRest {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
     }

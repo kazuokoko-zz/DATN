@@ -1,7 +1,6 @@
 package com.poly.datn.service;
 
-import com.poly.datn.VO.CategoryVO;
-import com.poly.datn.VO.ProductVO;
+import com.poly.datn.vo.CategoryVO;
 
 import java.security.Principal;
 import java.util.List;

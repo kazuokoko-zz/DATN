@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "Comment")
@@ -37,7 +36,7 @@ public class Comment {
     private Boolean status;
     @Basic
     @Column(name = "comment", nullable = false, length = -1)
-    private String comment;
+    private String detail;
 
     public long getId() {
         return id;
@@ -103,17 +102,16 @@ public class Comment {
         this.status = status;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
-
 
     @ManyToOne
-    @JoinColumn(name = "blog_id", insertable = false ,updatable  = false)
+    @JoinColumn(name = "blog_id", insertable = false, updatable = false)
     @JsonIgnore
     Blog blog;
 
@@ -121,7 +119,7 @@ public class Comment {
     List<Comment> comments;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable = false ,updatable  = false)
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     @JsonIgnore
     Comment reComment;
 

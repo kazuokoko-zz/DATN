@@ -1,7 +1,6 @@
 package com.poly.datn.rest.controler.admin;
 
-import com.poly.datn.VO.CategoryVO;
-import com.poly.datn.VO.ProductVO;
+import com.poly.datn.vo.CategoryVO;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

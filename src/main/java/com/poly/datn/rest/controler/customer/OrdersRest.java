@@ -1,13 +1,11 @@
 package com.poly.datn.rest.controler.customer;
 
-import com.poly.datn.Utils.Jwt;
-import com.poly.datn.VO.OrdersVO;
+import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 

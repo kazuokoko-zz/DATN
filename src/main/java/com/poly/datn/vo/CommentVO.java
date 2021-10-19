@@ -1,10 +1,7 @@
-package com.poly.datn.VO;
+package com.poly.datn.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 @Data

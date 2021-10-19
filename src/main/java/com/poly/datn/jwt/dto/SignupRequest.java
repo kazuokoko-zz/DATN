@@ -1,4 +1,4 @@
-package com.poly.datn.jwt.DTO;
+package com.poly.datn.jwt.dto;
 
 import lombok.Data;
 

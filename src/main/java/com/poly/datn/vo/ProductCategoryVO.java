@@ -1,8 +1,6 @@
-package com.poly.datn.VO;
+package com.poly.datn.vo;
 
 import lombok.Data;
-
-import javax.persistence.*;
 
 @Data
 public class ProductCategoryVO {

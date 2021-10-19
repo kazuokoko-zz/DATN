@@ -1,7 +1,6 @@
 package com.poly.datn.service;
 
-import com.poly.datn.VO.ProductCategoryVO;
-import com.poly.datn.entity.Product;
+import com.poly.datn.vo.ProductCategoryVO;
 
 import java.util.List;
 

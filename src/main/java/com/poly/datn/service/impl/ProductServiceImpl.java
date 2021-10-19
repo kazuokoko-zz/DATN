@@ -1,9 +1,9 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.Utils.StringFind;
-import com.poly.datn.VO.ProductColorVO;
-import com.poly.datn.VO.ProductDetailsVO;
-import com.poly.datn.VO.ProductVO;
+import com.poly.datn.utils.StringFind;
+import com.poly.datn.vo.ProductColorVO;
+import com.poly.datn.vo.ProductDetailsVO;
+import com.poly.datn.vo.ProductVO;
 import com.poly.datn.dao.ProductCategoryDAO;
 import com.poly.datn.dao.ProductColorDAO;
 import com.poly.datn.dao.ProductDAO;
@@ -77,8 +77,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductVO getById(Integer id) throws Exception {
-        Product product = productDAO.findById(id).orElseThrow(() -> new Exception("Product not found with id: " + String.valueOf(id)));
+    public ProductVO getById(Integer id) throws NullPointerException {
+        Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
         return convertToVO(product);
     }
 

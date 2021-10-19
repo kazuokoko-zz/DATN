@@ -1,7 +1,6 @@
 package com.poly.datn.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "Warranty_invoice")
@@ -12,7 +11,7 @@ public class WarrantyInvoice {
     private Integer id;
     @Basic
     @Column(name = "warranty_invoice", nullable = true)
-    private Integer warrantyInvoice;
+    private Integer invoice;
     @Basic
     @Column(name = "product_state", nullable = false, length = -1)
     private String productState;
@@ -29,11 +28,11 @@ public class WarrantyInvoice {
     }
 
     public Integer getWarrantyInvoice() {
-        return warrantyInvoice;
+        return invoice;
     }
 
     public void setWarrantyInvoice(Integer warrantyInvoice) {
-        this.warrantyInvoice = warrantyInvoice;
+        this.invoice = warrantyInvoice;
     }
 
     public String getProductState() {
