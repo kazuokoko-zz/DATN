@@ -1,13 +1,10 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.dao.*;
+import com.poly.datn.entity.Blog;
+import com.poly.datn.entity.BlogDetails;
 import com.poly.datn.utils.StringFind;
-import com.poly.datn.vo.ProductColorVO;
-import com.poly.datn.vo.ProductDetailsVO;
-import com.poly.datn.vo.ProductVO;
-import com.poly.datn.dao.ProductCategoryDAO;
-import com.poly.datn.dao.ProductColorDAO;
-import com.poly.datn.dao.ProductDAO;
-import com.poly.datn.dao.ProductDetailsDAO;
+import com.poly.datn.vo.*;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
@@ -34,6 +31,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductDetailsDAO productDetailsDAO;
 
+    @Autowired
+    BlogDAO blogDAO;
+
+    @Autowired
+    BlogDetailsDAO blogDetailsDAO;
     // Begin code of MA
 
     @Override
@@ -106,10 +108,26 @@ public class ProductServiceImpl implements ProductService {
         });
         productVO.setProductDetails(productDetailsVOS);
         productVO.setPhotos(photos);
+        List<BlogVO> blogVOS = new ArrayList<>();
+        blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
+        productVO.setBlogs(blogVOS);
         return productVO;
     }
 
 
+    private BlogVO getBlogByProductIdAndType(Integer productId, Integer type) {
+        Blog blog = blogDAO.getByProductIdAndType(productId, type);
+        BlogVO blogVO = new BlogVO();
+        List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
+        BeanUtils.copyProperties(blog, blogVO);
+        for (BlogDetails blogDetails : blogDetailsDAO.findByBlogId(blog.getId())) {
+            BlogDetailsVO blogDetailsVO = new BlogDetailsVO();
+            BeanUtils.copyProperties(blogDetails, blogDetailsVO);
+            blogDetailsVOS.add(blogDetailsVO);
+        }
+        blogVO.setBlogDetails(blogDetailsVOS);
+        return blogVO;
+    }
     // End code of MA
 
 }
