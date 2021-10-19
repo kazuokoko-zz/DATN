@@ -26,7 +26,9 @@ public class OrdersRest {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResponseDTO> getOrders(Principal principal, @PathVariable("id") Integer id) throws Exception {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getByIdAndUserName(id, principal.getName())).build());
+
+    public OrdersVO getOrders(Principal principal, @PathVariable("id") Integer id) throws NullPointerException, SecurityException {
+        return ordersService.getByIdAndUserName(id, principal.getName());
+
     }
 }

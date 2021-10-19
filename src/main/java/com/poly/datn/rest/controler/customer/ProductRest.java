@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,14 +21,16 @@ public class ProductRest {
 
     // Mah code
     @GetMapping
-    public ResponseEntity<ResponseDTO> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).build());
+    public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).code("1000").message("ok").build());
 
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResponseDTO> getDetail(@PathVariable("id") Integer id) throws Exception {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getById(id)).build());
+
+    public ProductVO getDetail(@PathVariable("id") Integer id) throws NullPointerException {
+        return productService.getById(id);
+
     }
     //End MAH CODE
 
