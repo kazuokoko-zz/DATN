@@ -115,8 +115,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private BlogVO getBlogByProductIdAndType(Integer productId, Integer type) {
-        Blog blog = blogDAO.getByProductIdAndType(productId, type);
+    private BlogVO getBlogByProductIdAndType(Integer productId, Integer type) throws NullPointerException {
+        Blog blog = blogDAO.getByProductIdAndType(productId, type).orElseThrow(() -> new NullPointerException("Blog not Fount for product"));
         BlogVO blogVO = new BlogVO();
         List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
         BeanUtils.copyProperties(blog, blogVO);
