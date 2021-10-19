@@ -23,7 +23,7 @@ public class OrdersRest {
     }
 
     @GetMapping("{id}")
-    public OrdersVO getOrders(Principal principal, @PathVariable("id") Integer id) throws Exception {
+    public OrdersVO getOrders(Principal principal, @PathVariable("id") Integer id) throws NullPointerException, SecurityException {
         return ordersService.getByIdAndUserName(id, principal.getName());
     }
 }

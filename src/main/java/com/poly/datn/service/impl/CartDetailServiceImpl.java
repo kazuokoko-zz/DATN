@@ -1,7 +1,6 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.common.Constant;
-import com.poly.datn.jwt.AuthTokenFilter;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CartDetailDAO;
@@ -41,7 +40,7 @@ public class CartDetailServiceImpl implements CartDetailService {
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
-            return null;
+            return new ArrayList<>();
         }
         List<CartDetailVO> cartDetailVOS = new ArrayList<>();
         cartDao.getCartDetailsByUsername(principal.getName()).forEach(orders -> {
