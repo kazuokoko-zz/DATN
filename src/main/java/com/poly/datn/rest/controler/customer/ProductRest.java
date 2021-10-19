@@ -27,8 +27,10 @@ public class ProductRest {
     }
 
     @GetMapping("{id}")
+
     public ProductVO getDetail(@PathVariable("id") Integer id) throws NullPointerException {
         return productService.getById(id);
+
     }
     //End MAH CODE
 
