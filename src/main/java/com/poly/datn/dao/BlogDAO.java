@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface BlogDAO extends JpaRepository<Blog, Integer> {
-    @Query("select  b from Blog b where b.productId =: productId and b.type =:type")
+    @Query("select  b from Blog b where b.productId =:productId and b.type =:type")
     Optional<Blog> getByProductIdAndType(@Param("productId") Integer productId, @Param("type") Integer type);
 }
