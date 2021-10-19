@@ -104,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
             }
         });
         productVO.setProductDetails(productDetailsVOS);
+        productVO.setPhotos(photos);
         return productVO;
     }
 
