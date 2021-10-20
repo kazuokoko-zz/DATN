@@ -80,7 +80,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductVO getById(Integer id) throws NullPointerException {
         Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
-        return convertToVO(product);
+        ProductVO productVO = convertToVO(product);
+        List<BlogVO> blogVOS = new ArrayList<>();
+        blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
+        productVO.setBlogs(blogVOS);
+        return productVO;
     }
 
     private ProductVO convertToVO(Product product) {
@@ -108,9 +112,6 @@ public class ProductServiceImpl implements ProductService {
         });
         productVO.setProductDetails(productDetailsVOS);
         productVO.setPhotos(photos);
-        List<BlogVO> blogVOS = new ArrayList<>();
-        blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
-        productVO.setBlogs(blogVOS);
         return productVO;
     }
 
