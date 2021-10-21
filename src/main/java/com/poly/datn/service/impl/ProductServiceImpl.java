@@ -9,6 +9,7 @@ import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
 import org.springframework.beans.BeanUtils;
+import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 
     @Autowired
     ProductDAO productDAO;
@@ -121,6 +123,7 @@ public class ProductServiceImpl implements ProductService {
         BlogVO blogVO = new BlogVO();
         List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
         BeanUtils.copyProperties(blog, blogVO);
+        blogVo.setTimeCreated(sdf.format(blog.getTimeCreated()));
         for (BlogDetails blogDetails : blogDetailsDAO.findByBlogId(blog.getId())) {
             BlogDetailsVO blogDetailsVO = new BlogDetailsVO();
             BeanUtils.copyProperties(blogDetails, blogDetailsVO);
