@@ -10,7 +10,7 @@ public class BlogVO {
 
     private Integer id;
     private String title;
-    private Timestamp timeCreated;
+    private String timeCreated;
     private String createdBy;
     private Integer type;
     private Integer productId;
