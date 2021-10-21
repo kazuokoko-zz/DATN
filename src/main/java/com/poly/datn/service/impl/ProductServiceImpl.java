@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
         BlogVO blogVO = new BlogVO();
         List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
         BeanUtils.copyProperties(blog, blogVO);
-        blogVo.setTimeCreated(sdf.format(blog.getTimeCreated()));
+        blogVO.setTimeCreated(sdf.format(blog.getTimeCreated()));
         for (BlogDetails blogDetails : blogDetailsDAO.findByBlogId(blog.getId())) {
             BlogDetailsVO blogDetailsVO = new BlogDetailsVO();
             BeanUtils.copyProperties(blogDetails, blogDetailsVO);
