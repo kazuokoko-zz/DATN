@@ -84,8 +84,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
         ProductVO productVO = convertToVO(product);
         List<BlogVO> blogVOS = new ArrayList<>();
-        blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
-        productVO.setBlogs(blogVOS);
+        try
+        {
+            blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
+            productVO.setBlogs(blogVOS);
+        }
+        catch(NullPointerException e)
+        {
+            productVO.setBlogs(null);
+        }
         return productVO;
     }
 
