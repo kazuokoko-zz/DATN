@@ -32,9 +32,6 @@ public class Comment {
     @Column(name = "email", nullable = true, length = 50)
     private String email;
     @Basic
-    @Column(name = "status", nullable = false)
-    private Boolean status;
-    @Basic
     @Column(name = "comment", nullable = false, length = -1)
     private String detail;
 
@@ -94,13 +91,6 @@ public class Comment {
         this.email = email;
     }
 
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
 
     public String getDetail() {
         return detail;

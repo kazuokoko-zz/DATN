@@ -3,6 +3,7 @@ package com.poly.datn.service.impl;
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.Blog;
 import com.poly.datn.entity.BlogDetails;
+import com.poly.datn.service.CommentService;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.entity.Product;
@@ -36,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     BlogDetailsDAO blogDetailsDAO;
+
+    @Autowired
+    CommentService commentService;
     // Begin code of MA
 
     @Override
@@ -43,13 +47,13 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
-            products = StringFind.getMatch(products, find.get());
+            products = StringFind.getMatchProduct(products, find.get());
 
         } else if (cate.isPresent()) {
             products = getListByCate(cate.get());
         } else if (find.isPresent()) {
             products = productDAO.findAll();
-            products = StringFind.getMatch(products, find.get());
+            products = StringFind.getMatchProduct(products, find.get());
 
         } else {
             products = productDAO.findAll();
@@ -126,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
             BeanUtils.copyProperties(blogDetails, blogDetailsVO);
             blogDetailsVOS.add(blogDetailsVO);
         }
+        blogVO.setComments(commentService.getListByBlogId(blogVO.getId()));
         blogVO.setBlogDetails(blogDetailsVOS);
         return blogVO;
     }
