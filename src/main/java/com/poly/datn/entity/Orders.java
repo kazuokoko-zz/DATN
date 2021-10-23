@@ -26,11 +26,11 @@ public class Orders {
     @Column(name = "sumprice", nullable = false, precision = 0)
     private Double sumprice;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

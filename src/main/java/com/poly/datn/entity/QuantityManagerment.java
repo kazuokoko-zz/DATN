@@ -25,27 +25,27 @@ public class QuantityManagerment {
     @Column(name = "note", nullable = false, length = 30)
     private String note;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getProductColorId() {
+    public Integer getProductColorId() {
         return productColorId;
     }
 
-    public void setProductColorId(int productColorId) {
+    public void setProductColorId(Integer productColorId) {
         this.productColorId = productColorId;
     }
 
-    public int getChangedBy() {
+    public Integer getChangedBy() {
         return changedBy;
     }
 
-    public void setChangedBy(int changedBy) {
+    public void setChangedBy(Integer changedBy) {
         this.changedBy = changedBy;
     }
 

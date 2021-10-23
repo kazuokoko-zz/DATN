@@ -21,11 +21,11 @@ public class Product {
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

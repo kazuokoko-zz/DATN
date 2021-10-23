@@ -43,11 +43,11 @@ public class Comment {
         this.id = id;
     }
 
-    public int getBlogId() {
+    public Integer getBlogId() {
         return blogId;
     }
 
-    public void setBlogId(int blogId) {
+    public void setBlogId(Integer blogId) {
         this.blogId = blogId;
     }
 

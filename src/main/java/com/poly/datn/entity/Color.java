@@ -15,11 +15,11 @@ public class Color {
     @Column(name = "color_name", nullable = false, length = 15)
     private String colorName;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
