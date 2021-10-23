@@ -15,11 +15,11 @@ public class Role {
     @Column(name = "role_name", nullable = false, length = 20)
     private String roleName;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -9,8 +9,6 @@ public class AccountRoleVO {
     private Integer accountId;
     private Integer roleId;
 
-
-
     AccountVO account;
 
     RoleVO role;
