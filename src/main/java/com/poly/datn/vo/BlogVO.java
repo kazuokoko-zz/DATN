@@ -10,6 +10,7 @@ public class BlogVO {
     private Integer id;
     private String title;
     private String shortText;
+    private String photo;
     private String timeCreated;
     private String createdBy;
     private Integer type;

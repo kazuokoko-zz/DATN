@@ -20,6 +20,9 @@ public class Blog {
     @Column(name = "short_text", nullable = false)
     private String shortText;
     @Basic
+    @Column(name = "photo", nullable = false)
+    private String photo;
+    @Basic
     @Column(name = "time_created", nullable = false)
     private Timestamp timeCreated;
     @Basic
