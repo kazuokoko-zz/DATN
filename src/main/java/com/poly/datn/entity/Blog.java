@@ -36,7 +36,7 @@ public class Blog {
     private Boolean status;
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -84,7 +84,7 @@ public class Blog {
         this.type = type;
     }
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
