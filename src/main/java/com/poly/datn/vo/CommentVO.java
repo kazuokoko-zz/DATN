@@ -2,8 +2,8 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.List;
+
 @Data
 public class CommentVO {
 
@@ -13,7 +13,7 @@ public class CommentVO {
 
     private Byte rate;
 
-    private Timestamp timeCreated ;
+    private String timeCreated;
 
     private Long repliedTo;
 
@@ -22,8 +22,6 @@ public class CommentVO {
     private String email;
 
     private String comment;
-
-
 
 
     BlogVO blog;

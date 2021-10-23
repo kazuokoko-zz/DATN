@@ -13,12 +13,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BlogServiceImpl implements BlogService {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+
     @Autowired
     private BlogDAO blogDAO;
 
@@ -33,6 +36,7 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogDAO.findById(id).orElseThrow(() -> new NullPointerException("Blog not found"));
         BlogVO blogVO = new BlogVO();
         BeanUtils.copyProperties(blog, blogVO);
+        blogVO.setTimeCreated(sdf.format(blog.getTimeCreated()));
         List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
         for (BlogDetails blogDetails : blogDetailsDAO.findByBlogId(blogVO.getId())) {
             BlogDetailsVO blogDetailsVO = new BlogDetailsVO();
@@ -65,6 +69,7 @@ public class BlogServiceImpl implements BlogService {
         blogs.forEach(blog -> {
             BlogVO blogVO = new BlogVO();
             BeanUtils.copyProperties(blog, blogVO);
+            blogVO.setTimeCreated(sdf.format(blog.getTimeCreated()));
             blogVOS.add(blogVO);
         });
         return blogVOS;
