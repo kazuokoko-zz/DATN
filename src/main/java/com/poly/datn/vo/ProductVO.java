@@ -21,7 +21,7 @@ public class ProductVO {
 
     List<OrderDetailsVO> orderDetails;
 
-    List<BlogVO> blogs;
+    BlogVO blogs;
 
     List<ProductCategoryVO> productCategories;
 

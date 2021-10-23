@@ -2,7 +2,6 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -10,6 +9,7 @@ public class BlogVO {
 
     private Integer id;
     private String title;
+    private String shortText;
     private String timeCreated;
     private String createdBy;
     private Integer type;
