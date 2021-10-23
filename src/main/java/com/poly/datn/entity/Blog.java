@@ -11,11 +11,14 @@ import java.util.List;
 public class Blog {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
     @Column(name = "title", nullable = false, length = 150)
     private String title;
+    @Basic
+    @Column(name = "short_text", nullable = false)
+    private String shortText;
     @Basic
     @Column(name = "time_created", nullable = false)
     private Timestamp timeCreated;
@@ -26,7 +29,7 @@ public class Blog {
     @Column(name = "type", nullable = false)
     private Integer type;
     @Basic
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Integer productId;
     @Basic
     @Column(name = "status", nullable = false)
@@ -47,6 +50,14 @@ public class Blog {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getShortText() {
+        return shortText;
+    }
+
+    public void setShortText(String shortText) {
+        this.shortText = shortText;
     }
 
     public Timestamp getTimeCreated() {
@@ -91,13 +102,10 @@ public class Blog {
 
 
     @ManyToOne
-    @JoinColumn(name = "created_by", insertable = false ,updatable  = false)
+    @JoinColumn(name = "created_by", insertable = false, updatable = false)
     @JsonIgnore
     Account account;
-    @ManyToOne
-    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
-    @JsonIgnore
-    Product product;
+
 
     @OneToMany(mappedBy = "blog")
     List<Comment> comments;
@@ -108,9 +116,6 @@ public class Blog {
         return account;
     }
 
-    public Product getProduct() {
-        return product;
-    }
 
     public List<Comment> getComments() {
         return comments;

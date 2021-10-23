@@ -10,7 +10,9 @@ import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
 import org.springframework.beans.BeanUtils;
+
 import java.text.SimpleDateFormat;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,14 +89,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductVO getById(Integer id) throws NullPointerException {
         Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
         ProductVO productVO = convertToVO(product);
-        List<BlogVO> blogVOS = new ArrayList<>();
-        try
-        {
-            blogVOS.add(getBlogByProductIdAndType(productVO.getId(), 1));
-            productVO.setBlogs(blogVOS);
-        }
-        catch(NullPointerException e)
-        {
+        try {
+            productVO.setBlogs(getBlogByProductIdAndType(productVO.getId(), 1));
+        } catch (NullPointerException e) {
             productVO.setBlogs(null);
         }
         return productVO;

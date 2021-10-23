@@ -66,12 +66,15 @@ public class BlogServiceImpl implements BlogService {
         }
 
         List<BlogVO> blogVOS = new ArrayList<>();
-        blogs.forEach(blog -> {
+        for (Blog blog : blogs) {
+            if (blog.getType() == 1) {
+                continue;
+            }
             BlogVO blogVO = new BlogVO();
             BeanUtils.copyProperties(blog, blogVO);
             blogVO.setTimeCreated(sdf.format(blog.getTimeCreated()));
             blogVOS.add(blogVO);
-        });
+        }
         return blogVOS;
     }
 

@@ -58,8 +58,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<OrderDetails> orderDetails;
     @OneToMany(mappedBy = "product")
-    List<Blog> blogs;
-    @OneToMany(mappedBy = "product")
     List<ProductCategory> productCategories;
     @OneToMany(mappedBy = "product")
     List<Sale> sales;
@@ -74,9 +72,6 @@ public class Product {
         return orderDetails;
     }
 
-    public List<Blog> getBlogs() {
-        return blogs;
-    }
 
     public List<ProductCategory> getProductCategories() {
         return productCategories;
