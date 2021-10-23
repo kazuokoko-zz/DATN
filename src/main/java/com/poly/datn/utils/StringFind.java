@@ -1,5 +1,6 @@
 package com.poly.datn.utils;
 
+import com.poly.datn.entity.Blog;
 import com.poly.datn.entity.Product;
 
 import java.util.List;
@@ -9,14 +10,14 @@ public class StringFind {
     }
 
 
-    public static List<Product> getMatch(List<Product> products, String sentences) {
+    public static List<Product> getMatchProduct(List<Product> products, String sentences) {
 
         String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
 
         products.forEach(product -> {
             Boolean found = false;
             for (String word : words) {
-                if (product.getName().contains(word)) {
+                if (product.getName().toLowerCase().contains(word.toLowerCase())) {
                     found = true;
                     break;
                 }
@@ -26,6 +27,26 @@ public class StringFind {
             }
         });
         return products;
+
+    }
+
+    public static List<Blog> getMatchBlog(List<Blog> blogs, String sentences) {
+
+        String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
+
+        blogs.forEach(blog -> {
+            Boolean found = false;
+            for (String word : words) {
+                if (blog.getTitle().toLowerCase().contains(word.toLowerCase())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (Boolean.FALSE.equals(found)) {
+                blogs.remove(blog);
+            }
+        });
+        return blogs;
 
     }
 }

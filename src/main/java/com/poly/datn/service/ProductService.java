@@ -9,8 +9,9 @@ import java.util.Optional;
 
 public interface ProductService {
 
-   List<ProductVO> getList(Optional<Integer> cate, Optional<String> find);
-   List<Product> getListByCate(Integer cateId);
+    List<ProductVO> getList(Optional<Integer> cate, Optional<String> find);
+
+    List<Product> getListByCate(Integer cateId);
 
     ProductVO getById(Integer id) throws NullPointerException;
 }

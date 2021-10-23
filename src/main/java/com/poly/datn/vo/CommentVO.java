@@ -21,8 +21,6 @@ public class CommentVO {
 
     private String email;
 
-    private Boolean status;
-
     private String comment;
 
 
