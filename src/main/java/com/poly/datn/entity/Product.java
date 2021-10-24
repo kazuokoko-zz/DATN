@@ -56,6 +56,8 @@ public class Product {
 
 
     @OneToMany(mappedBy = "product")
+    List<Favorite> favorites;
+    @OneToMany(mappedBy = "product")
     List<OrderDetails> orderDetails;
     @OneToMany(mappedBy = "product")
     List<ProductCategory> productCategories;
@@ -68,6 +70,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<ProductDetails> productDetails;
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+    
     public List<OrderDetails> getOrderDetails() {
         return orderDetails;
     }
