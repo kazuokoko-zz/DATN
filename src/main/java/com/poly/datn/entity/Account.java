@@ -97,6 +97,8 @@ public class Account {
     }
 
     @OneToMany(mappedBy = "account")
+    List<Favorite> favorites;
+    @OneToMany(mappedBy = "account")
     List<Blog> blogs;
     @OneToMany(mappedBy = "account")
     List<AccountRole> accountRoles;
@@ -109,6 +111,10 @@ public class Account {
 
 
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+    
     public List<Blog> getBlogs() {
         return blogs;
     }
