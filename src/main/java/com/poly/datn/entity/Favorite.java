@@ -26,11 +26,11 @@ public class Favorite {
     }
 
     public Integer getAccountId() {
-        return orderId;
+        return accountId;
     }
 
-    public void setAccountId(Integer orderId) {
-        this.orderId = orderId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public Integer getProductId() {
