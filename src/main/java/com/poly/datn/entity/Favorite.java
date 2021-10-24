@@ -16,7 +16,6 @@ public class Favorite {
     @Basic
     @Column(name = "product_id", nullable = false)
     private Integer productId;
-    nt;
 
     public long getId() {
         return id;
