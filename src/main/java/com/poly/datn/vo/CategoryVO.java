@@ -1,7 +1,6 @@
 package com.poly.datn.vo;
 
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.List;
 

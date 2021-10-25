@@ -8,7 +8,6 @@ import com.poly.datn.entity.Favorite;
 import com.poly.datn.entity.Product;
 import com.poly.datn.service.FavoriteService;
 import com.poly.datn.vo.FavoriteVO;
-import javassist.NotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,13 +67,14 @@ public class FavoriteServiceImpl implements FavoriteService {
 
                 Favorite favorite = new Favorite();
                 BeanUtils.copyProperties(favoriteVO, favorite);
-                favorite = favoriteDAO.save(favorite);
+                favoriteDAO.save(favorite);
+                return favoriteVO;
             } else {
                 System.out.println("lỗi");
                 favorite1 = favoriteDAO.findByProductId(favoriteVO.getProductId());
                 favoriteDAO.delete(favorite1);
                 System.out.println("xóa rồi thằng chó");
+                return favoriteVO;
             }
-        return favoriteVO;
     }
 }
