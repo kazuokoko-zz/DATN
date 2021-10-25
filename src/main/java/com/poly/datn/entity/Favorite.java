@@ -44,11 +44,9 @@ public class Favorite {
     }
 
 
-    @Nullable
     @ManyToOne
     @JoinColumn(name = "account_id", insertable = false ,updatable  = false)
     Account account;
-    @Nullable
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
     Product product;

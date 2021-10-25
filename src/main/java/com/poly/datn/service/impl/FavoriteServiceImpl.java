@@ -8,6 +8,7 @@ import com.poly.datn.entity.Favorite;
 import com.poly.datn.entity.Product;
 import com.poly.datn.service.FavoriteService;
 import com.poly.datn.vo.FavoriteVO;
+import com.poly.datn.vo.ProductVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,19 +34,21 @@ public class FavoriteServiceImpl implements FavoriteService {
 
 
     @Override
-    public List<FavoriteVO> getFavorites(Principal principal) {
+    public List<ProductVO> getFavorites(Principal principal) {
         if (principal == null)
             return null;
-        List<FavoriteVO> favoriteVO = new ArrayList<>();
+        List<ProductVO> productVO2 = new ArrayList<>();
        favoriteDAO.findByAccountUsername(principal.getName()).forEach(favorite ->
        {
-           FavoriteVO vo = new FavoriteVO();
-           Optional<Product> product = productDAO.findById(favorite.getProductId());
-           BeanUtils.copyProperties(favorite,vo);
-           vo.setNameProduct(product.get().getName());
-           favoriteVO.add(vo);
+           productDAO.getProductById(favorite.getProductId()).forEach(productVO ->
+           {;
+               ProductVO productVOS = new ProductVO();
+//               productVO = productVO.add(product1);
+               BeanUtils.copyProperties( productVO, productVOS);
+               productVO2.add(productVOS);
+           });
        });
-        return favoriteVO;
+        return productVO2;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         Favorite favorite1 = new Favorite();
             if (favoriteDAO.findFavoriteByAccountIdAndProductId(idUser,idProduct) == null) {
-                favoriteVO.setAccountId(accountDAO.findAccountByUsername(principal.getName()).getId());
+
 
                 Favorite favorite = new Favorite();
                 BeanUtils.copyProperties(favoriteVO, favorite);
