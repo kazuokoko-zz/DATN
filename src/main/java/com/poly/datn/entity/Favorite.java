@@ -1,6 +1,8 @@
 package com.poly.datn.entity;
 
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,7 +11,7 @@ public class Favorite {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     @Basic
     @Column(name = "account_id", nullable = false)
     private Integer accountId;
@@ -17,11 +19,11 @@ public class Favorite {
     @Column(name = "product_id", nullable = false)
     private Integer productId;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -41,11 +43,12 @@ public class Favorite {
         this.productId = productId;
     }
 
-   
+
+    @Nullable
     @ManyToOne
     @JoinColumn(name = "account_id", insertable = false ,updatable  = false)
     Account account;
-
+    @Nullable
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
     Product product;
