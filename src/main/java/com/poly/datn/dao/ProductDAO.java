@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductDAO  extends JpaRepository<Product, Integer> {
      List<Product> getProductById(Integer id);
+     Product getOneProductById(Integer id);
 }
