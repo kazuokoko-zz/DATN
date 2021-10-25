@@ -66,8 +66,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         Favorite favorite1 = new Favorite();
             if (favoriteDAO.findFavoriteByAccountIdAndProductId(idUser,idProduct) == null) {
-
-
+                favoriteVO.setAccountId(accountDAO.findAccountByUsername(principal.getName()).getId());
                 Favorite favorite = new Favorite();
                 BeanUtils.copyProperties(favoriteVO, favorite);
                 favoriteDAO.save(favorite);
