@@ -37,7 +37,7 @@ public class ColorServiceImpl implements ColorService {
     ProductColorDAO productColorDAO;
 
     @Override
-    public List<ColorVO> getColorProduct(Principal principal) {
+    public List<ColorVO> getColor(Principal principal) {
         if(principal == null){
             log.error(Constant.NOT_LOGGED_IN);
             return null;
@@ -56,7 +56,7 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public ColorVO addColorProduct(ColorVO colorVO, Principal principal) {
+    public ColorVO addColor(ColorVO colorVO, Principal principal) {
         if(principal == null){
             log.error(Constant.NOT_LOGGED_IN);
             return null;
@@ -77,7 +77,7 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public ColorVO updateColorProduct(ColorVO colorVO, Principal principal) {
+    public ColorVO updateColor(ColorVO colorVO, Principal principal) {
         if(principal == null){
             log.error(Constant.NOT_LOGGED_IN);
             return null;
@@ -95,7 +95,7 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public Color deleteColorProduct(Integer id, Principal principal) {
+    public Color deleteColor(Integer id, Principal principal) {
         if(principal == null){
             log.error(Constant.NOT_LOGGED_IN);
             return null;

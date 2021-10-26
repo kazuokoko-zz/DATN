@@ -12,32 +12,32 @@ import java.security.Principal;
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
-@RequestMapping("/api/staff/colorproduct")
-public class ProductColorRest {
+@RequestMapping("/api/staff/color")
+public class ColorRest {
     @Autowired
     ColorService colorService;
 
     @GetMapping("get")
     public ResponseEntity<ResponseDTO<Object>> getList(Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.getColorProduct(principal))
+        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.getColor(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PutMapping("update")
     public ResponseEntity<ResponseDTO<Object>> updateCartDetail(@RequestBody ColorVO colorVO, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.updateColorProduct(colorVO, principal))
+        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.updateColor(colorVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.deleteColorProduct(id, principal))
+        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.deleteColor(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("new")
     public ResponseEntity<ResponseDTO<Object>> addToCartDetail(@RequestBody ColorVO colorVO, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.addColorProduct(colorVO, principal))
+        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.addColor(colorVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }
