@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
+import lombok.Data;
 
 @Entity
 @Table(name = "Sale")
+@Data
 public class Sale {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "product_id", nullable = false)
-    private Integer productId;
-    @Basic
-    @Column(name = "discount", nullable = false, precision = 0)
-    private Double discount;
+    @Column(name = "name", nullable = false)
+    private String name;
     @Basic
     @Column(name = "start_time", nullable = false)
     private Timestamp startTime;
@@ -25,76 +25,14 @@ public class Sale {
     @Column(name = "end_time", nullable = false)
     private Timestamp endTime;
     @Basic
-    @Column(name = "quantity", nullable = true)
-    private Integer quantity;
-    @Basic
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
-    public Integer getId() {
-        return id;
-    }
+    
+    @OneToMany(mappedBy ="sale")
+    List<ProductSale> productSales;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    public Timestamp getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
-    }
-
-    public Timestamp getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", insertable = false ,updatable  = false)
-    @JsonIgnore
-    Product product;
-
-    public Product getProduct() {
-        return product;
+    public List<ProductSale> getProductSale() {
+        return productSales;
     }
 }
