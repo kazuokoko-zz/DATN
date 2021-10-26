@@ -73,6 +73,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductVO> getTrending() {
+        List<ProductVO> productVOS = new ArrayList<>();
+        productDAO.findTrend().forEach(product -> {
+            ProductVO productVO = convertToVO(product);
+            productVOS.add(productVO);
+        });
+        return productVOS;
+    }
+
+    @Override
     public List<Product> getListByCate(Integer cateId) {
         List<Product> products = new ArrayList<>();
         List<ProductCategory> productCategories = productCategoryDAO.findAllByCategoryIdEquals(cateId);
@@ -96,6 +106,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return productVO;
     }
+
 
     private ProductVO convertToVO(Product product) {
         ProductVO productVO = new ProductVO();
