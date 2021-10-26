@@ -1,10 +1,10 @@
 package com.poly.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+
 import lombok.Data;
 
 @Entity
@@ -28,8 +28,8 @@ public class Sale {
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
-    
-    @OneToMany(mappedBy ="sale")
+
+    @OneToMany(mappedBy = "sale")
     List<ProductSale> productSales;
 
     public List<ProductSale> getProductSale() {
