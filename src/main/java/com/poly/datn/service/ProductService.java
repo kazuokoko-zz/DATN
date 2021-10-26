@@ -14,4 +14,6 @@ public interface ProductService {
     List<Product> getListByCate(Integer cateId);
 
     ProductVO getById(Integer id) throws NullPointerException;
+
+    List<ProductVO> getTrending();
 }

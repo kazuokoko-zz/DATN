@@ -23,6 +23,11 @@ public class ProductRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @GetMapping("trending")
+    public ResponseEntity<ResponseDTO<Object>> getTrending() {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getTrending()).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<ResponseDTO<Object>> getDetail(@PathVariable("id") Integer id) throws NullPointerException {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getById(id)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
