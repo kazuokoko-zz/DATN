@@ -8,7 +8,7 @@ import lombok.Data;
 @Entity
 @Table(name = "product_sale")
 @Data
-public class Sale {
+public class ProductSale {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
