@@ -10,7 +10,7 @@ public interface ProductDAO  extends JpaRepository<Product, Integer> {
      List<Product> getProductById(Integer id);
      Product getOneProductById(Integer id);
 
-     @Query(value = "select  * from Product p order by p.name limit 8",nativeQuery = true)
+     @Query(value = "select  * from product  order by name limit 8",nativeQuery = true)
      List<Product> findTrend();
 
 }
