@@ -62,7 +62,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<ProductCategory> productCategories;
     @OneToMany(mappedBy = "product")
-    List<Sale> sales;
+    List<ProductSale> productSales;
     @OneToMany(mappedBy = "product")
     List<ProductColor> productColors;
     @OneToMany(mappedBy = "product")
@@ -83,8 +83,8 @@ public class Product {
         return productCategories;
     }
 
-    public List<Sale> getSales() {
-        return sales;
+    public List<ProductSale> getProductSales() {
+        return productSales;
     }
 
     public List<ProductColor> getProductColors() {
