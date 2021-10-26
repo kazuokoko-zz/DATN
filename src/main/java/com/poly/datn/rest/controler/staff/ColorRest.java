@@ -18,25 +18,25 @@ public class ColorRest {
     ColorService colorService;
 
     @GetMapping("get")
-    public ResponseEntity<ResponseDTO<Object>> getList(Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> getListColor(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(colorService.getColor(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseDTO<Object>> updateCartDetail(@RequestBody ColorVO colorVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> updateColor(@RequestBody ColorVO colorVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(colorService.updateColor(colorVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable Integer id, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> deleteColor(@PathVariable Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(colorService.deleteColor(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("new")
-    public ResponseEntity<ResponseDTO<Object>> addToCartDetail(@RequestBody ColorVO colorVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> addColor(@RequestBody ColorVO colorVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(colorService.addColor(colorVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
