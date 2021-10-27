@@ -12,7 +12,7 @@ public class Color {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "color_name", nullable = false, length = 15)
+    @Column(name = "color_name", nullable = false, length = 50)
     private String colorName;
 
     public Integer getId() {
@@ -30,8 +30,6 @@ public class Color {
     public void setColorName(String colorName) {
         this.colorName = colorName;
     }
-
-
 
     @OneToMany(mappedBy = "color")
     List<ProductColor> productColors;

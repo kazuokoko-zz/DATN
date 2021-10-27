@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface FavoriteDAO extends JpaRepository<Favorite, Integer> {
+public interface FavoriteDAO extends JpaRepository<Favorite, Long> {
   @Query("select f from Favorite f where f.account.username=?1")
   List<Favorite> findByAccountUsername(String username);
 
