@@ -9,7 +9,7 @@ public class WarrantyInvoiceVO {
 
     private Integer id;
 
-    private Integer warrantyInvoice;
+    private Integer invoice;
 
     private String productState;
 
