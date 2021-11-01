@@ -49,6 +49,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 //        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        String vnp_CreateDate = formatter.format(cld.getTime());
 
         Payment payment = new Payment();
         Customer customer = customerDAO.getById(ordersDAO.getById(payInfoVO.getOrdersId()).getCustomerId());
@@ -70,6 +71,21 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                 }
             }
         } while (exists);
+
+        Payment pa = paymentDAO.getByOrdersIdToday(payInfoVO.getOrdersId(), vnp_CreateDate.substring(0, 8));
+
+        payment.setBankCode(null);
+        payment.setBankTranNo(null);
+        payment.setCardType(null);
+        payment.setCreateDate(vnp_CreateDate);
+        payment.setOrderInfo(payInfoVO.getOrderInfo());
+        payment.setOrdersId(payInfoVO.getOrdersId());
+        payment.setTransactionNo(null);
+        payment.setTxnRef(vnp_TxnRef);
+        payment.setStatus(-1);
+
+        if (paymentDAO.save(payment) == null)
+            return null;
 
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TmnCode = Constant.vnp_TmnCode;
@@ -98,7 +114,6 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         vnp_Params.put("vnp_ReturnUrl", Constant.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        String vnp_CreateDate = formatter.format(cld.getTime());
 
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
         cld.add(Calendar.MINUTE, 15);
@@ -174,17 +189,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 ////        return gson.toJson(job);
 //        System.out.println(job.get("data"));
 //        payment.setBankCode(payInfoVO.getBankcode());
-        payment.setBankCode(null);
-        payment.setBankTranNo(null);
-        payment.setCardType(null);
-        payment.setCreateDate(vnp_CreateDate);
-        payment.setOrderInfo(payInfoVO.getOrderInfo());
-        payment.setOrdersId(payInfoVO.getOrdersId());
-        payment.setTransactionNo(null);
-        payment.setTxnRef(vnp_TxnRef);
-        payment.setStatus(-1);
-        if (paymentDAO.save(payment) == null)
-            return null;
+
         return paymentUrl;
 //        resp.getWriter().write(gson.toJson(job));
     }
