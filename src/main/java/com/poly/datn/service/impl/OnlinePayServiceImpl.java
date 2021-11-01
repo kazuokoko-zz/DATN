@@ -260,6 +260,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     public Object merchantcall(HttpServletRequest request) {
+
+
         try {
 
 	/*  IPN URL: Record payment results from VNPAY
@@ -322,24 +324,23 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                                 // Here Code update PaymnentStatus = 2 into your Database
                             }
                             paymentDAO.save(payment);
-                            System.out.print("{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}");
+                            return "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
                         } else {
 
-                            System.out.print("{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}");
+                            return "{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}";
                         }
                     } else {
-                        System.out.print("{\"RspCode\":\"04\",\"Message\":\"Invalid Amount\"}");
+                        return "{\"RspCode\":\"04\",\"Message\":\"Invalid Amount\"}";
                     }
                 } else {
-                    System.out.print("{\"RspCode\":\"01\",\"Message\":\"Order not Found\"}");
+                    return "{\"RspCode\":\"01\",\"Message\":\"Order not Found\"}";
                 }
             } else {
-                System.out.print("{\"RspCode\":\"97\",\"Message\":\"Invalid Checksum\"}");
+                return "{\"RspCode\":\"97\",\"Message\":\"Invalid Checksum\"}";
             }
         } catch (Exception e) {
-            System.out.print("{\"RspCode\":\"99\",\"Message\":\"Unknow error\"}");
+            return "{\"RspCode\":\"99\",\"Message\":\"Unknow error\"}";
         }
-        return true;
     }
     //localhost:8080/vnpay_jsp/vnpay_return.jsp?
     // vnp_Amount=30000000
