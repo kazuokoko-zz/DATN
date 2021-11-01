@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PaymentDAO extends JpaRepository<Payment, Integer> {
 
-    @Query(nativeQuery = true, value = "select p from Payment p where p.txnRef=:txnRef and SUBSTRING(p.createDate,1,8) =:createDate")
+    @Query(nativeQuery = true, value = "select * from payment p where p.txnRef=:txnRef and SUBSTRING(p.createDate,1,8) =:createDate")
     Payment  getByTxnRefToday(@Param("txnRef") String txnRef, @Param("createDate") String createDate);
 
 
