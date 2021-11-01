@@ -31,8 +31,13 @@ public class OnlinePayRest {
     }
 
     @GetMapping("getresult")
-    public ResponseEntity<ResponseDTO<Object>> getResult(@PathVariable Integer id, HttpServletRequest request) throws IOException {
-        return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.getResult(id, request))
+    public ResponseEntity<ResponseDTO<Object>> getResult(
+//            @PathVariable Integer id,
+            HttpServletRequest request) throws IOException {
+        return ResponseEntity.ok(ResponseDTO.builder()
+//                .object(onlinePayService.getResult(id, request)
+                .object(onlinePayService.merchantcall(request)
+                )
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     //localhost:8080/vnpay_jsp/vnpay_return.jsp?
