@@ -67,18 +67,12 @@ public class OrderManagement {
 
 
 
-    @ManyToOne
-    @JoinColumn(name = "changed_by", insertable = false ,updatable  = false)
-    @JsonIgnore
-    Account account;
+
     @ManyToOne
     @JoinColumn(name = "order_id", insertable = false ,updatable  = false)
     @JsonIgnore
     Orders  orders;
 
-    public Account getAccount() {
-        return account;
-    }
 
     public Orders getOrders() {
         return orders;

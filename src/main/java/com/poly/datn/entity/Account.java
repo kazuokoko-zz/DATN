@@ -103,8 +103,6 @@ public class Account {
     @OneToMany(mappedBy = "account")
     List<AccountRole> accountRoles;
     @OneToMany(mappedBy = "account")
-    List<OrderManagement> orderManagements;
-    @OneToMany(mappedBy = "account")
     List<QuantityManagerment> quantityManagerments;
     @OneToMany(mappedBy = "account")
     List<CartDetail> cartDetails;
@@ -121,10 +119,6 @@ public class Account {
 
     public List<AccountRole> getAccountRoles() {
         return accountRoles;
-    }
-
-    public List<OrderManagement> getOrderManagements() {
-        return orderManagements;
     }
 
     public List<QuantityManagerment> getQuantityManagerments() {
