@@ -26,14 +26,12 @@ public class OnlinePayRest {
 
     @GetMapping("merchantipn")
     public ResponseEntity<ResponseDTO<Object>> merchantIpn(HttpServletRequest request) throws IOException {
-//        @P
         return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.merchantcall(request))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-    @GetMapping("getresult/{id}")
+    @GetMapping("getresult")
     public ResponseEntity<ResponseDTO<Object>> getResult(@PathVariable Integer id, HttpServletRequest request) throws IOException {
-//        @P
         return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.getResult(id, request))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
