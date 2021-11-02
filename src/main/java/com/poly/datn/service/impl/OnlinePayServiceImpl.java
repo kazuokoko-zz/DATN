@@ -1,30 +1,20 @@
 package com.poly.datn.service.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.poly.datn.common.Constant;
 import com.poly.datn.config.VnpayConfig;
-import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CustomerDAO;
 import com.poly.datn.dao.OrdersDAO;
 import com.poly.datn.dao.PaymentDAO;
 import com.poly.datn.entity.Customer;
-import com.poly.datn.entity.Orders;
 import com.poly.datn.entity.Payment;
 import com.poly.datn.service.OnlinePayService;
 import com.poly.datn.vo.PayInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -73,8 +63,13 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         } while (exists);
 
         Payment pa = paymentDAO.getByOrdersIdToday(payInfoVO.getOrdersId(), vnp_CreateDate.substring(0, 8));
-
-        payment.setBankCode(null);
+        if (pa != null) {
+            if (pa.getStatus() != 0) {
+                return "Giao dịch đã xử lý";
+            }
+            payment.setId(pa.getId());
+        }
+        payment.setBankCode( null);
         payment.setBankTranNo(null);
         payment.setCardType(null);
         payment.setCreateDate(vnp_CreateDate);
@@ -82,7 +77,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         payment.setOrdersId(payInfoVO.getOrdersId());
         payment.setTransactionNo(null);
         payment.setTxnRef(vnp_TxnRef);
-        payment.setStatus(-1);
+        payment.setStatus(0);
 
         if (paymentDAO.save(payment) == null)
             return null;
