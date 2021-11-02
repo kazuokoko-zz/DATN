@@ -19,11 +19,6 @@ public class CustomerVO {
 
     private String note;
 
-
-
-
-
-
     OrdersVO orders;
 
 

@@ -21,7 +21,7 @@ public class CommentVO {
 
     private String email;
 
-    private String comment;
+    private String detail;
 
 
     BlogVO blog;

@@ -11,7 +11,7 @@ public class Favorite {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Basic
     @Column(name = "account_id", nullable = false)
     private Integer accountId;
@@ -19,11 +19,11 @@ public class Favorite {
     @Column(name = "product_id", nullable = false)
     private Integer productId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
