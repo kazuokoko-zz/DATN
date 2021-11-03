@@ -51,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
+            if(products.size() > 0)
             products = StringFind.getMatchProduct(products, find.get());
 
         } else if (cate.isPresent()) {
@@ -64,10 +65,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductVO> productVOS = new ArrayList<>();
-        products.forEach(product -> {
+        for(Product product : products)
+         {
             ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
-        });
+        }
 
         return productVOS;
     }
