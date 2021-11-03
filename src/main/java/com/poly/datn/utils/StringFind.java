@@ -14,7 +14,8 @@ public class StringFind {
 
         String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
 
-        products.forEach(product -> {
+        for(Product product : products)
+        {
             Boolean found = false;
             for (String word : words) {
                 if (product.getName().toLowerCase().contains(word.toLowerCase())) {
@@ -25,7 +26,19 @@ public class StringFind {
             if (Boolean.FALSE.equals(found)) {
                 products.remove(product);
             }
-        });
+        }
+       // products.forEach(product -> {
+       //     Boolean found = false;
+      //      for (String word : words) {
+       //         if (product.getName().toLowerCase().contains(word.toLowerCase())) {
+      //              found = true;
+     //               break;
+      //          }
+     //       }
+     //       if (Boolean.FALSE.equals(found)) {
+     //           products.remove(product);
+   //         }
+    //    });
         return products;
 
     }
