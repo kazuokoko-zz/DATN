@@ -52,15 +52,17 @@ public class ProductServiceImpl implements ProductService {
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
             if(products.size() > 0)
-            products = StringFind.getMatchProduct(products, find.get());
-
+                products = StringFind.getMatchProduct(products, find.get());
+            else
+                products = new ArrayList<>();
         } else if (cate.isPresent()) {
             products = getListByCate(cate.get());
         } else if (find.isPresent()) {
             products = productDAO.findAll();
-            List<Product> tmp = new ArrayList<>(products);
-            products = new ArrayList<>(StringFind.getMatchProduct(tmp, find.get()));
-
+            if(products.size() > 0)
+            products = StringFind.getMatchProduct(products, find.get());
+            else
+                products = new ArrayList<>();
         } else {
             products = productDAO.findAll();
         }
