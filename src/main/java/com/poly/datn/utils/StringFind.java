@@ -2,20 +2,19 @@ package com.poly.datn.utils;
 
 import com.poly.datn.entity.Blog;
 import com.poly.datn.entity.Product;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class StringFind {
-    private StringFind() {
-    }
 
-
-    public static List<Product> getMatchProduct(List<Product> products, String sentences) {
+    public List<Product> getMatchProduct(List<Product> products, String sentences) {
 
         String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
-
-        for(Product product : products)
-        {
+        List<Product> products1 = new ArrayList<>();
+        for (Product product : products) {
             Boolean found = false;
             for (String word : words) {
                 if (product.getName().toLowerCase().contains(word.toLowerCase())) {
@@ -23,30 +22,30 @@ public class StringFind {
                     break;
                 }
             }
-            if (Boolean.FALSE.equals(found)) {
-                products.remove(product);
+            if (found) {
+               products1.add(product);
             }
         }
-       // products.forEach(product -> {
-       //     Boolean found = false;
-      //      for (String word : words) {
-       //         if (product.getName().toLowerCase().contains(word.toLowerCase())) {
-      //              found = true;
-     //               break;
-      //          }
-     //       }
-     //       if (Boolean.FALSE.equals(found)) {
-     //           products.remove(product);
-   //         }
-    //    });
-        return products;
+        // products.forEach(product -> {
+        //     Boolean found = false;
+        //      for (String word : words) {
+        //         if (product.getName().toLowerCase().contains(word.toLowerCase())) {
+        //              found = true;
+        //               break;
+        //          }
+        //       }
+        //       if (Boolean.FALSE.equals(found)) {
+        //           products.remove(product);
+        //         }
+        //    });
+        return products1;
 
     }
 
-    public static List<Blog> getMatchBlog(List<Blog> blogs, String sentences) {
+    public List<Blog> getMatchBlog(List<Blog> blogs, String sentences) {
 
         String[] words = sentences.trim().replaceAll("[._\\-]", " ").split(" ");
-
+        List<Blog> blogs1 = new ArrayList<>();
         blogs.forEach(blog -> {
             Boolean found = false;
             for (String word : words) {
@@ -55,11 +54,11 @@ public class StringFind {
                     break;
                 }
             }
-            if (Boolean.FALSE.equals(found)) {
-                blogs.remove(blog);
+            if (found) {
+                blogs1.add(blog);
             }
         });
-        return blogs;
+        return blogs1;
 
     }
 }
