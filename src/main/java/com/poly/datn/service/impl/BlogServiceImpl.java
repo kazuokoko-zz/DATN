@@ -31,6 +31,9 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    StringFind stringFind;
+
     @Override
     public Object getById(Integer id) {
         Blog blog = blogDAO.findById(id).orElseThrow(() -> new NullPointerException("Blog not found"));
@@ -53,13 +56,13 @@ public class BlogServiceImpl implements BlogService {
         List<Blog> blogs;
         if (pid.isPresent() && title.isPresent()) {
             blogs = blogDAO.findAllByProductIdEquals(pid.get());
-            blogs = StringFind.getMatchBlog(blogs, title.get());
+            blogs = stringFind.getMatchBlog(blogs, title.get());
 
         } else if (pid.isPresent()) {
             blogs = blogDAO.findAllByProductIdEquals(pid.get());
         } else if (title.isPresent()) {
             blogs = blogDAO.findAll();
-            blogs = StringFind.getMatchBlog(blogs, title.get());
+            blogs = stringFind.getMatchBlog(blogs, title.get());
 
         } else {
             blogs = blogDAO.findAll();

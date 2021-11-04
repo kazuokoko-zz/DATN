@@ -43,6 +43,9 @@ public class ProductServiceImpl implements ProductService {
     BlogDetailsDAO blogDetailsDAO;
 
     @Autowired
+    StringFind stringFind;
+
+    @Autowired
     CommentService commentService;
     // Begin code of MA
 
@@ -52,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
             if(products.size() > 0)
-                products = StringFind.getMatchProduct(products, find.get());
+                products = stringFind.getMatchProduct(products, find.get());
             else
                 products = new ArrayList<>();
         } else if (cate.isPresent()) {
@@ -60,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
         } else if (find.isPresent()) {
             products = productDAO.findAll();
             if(products.size() > 0)
-            products = StringFind.getMatchProduct(products, find.get());
+            products = stringFind.getMatchProduct(products, find.get());
             else
                 products = new ArrayList<>();
         } else {
