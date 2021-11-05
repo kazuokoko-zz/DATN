@@ -1,6 +1,7 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.common.Constant;
+import com.poly.datn.service.SaleService;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CartDetailDAO;
@@ -36,6 +37,9 @@ public class CartDetailServiceImpl implements CartDetailService {
     @Autowired
     AccountDAO accountDAO;
 
+    @Autowired
+    SaleService saleService;
+
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
@@ -46,6 +50,8 @@ public class CartDetailServiceImpl implements CartDetailService {
         cartDao.getCartDetailsByUsername(principal.getName()).forEach(orders -> {
             CartDetailVO vo = new CartDetailVO();
             BeanUtils.copyProperties(orders, vo);
+            vo.setProductName(productDAO.getById(vo.getProductId()).getName());
+            vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
@@ -60,15 +66,8 @@ public class CartDetailServiceImpl implements CartDetailService {
             log.error(Constant.NOT_LOGGED_IN);
             return false;
         }
-        CartDetailVO cartDetailVO = new CartDetailVO();
-        Optional<CartDetail> optionalCartDetail = cartDao.findById(id);
-        if (optionalCartDetail.isPresent()) {
-            CartDetail entity = optionalCartDetail.get();
-            BeanUtils.copyProperties(entity, cartDetailVO);
-            cartDao.delete(entity);
-            return true;
-        }
-        return false;
+        cartDetailDAO.deleteById(id);
+        return true;
     }
 
 

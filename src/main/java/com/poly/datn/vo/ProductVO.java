@@ -12,7 +12,7 @@ public class ProductVO {
 
     private String name;
 
-    private Integer price;
+    private Long price;
 
     private List<String> photos;
 
