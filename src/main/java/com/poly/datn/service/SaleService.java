@@ -10,4 +10,5 @@ public interface SaleService {
     List<SaleVO> getSaleNow(Principal principal);
     List<SaleVO>  getSaleAboutStart(Principal principal);
     List<SaleVO>  getSellEnd(Principal principal);
+    Integer getCurrentSaleOf(Integer productId);
 }
