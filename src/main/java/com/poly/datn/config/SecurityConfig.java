@@ -53,19 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/api/authentication/login", "/api/authentication/forgot", "/api/authentication/create").permitAll()
-                .antMatchers("/api/customer/orders**","/api/customer/cart**","/api/customer/account**").authenticated()
-                .antMatchers("/api/customer/**").permitAll()
-                .anyRequest().authenticated();
+//                .antMatchers("/api/customer/orders**","/api/customer/cart**","/api/customer/account**").authenticated()
+                .antMatchers("/api/customer/**").permitAll();
+//                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOriginPattern("*");
-//        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
 }
