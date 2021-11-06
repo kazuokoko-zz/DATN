@@ -15,9 +15,9 @@ public class OrderDetailsVO {
 
     private Integer quantity;
 
-    private Double price;
+    private Long price;
 
-    private Double discount;
+    private Long discount;
 
 
     OrdersVO orders;

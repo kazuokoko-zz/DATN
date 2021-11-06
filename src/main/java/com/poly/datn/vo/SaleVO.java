@@ -3,22 +3,16 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 @Data
 public class SaleVO {
 
+
     private Integer id;
-
-    private Integer productId;
-
-    private Double discount;
-
+    private String name;
     private Timestamp startTime;
-
     private Timestamp endTime;
-
-    private Integer quantity;
-
     private String status;
 
 

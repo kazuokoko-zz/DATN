@@ -1,11 +1,13 @@
 package com.poly.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@Data
 @Table(name = "OrderManagement")
 public class OrderManagement {
     @Id
@@ -24,47 +26,6 @@ public class OrderManagement {
     @Basic
     @Column(name = "status", nullable = false, length = 40)
     private String status;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Timestamp getTimeChange() {
-        return timeChange;
-    }
-
-    public void setTimeChange(Timestamp timeChange) {
-        this.timeChange = timeChange;
-    }
-
-    public String getChangedBy() {
-        return changedBy;
-    }
-
-    public void setChangedBy(String changedBy) {
-        this.changedBy = changedBy;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
 
 
 

@@ -1,9 +1,12 @@
 package com.poly.datn.entity;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "Product_details")
 public class ProductDetails {
     @Id
@@ -20,39 +23,7 @@ public class ProductDetails {
     @Column(name = "property_value", nullable = false, length = 150)
     private String propertyValue;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    public String getPropertyValue() {
-        return propertyValue;
-    }
-
-    public void setPropertyValue(String propertyValue) {
-        this.propertyValue = propertyValue;
-    }
-
-
+   
 
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false ,updatable  = false)

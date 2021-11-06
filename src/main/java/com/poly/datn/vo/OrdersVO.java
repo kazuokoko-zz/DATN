@@ -18,7 +18,7 @@ public class OrdersVO {
     private Long customerId;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER,pattern = "##.##")
-    private Double sumprice;
+    private Long sumprice;
 
 
     CustomerVO customer;

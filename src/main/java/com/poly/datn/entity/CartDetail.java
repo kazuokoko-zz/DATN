@@ -24,7 +24,7 @@ public class CartDetail {
     private Integer quantity;
 
     @Column(name = "price", nullable = false, precision = 0)
-    private Double price;
+    private Long price;
 
     @Column(name = "sale_id", nullable = true)
     private Integer saleId;

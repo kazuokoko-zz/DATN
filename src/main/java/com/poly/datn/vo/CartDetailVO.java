@@ -13,7 +13,7 @@ public class CartDetailVO {
 
     private Integer quantity;
 
-    private Double price;
+    private Long price;
 
     private Integer saleId;
 
