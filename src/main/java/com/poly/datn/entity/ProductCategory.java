@@ -1,9 +1,12 @@
 package com.poly.datn.entity;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "Product_category")
 public class ProductCategory {
     @Id
