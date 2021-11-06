@@ -2,7 +2,9 @@ package com.poly.datn.service.impl;
 
 
 import com.poly.datn.common.Constant;
+import com.poly.datn.dao.ProductSaleDAO;
 import com.poly.datn.dao.SaleDAO;
+import com.poly.datn.entity.ProductSale;
 import com.poly.datn.entity.Sale;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
@@ -11,13 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class SaleServiceImpl implements SaleService {
 
 
@@ -99,7 +104,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<SaleVO> getSellEnd(Principal principal) {
         return null;
-
+    }
 
     @Override
     public Integer getCurrentSaleOf(Integer productId) {
