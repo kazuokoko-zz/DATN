@@ -28,8 +28,10 @@ public class SaleServiceImpl implements SaleService {
     SaleDAO saleDAO;
 
     @Autowired
-
     CheckRole checkRole;
+    
+    @Autowired
+    ProductSaleDAO productSaleDAO;
 
     @Override
     public List<SaleVO> getAll(Principal principal) {
@@ -98,7 +100,6 @@ public class SaleServiceImpl implements SaleService {
     public List<SaleVO> getSellEnd(Principal principal) {
         return null;
 
-    ProductSaleDAO productSaleDAO;
 
     @Override
     public Integer getCurrentSaleOf(Integer productId) {
