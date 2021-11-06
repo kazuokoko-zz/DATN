@@ -1,6 +1,9 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.dao.OrderDetailsDAO;
+import com.poly.datn.entity.OrderDetails;
 import com.poly.datn.vo.CustomerVO;
+import com.poly.datn.vo.OrderDetailsVO;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.dao.CustomerDAO;
 import com.poly.datn.dao.OrdersDAO;
@@ -22,16 +25,26 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     CustomerDAO customerDAO;
 
+    @Autowired
+    OrderDetailsDAO orderDetailsDAO;
+
     @Override
-    public OrdersVO getByIdAndUserName(Integer id, String username) throws SecurityException,NullPointerException {
+    public OrdersVO getByIdAndUserName(Integer id, String username) throws SecurityException, NullPointerException {
         Orders orders = ordersDAO.findByIdAndUsername(id, username).orElseThrow(() -> new SecurityException("Not your order"));
 
-        Customer customer = customerDAO.findById(orders.getCustomerId()).orElseThrow(()->new NullPointerException("Cannot find customer"));
+        Customer customer = customerDAO.findById(orders.getCustomerId()).orElseThrow(() -> new NullPointerException("Cannot find customer"));
         OrdersVO ordersVO = new OrdersVO();
         CustomerVO vo = new CustomerVO();
         BeanUtils.copyProperties(customer, vo);
         BeanUtils.copyProperties(orders, ordersVO);
         ordersVO.setCustomer(vo);
+        List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
+        for (OrderDetails orderDetails : orderDetailsDAO.findAllByOrderIdEquals(id)) {
+            OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
+            BeanUtils.copyProperties(orderDetails, orderDetailsVO);
+            orderDetailsVOS.add(orderDetailsVO);
+        }
+        ordersVO.setOrderDetails(orderDetailsVOS);
         return ordersVO;
     }
 
