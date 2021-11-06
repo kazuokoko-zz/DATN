@@ -11,11 +11,13 @@ public class CartDetailVO {
 
     private Integer productId;
 
+    private String productName;
+
     private Integer quantity;
 
     private Long price;
 
-    private Integer saleId;
+    private Integer discount;
 
     AccountVO account;
 

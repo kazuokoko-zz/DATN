@@ -1,5 +1,6 @@
 package com.poly.datn.service.impl;
 
+
 import com.poly.datn.common.Constant;
 import com.poly.datn.dao.SaleDAO;
 import com.poly.datn.entity.Sale;
@@ -22,10 +23,12 @@ public class SaleServiceImpl implements SaleService {
 
     private static final Logger log = LoggerFactory.getLogger(CartDetailServiceImpl.class);
 
+
     @Autowired
     SaleDAO saleDAO;
 
     @Autowired
+
     CheckRole checkRole;
 
     @Override
@@ -94,5 +97,17 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<SaleVO> getSellEnd(Principal principal) {
         return null;
+
+    ProductSaleDAO productSaleDAO;
+
+    @Override
+    public Integer getCurrentSaleOf(Integer productId) {
+        List<Sale> sales = saleDAO.findSalesAt(Timestamp.valueOf(LocalDateTime.now()));
+        for (Sale sale : sales) {
+            Optional<ProductSale> productSale = productSaleDAO.findByProductIdEqualsAndSaleIdEquals(productId, sale.getId());
+            if (productSale.isPresent())
+                return productSale.get().getDiscount();
+        }
+        return 0;
     }
 }
