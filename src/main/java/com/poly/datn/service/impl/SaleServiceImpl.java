@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@Transactional
 public class SaleServiceImpl implements SaleService {
 
 
@@ -42,13 +44,14 @@ public class SaleServiceImpl implements SaleService {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 List<Sale> saleList = saleDAO.findAll();
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties(saleVO, sale);
+                    BeanUtils.copyProperties(sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;
@@ -73,7 +76,7 @@ public class SaleServiceImpl implements SaleService {
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties(saleVO,sale);
+                    BeanUtils.copyProperties(sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;
@@ -98,7 +101,7 @@ public class SaleServiceImpl implements SaleService {
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties( saleVO,sale);
+                    BeanUtils.copyProperties( sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;
@@ -123,7 +126,7 @@ public class SaleServiceImpl implements SaleService {
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties(saleVO,sale);
+                    BeanUtils.copyProperties(sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;

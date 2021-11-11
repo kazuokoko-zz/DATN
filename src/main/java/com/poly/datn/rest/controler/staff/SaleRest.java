@@ -22,7 +22,7 @@ public class SaleRest {
     SaleService saleService;
 
     @GetMapping("get")
-    public ResponseEntity<ResponseDTO<Object>> getAllSake(Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> getAllSale(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.getAll(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
