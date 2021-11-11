@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
-@RequestMapping("/api/customer/account")
+@RequestMapping("/api/staff/products")
 public class ProductAdminRest {
+
+
 }
