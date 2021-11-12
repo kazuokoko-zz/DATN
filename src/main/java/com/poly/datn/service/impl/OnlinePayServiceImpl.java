@@ -69,7 +69,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
             }
             payment.setId(pa.getId());
         }
-        payment.setBankCode( null);
+        payment.setBankCode(null);
         payment.setBankTranNo(null);
         payment.setCardType(null);
         payment.setCreateDate(vnp_CreateDate);
@@ -158,9 +158,9 @@ public class OnlinePayServiceImpl implements OnlinePayService {
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
-                hashData.append(fieldName);
-                hashData.append('=');
-                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+//                hashData.append(fieldName);
+//                hashData.append('=');
+//                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
                 //Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                 query.append('=');
@@ -171,6 +171,20 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                 }
             }
         }
+        hashData.append("vnp_TxnRef");
+        hashData.append('=');
+        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TxnRef"), StandardCharsets.US_ASCII.toString()));
+        hashData.append("vnp_TmnCode");
+        hashData.append('=');
+        hashData.append(URLEncoder.encode((String) vnp_Params.get("np_TmnCode"), StandardCharsets.US_ASCII.toString()));
+        hashData.append("vnp_Amount");
+        hashData.append('=');
+        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_Amount"), StandardCharsets.US_ASCII.toString()));
+        hashData.append("vnp_OrderInfo");
+        hashData.append('=');
+        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_OrderInfo"), StandardCharsets.US_ASCII.toString()));
+
+
         String queryUrl = query.toString();
         String vnp_SecureHash = VnpayConfig.hmacSHA512(Constant.vnp_HashSecret, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
@@ -307,6 +321,15 @@ public class OnlinePayServiceImpl implements OnlinePayService {
             if (fields.containsKey("vnp_SecureHash")) {
                 fields.remove("vnp_SecureHash");
             }
+            Map hashFields = new HashMap();
+            fields.put("vnp_TxnRef", fields.get("vnp_TxnRef"));
+            fields.put("vnp_TmnCode", fields.get("vnp_TmnCode"));
+            fields.put("vnp_Amount", fields.get("vnp_Amount"));
+            fields.put("vnp_OrderInfo", fields.get("vnp_OrderInfo"));
+
+
+
+
 
 
             Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
