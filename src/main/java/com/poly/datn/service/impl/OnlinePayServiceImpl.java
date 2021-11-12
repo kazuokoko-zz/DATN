@@ -44,10 +44,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         Payment payment = new Payment();
         Customer customer = customerDAO.getById(ordersDAO.getById(payInfoVO.getOrdersId()).getCustomerId());
 
-        String vnp_Version = "2.1.0";
-        String vnp_Command = "pay";
         String vnp_OrderInfo = payInfoVO.getOrderInfo();
-        String orderType = "130000";//payInfoVO.getOrderType();
         String vnp_TxnRef;
         Boolean exists = false;
         do {
@@ -87,25 +84,21 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
         int amount = payInfoVO.getAmount() * 100;
         Map vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", vnp_Version);
-        vnp_Params.put("vnp_Command", vnp_Command);
+        vnp_Params.put("vnp_Version", Constant.vnp_Version);
+        vnp_Params.put("vnp_Command", Constant.vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
-        vnp_Params.put("vnp_CurrCode", "VND");
+        vnp_Params.put("vnp_CurrCode", Constant.vnp_CurrCode);
 //        String bank_code = payInfoVO.getBankcode();
 //        if (bank_code != null && !bank_code.isEmpty()) {
 //            vnp_Params.put("vnp_BankCode", bank_code);
 //        }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", vnp_OrderInfo);
-        vnp_Params.put("vnp_OrderType", orderType);
+        vnp_Params.put("vnp_OrderType", Constant.vnp_OrderType);
 
-        String locate = payInfoVO.getLanguage();
-        if (locate != null && !locate.isEmpty()) {
-            vnp_Params.put("vnp_Locale", locate);
-        } else {
-            vnp_Params.put("vnp_Locale", "vn");
-        }
+        vnp_Params.put("vnp_Locale", Constant.vnp_Locale);
+
         vnp_Params.put("vnp_ReturnUrl", Constant.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
@@ -158,9 +151,9 @@ public class OnlinePayServiceImpl implements OnlinePayService {
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
-//                hashData.append(fieldName);
-//                hashData.append('=');
-//                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                hashData.append(fieldName);
+                hashData.append('=');
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
                 //Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                 query.append('=');
@@ -171,18 +164,18 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                 }
             }
         }
-        hashData.append("vnp_TxnRef");
-        hashData.append('=');
-        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TxnRef"), StandardCharsets.US_ASCII.toString()));
-        hashData.append("vnp_TmnCode");
-        hashData.append('=');
-        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TmnCode"), StandardCharsets.US_ASCII.toString()));
-        hashData.append("vnp_Amount");
-        hashData.append('=');
-        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_Amount"), StandardCharsets.US_ASCII.toString()));
-        hashData.append("vnp_OrderInfo");
-        hashData.append('=');
-        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_OrderInfo"), StandardCharsets.US_ASCII.toString()));
+//        hashData.append("vnp_TxnRef");
+//        hashData.append('=');
+//        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TxnRef"), StandardCharsets.US_ASCII.toString()));
+//        hashData.append("vnp_TmnCode");
+//        hashData.append('=');
+//        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TmnCode"), StandardCharsets.US_ASCII.toString()));
+//        hashData.append("vnp_Amount");
+//        hashData.append('=');
+//        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_Amount"), StandardCharsets.US_ASCII.toString()));
+//        hashData.append("vnp_OrderInfo");
+//        hashData.append('=');
+//        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_OrderInfo"), StandardCharsets.US_ASCII.toString()));
 
 
         String queryUrl = query.toString();
@@ -321,15 +314,12 @@ public class OnlinePayServiceImpl implements OnlinePayService {
             if (fields.containsKey("vnp_SecureHash")) {
                 fields.remove("vnp_SecureHash");
             }
-            Map hashFields = new HashMap();
-            fields.put("vnp_TxnRef", fields.get("vnp_TxnRef"));
-            fields.put("vnp_TmnCode", fields.get("vnp_TmnCode"));
-            fields.put("vnp_Amount", fields.get("vnp_Amount"));
-            fields.put("vnp_OrderInfo", fields.get("vnp_OrderInfo"));
 
-
-
-
+//            Map hashFields = new HashMap();
+//            fields.put("vnp_TxnRef", fields.get("vnp_TxnRef"));
+//            fields.put("vnp_TmnCode", fields.get("vnp_TmnCode"));
+//            fields.put("vnp_Amount", fields.get("vnp_Amount"));
+//            fields.put("vnp_OrderInfo", fields.get("vnp_OrderInfo"));
 
 
             Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
@@ -337,6 +327,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
             // Check checksum
             String signValue = VnpayConfig.hashAllFields(fields);
+            System.out.println(signValue);
+            System.out.println(vnp_SecureHash);
             if (signValue.equals(vnp_SecureHash)) {
 
                 boolean checkOrderId = true; // vnp_TxnRef exists in your database
