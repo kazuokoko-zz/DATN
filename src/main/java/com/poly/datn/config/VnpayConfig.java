@@ -5,7 +5,9 @@ import com.poly.datn.common.Constant;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -91,7 +93,7 @@ public class VnpayConfig {
     }
 
     //Util for VNPAY
-    public static String hashAllFields(Map fields) {
+    public static String hashAllFields(Map fields) throws IOException {
         // create a list and sort it
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
@@ -105,7 +107,7 @@ public class VnpayConfig {
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 sb.append(fieldName);
                 sb.append("=");
-                sb.append(fieldValue);
+                sb.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
             }
             if (itr.hasNext()) {
                 sb.append("&");

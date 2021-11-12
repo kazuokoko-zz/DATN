@@ -36,7 +36,7 @@ public class OnlinePayRest {
             HttpServletRequest request) throws IOException {
         return ResponseEntity.ok(ResponseDTO.builder()
 //                .object(onlinePayService.getResult(id, request)
-                .object(onlinePayService.merchantcall(request)
+                .object(onlinePayService.getResult(1, request)
                 )
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }

@@ -198,6 +198,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     public String getResult(Integer id, HttpServletRequest request) throws IOException {
+
         try {
 
 	/*  IPN URL: Record payment results from VNPAY
@@ -259,7 +260,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                                 payment.setStatus(2);
                                 // Here Code update PaymnentStatus = 2 into your Database
                             }
-                            paymentDAO.save(payment);
+//                            paymentDAO.save(payment);
                             return "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
                         } else {
 
@@ -281,6 +282,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     public Object merchantcall(HttpServletRequest request) {
+
         try {
 
 	/*  IPN URL: Record payment results from VNPAY
@@ -327,8 +329,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
             // Check checksum
             String signValue = VnpayConfig.hashAllFields(fields);
-            System.out.println(signValue);
-            System.out.println(vnp_SecureHash);
+//            request.getRequestURI()
+//            String signValue = VnpayConfig.hmacSHA512(Constant.vnp_HashSecret, );
             if (signValue.equals(vnp_SecureHash)) {
 
                 boolean checkOrderId = true; // vnp_TxnRef exists in your database
