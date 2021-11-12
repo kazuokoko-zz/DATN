@@ -176,7 +176,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TxnRef"), StandardCharsets.US_ASCII.toString()));
         hashData.append("vnp_TmnCode");
         hashData.append('=');
-        hashData.append(URLEncoder.encode((String) vnp_Params.get("np_TmnCode"), StandardCharsets.US_ASCII.toString()));
+        hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_TmnCode"), StandardCharsets.US_ASCII.toString()));
         hashData.append("vnp_Amount");
         hashData.append('=');
         hashData.append(URLEncoder.encode((String) vnp_Params.get("vnp_Amount"), StandardCharsets.US_ASCII.toString()));
