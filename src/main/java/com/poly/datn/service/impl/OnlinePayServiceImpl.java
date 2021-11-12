@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,7 +35,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     @Transactional
-    public String doPay(PayInfoVO payInfoVO, HttpServletRequest request) throws IOException {
+    public String doPay(PayInfoVO payInfoVO, HttpServletRequest request) throws IOException, ParseException {
+
 
 //        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -61,10 +63,21 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
         Payment pa = paymentDAO.getByOrdersIdToday(payInfoVO.getOrdersId(), vnp_CreateDate.substring(0, 8));
         if (pa != null) {
-            if (pa.getStatus() != 0) {
-                return "Giao dịch đã xử lý";
+            if (pa.getStatus() == 0) {
+                Date dn = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7")).getTime();
+                Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+                cal1.setTime(formatter.parse(pa.getCreateDate()));
+                cal1.add(Calendar.MINUTE, 15);
+                if (dn.after(cal1.getTime())) {
+                    paymentDAO.deleteById(pa.getId());
+                } else {
+                    return null;
+                }
+            } else if (pa.getStatus() == 1) {
+                return null;
+            } else {
+                paymentDAO.deleteById(pa.getId());
             }
-            payment.setId(pa.getId());
         }
         payment.setBankCode(null);
         payment.setBankTranNo(null);
@@ -197,9 +210,12 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     }
 
     @Override
-    public String getResult(Integer id, HttpServletRequest request) throws IOException {
+    public Boolean getResult(Integer id, HttpServletRequest request) throws IOException {
+        Payment payment = paymentDAO.getByOrdersIdEquals(id);
 
-        try {
+        return payment != null ? payment.getStatus() == 1 ? true : false : false;
+
+//        try {
 
 	/*  IPN URL: Record payment results from VNPAY
 	Implementation steps:
@@ -211,73 +227,73 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 	Return recorded results to VNPAY
 	*/
 
-            // ex:  	PaymnentStatus = 0; pending
-            //              PaymnentStatus = 1; success
-            //              PaymnentStatus = 2; Faile
+        // ex:  	PaymnentStatus = 0; pending
+        //              PaymnentStatus = 1; success
+        //              PaymnentStatus = 2; Faile
 
-            //Begin process return from VNPAY
-            Map fields = new HashMap();
-            for (Enumeration params = request.getParameterNames(); params.hasMoreElements(); ) {
-                String fieldName = (String) params.nextElement();
-                String fieldValue = request.getParameter(fieldName);
-                if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                    fields.put(fieldName, fieldValue);
-                }
-            }
-
-            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
-            if (fields.containsKey("vnp_SecureHashType")) {
-                fields.remove("vnp_SecureHashType");
-            }
-            if (fields.containsKey("vnp_SecureHash")) {
-                fields.remove("vnp_SecureHash");
-            }
-
-
-            Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
-
-
-            // Check checksum
-            String signValue = VnpayConfig.hashAllFields(fields);
-            if (signValue.equals(vnp_SecureHash)) {
-
-                boolean checkOrderId = true; // vnp_TxnRef exists in your database
-                boolean checkAmount = true; // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
-                boolean checkOrderStatus = true; // PaymnentStatus = 0 (pending)
-
-
-                if (checkOrderId) {
-                    if (checkAmount) {
-                        if (checkOrderStatus) {
-                            payment.setBankCode((String) fields.get("vnp_BankCode"));
-                            payment.setTransactionNo((String) fields.get("vnp_TransactionNo"));
-                            payment.setCardType((String) fields.get("vnp_CardType"));
-                            payment.setBankTranNo((String) fields.get("vnp_TransactionNo"));
-                            if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-                                payment.setStatus(1);
-                                //Here Code update PaymnentStatus = 1 into your Database
-                            } else {
-                                payment.setStatus(2);
-                                // Here Code update PaymnentStatus = 2 into your Database
-                            }
-//                            paymentDAO.save(payment);
-                            return "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
-                        } else {
-
-                            return "{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}";
-                        }
-                    } else {
-                        return "{\"RspCode\":\"04\",\"Message\":\"Invalid Amount\"}";
-                    }
-                } else {
-                    return "{\"RspCode\":\"01\",\"Message\":\"Order not Found\"}";
-                }
-            } else {
-                return "{\"RspCode\":\"97\",\"Message\":\"Invalid Checksum\"}";
-            }
-        } catch (Exception e) {
-            return "{\"RspCode\":\"99\",\"Message\":\"Unknow error\"}";
-        }
+        //Begin process return from VNPAY
+//            Map fields = new HashMap();
+//            for (Enumeration params = request.getParameterNames(); params.hasMoreElements(); ) {
+//                String fieldName = (String) params.nextElement();
+//                String fieldValue = request.getParameter(fieldName);
+//                if ((fieldValue != null) && (fieldValue.length() > 0)) {
+//                    fields.put(fieldName, fieldValue);
+//                }
+//            }
+//
+//            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+//            if (fields.containsKey("vnp_SecureHashType")) {
+//                fields.remove("vnp_SecureHashType");
+//            }
+//            if (fields.containsKey("vnp_SecureHash")) {
+//                fields.remove("vnp_SecureHash");
+//            }
+//
+//
+//            Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
+//
+//
+//            // Check checksum
+//            String signValue = VnpayConfig.hashAllFields(fields);
+//            if (signValue.equals(vnp_SecureHash)) {
+//
+//                boolean checkOrderId = true; // vnp_TxnRef exists in your database
+//                boolean checkAmount = true; // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
+//                boolean checkOrderStatus = true; // PaymnentStatus = 0 (pending)
+//
+//
+//                if (checkOrderId) {
+//                    if (checkAmount) {
+//                        if (checkOrderStatus) {
+//                            payment.setBankCode((String) fields.get("vnp_BankCode"));
+//                            payment.setTransactionNo((String) fields.get("vnp_TransactionNo"));
+//                            payment.setCardType((String) fields.get("vnp_CardType"));
+//                            payment.setBankTranNo((String) fields.get("vnp_TransactionNo"));
+//                            if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
+//                                payment.setStatus(1);
+//                                //Here Code update PaymnentStatus = 1 into your Database
+//                            } else {
+//                                payment.setStatus(2);
+//                                // Here Code update PaymnentStatus = 2 into your Database
+//                            }
+////                            paymentDAO.save(payment);
+//                            return "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
+//                        } else {
+//
+//                            return "{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}";
+//                        }
+//                    } else {
+//                        return "{\"RspCode\":\"04\",\"Message\":\"Invalid Amount\"}";
+//                    }
+//                } else {
+//                    return "{\"RspCode\":\"01\",\"Message\":\"Order not Found\"}";
+//                }
+//            } else {
+//                return "{\"RspCode\":\"97\",\"Message\":\"Invalid Checksum\"}";
+//            }
+//        } catch (Exception e) {
+//            return "{\"RspCode\":\"99\",\"Message\":\"Unknow error\"}";
+//        }
     }
 
     @Override

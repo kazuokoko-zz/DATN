@@ -15,5 +15,7 @@ public interface PaymentDAO extends JpaRepository<Payment, Integer> {
     @Query(nativeQuery = true, value = "select * from payment p where p.orders_id=:ordersId and SUBSTRING(p.createDate,1,8) =:createDate")
     Payment getByOrdersIdToday(@Param("ordersId") Integer ordersId, @Param("createDate") String createDate);
 
+   Payment getByOrdersIdEquals(Integer ordersId);
+
     List<Payment> findAllByTxnRef(String txnRef);
 }

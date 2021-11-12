@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
@@ -19,7 +20,7 @@ public class OnlinePayRest {
     OnlinePayService onlinePayService;
 
     @GetMapping("getpayurl")
-    public ResponseEntity<ResponseDTO<Object>> doPay(@RequestBody PayInfoVO payInfoVO, HttpServletRequest request) throws IOException {
+    public ResponseEntity<ResponseDTO<Object>> doPay(@RequestBody PayInfoVO payInfoVO, HttpServletRequest request) throws IOException, ParseException {
         return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.doPay(payInfoVO, request))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
@@ -30,13 +31,13 @@ public class OnlinePayRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-    @GetMapping("getresult")
+    @GetMapping("getresult/{id}")
     public ResponseEntity<ResponseDTO<Object>> getResult(
-//            @PathVariable Integer id,
+            @PathVariable Integer id,
             HttpServletRequest request) throws IOException {
         return ResponseEntity.ok(ResponseDTO.builder()
 //                .object(onlinePayService.getResult(id, request)
-                .object(onlinePayService.getResult(1, request)
+                .object(onlinePayService.getResult(id, request)
                 )
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
