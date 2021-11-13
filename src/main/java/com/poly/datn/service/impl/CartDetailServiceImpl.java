@@ -51,6 +51,7 @@ public class CartDetailServiceImpl implements CartDetailService {
             BeanUtils.copyProperties(orders, vo);
             vo.setProductName(productDAO.getById(vo.getProductId()).getName());
             vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
+            vo.setPrice(productDAO.getById(vo.getProductId()).getPrice());
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;

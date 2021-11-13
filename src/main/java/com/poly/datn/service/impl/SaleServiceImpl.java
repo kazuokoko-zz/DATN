@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class SaleServiceImpl implements SaleService {
 
 
@@ -38,18 +40,21 @@ public class SaleServiceImpl implements SaleService {
     @Autowired
     ProductSaleDAO productSaleDAO;
 
+    @Autowired
+    ProductSaleDAO productSaleDAO;
     @Override
     public List<SaleVO> getAll(Principal principal) {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 List<Sale> saleList = saleDAO.findAll();
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties(saleVO, saleList);
+                    BeanUtils.copyProperties(sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;
@@ -66,28 +71,18 @@ public class SaleServiceImpl implements SaleService {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
+        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try{
-//                List<Sale> saleList = saleDAO.findAll();
-//                List<SaleVO> saleVOList = new ArrayList<>();
-//                String timestamp = String.valueOf(LocalDateTime.now());
-//                SaleVO saleVO1 = new SaleVO();
-//                saleList.forEach(sale -> {
-//                    SaleVO saleVO = new SaleVO();
-//                    BeanUtils.copyProperties(saleVO, saleList);
-////                    saleVOList.add(saleVO);
-//                    String timestamp1 = String.valueOf(sale.getStartTime());
-//                    if ( timestamp1 => timestamp && timestamp1 <= timestamp){
-//
-//                    }
-//
-//
-//
-//                });
-
-
-
-                return null;
+                Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+                List<Sale> saleList = saleDAO.findSalesAt(timestamp);
+                List<SaleVO> saleVOList = new ArrayList<>();
+                saleList.forEach(sale -> {
+                    SaleVO saleVO = new SaleVO();
+                    BeanUtils.copyProperties(sale, saleVO);
+                    saleVOList.add(saleVO);
+                });
+                return saleVOList;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -98,12 +93,52 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<SaleVO> getSaleAboutStart(Principal principal) {
-        return null;
+        if (principal == null) {
+            log.error(Constant.NOT_LOGGED_IN);
+            return new ArrayList<>();
+        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
+            try{
+                Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+                List<Sale> saleList = saleDAO.findSalesAboutStart(timestamp);
+                List<SaleVO> saleVOList = new ArrayList<>();
+                saleList.forEach(sale -> {
+                    SaleVO saleVO = new SaleVO();
+                    BeanUtils.copyProperties( sale, saleVO);
+                    saleVOList.add(saleVO);
+                });
+                return saleVOList;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
     public List<SaleVO> getSellEnd(Principal principal) {
-        return null;
+        if (principal == null) {
+            log.error(Constant.NOT_LOGGED_IN);
+            return new ArrayList<>();
+        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
+            try{
+                Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+                List<Sale> saleList = saleDAO.findSalesEnd(timestamp);
+                List<SaleVO> saleVOList = new ArrayList<>();
+                saleList.forEach(sale -> {
+                    SaleVO saleVO = new SaleVO();
+                    BeanUtils.copyProperties(sale, saleVO);
+                    saleVOList.add(saleVO);
+                });
+                return saleVOList;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
