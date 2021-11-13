@@ -20,9 +20,7 @@ public class OrdersVO {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER,pattern = "##.##")
     private Long sumprice;
 
-
     CustomerVO customer;
-
 
     List<OrderManagementVO> orderManagements;
 

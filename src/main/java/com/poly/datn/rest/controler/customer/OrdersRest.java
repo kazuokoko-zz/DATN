@@ -23,15 +23,25 @@ public class OrdersRest {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<Object>> getList(Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getByUsername(principal.getName()))
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getByUsername(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @GetMapping("getall")
+    public ResponseEntity<ResponseDTO<Object>> getAll(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getAll(principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
     @GetMapping("{id}")
     public ResponseEntity<ResponseDTO<Object>> getOrders(Principal principal, @PathVariable("id") Integer id) throws NullPointerException, SecurityException {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getByIdAndUserName(id, principal.getName()))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
 
+    }
+    @PostMapping("new")
+    public ResponseEntity<ResponseDTO<Object>> newOrder(@RequestBody OrdersVO ordersVO, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.newOrder(ordersVO, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 //    @PostMapping("new")
 //public  ResponseEntity<>
