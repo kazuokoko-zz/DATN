@@ -8,9 +8,10 @@ import java.util.List;
 import lombok.Data;
 
 @Entity
-@Table(name = "Sale")
+@Table(name = "sale")
 @Data
 public class Sale {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

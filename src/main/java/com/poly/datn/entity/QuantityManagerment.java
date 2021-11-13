@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Quantity_Managerment")
+@Table(name = "quantity_managerment")
 public class QuantityManagerment {
     @Id
     @Column(name = "id", nullable = false)

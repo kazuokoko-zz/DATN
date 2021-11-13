@@ -3,7 +3,7 @@ package com.poly.datn.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Warranty_invoice")
+@Table(name = "warranty_invoice")
 public class WarrantyInvoice {
     @Id
     @Column(name = "id", nullable = false)
