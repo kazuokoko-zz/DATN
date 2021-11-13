@@ -36,12 +36,10 @@ public class SaleServiceImpl implements SaleService {
 
     @Autowired
     CheckRole checkRole;
-    
-    @Autowired
-    ProductSaleDAO productSaleDAO;
 
     @Autowired
     ProductSaleDAO productSaleDAO;
+
     @Override
     public List<SaleVO> getAll(Principal principal) {
         if (principal == null) {
@@ -71,9 +69,9 @@ public class SaleServiceImpl implements SaleService {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
-            try{
+            try {
                 Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
                 List<Sale> saleList = saleDAO.findSalesAt(timestamp);
                 List<SaleVO> saleVOList = new ArrayList<>();
@@ -96,15 +94,15 @@ public class SaleServiceImpl implements SaleService {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
-            try{
+            try {
                 Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
                 List<Sale> saleList = saleDAO.findSalesAboutStart(timestamp);
                 List<SaleVO> saleVOList = new ArrayList<>();
                 saleList.forEach(sale -> {
                     SaleVO saleVO = new SaleVO();
-                    BeanUtils.copyProperties( sale, saleVO);
+                    BeanUtils.copyProperties(sale, saleVO);
                     saleVOList.add(saleVO);
                 });
                 return saleVOList;
@@ -121,9 +119,9 @@ public class SaleServiceImpl implements SaleService {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return new ArrayList<>();
-        } else if (checkRole.isHavePermition(principal.getName(), "Director" )
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
-            try{
+            try {
                 Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
                 List<Sale> saleList = saleDAO.findSalesEnd(timestamp);
                 List<SaleVO> saleVOList = new ArrayList<>();
