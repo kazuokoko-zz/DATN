@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "Product_color")
+@Table(name = "product_color")
 public class ProductColor {
     @Id
     @Column(name = "id", nullable = false)

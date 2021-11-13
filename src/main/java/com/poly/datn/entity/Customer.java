@@ -4,7 +4,7 @@ package com.poly.datn.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Customer")
+@Table(name = "customer")
 public class Customer {
     @Id
     @Column(name = "id", nullable = false)

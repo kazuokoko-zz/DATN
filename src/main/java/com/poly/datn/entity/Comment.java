@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "Comment")
+@Table(name = "comment")
 public class Comment {
     @Id
     @Column(name = "id", nullable = false)
