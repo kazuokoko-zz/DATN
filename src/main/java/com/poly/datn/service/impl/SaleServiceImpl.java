@@ -138,7 +138,6 @@ public class SaleServiceImpl implements SaleService {
             return null;
         }
     }
-
     @Override
     public Integer getCurrentSaleOf(Integer productId) {
         List<Sale> sales = saleDAO.findSalesAt(Timestamp.valueOf(LocalDateTime.now()));

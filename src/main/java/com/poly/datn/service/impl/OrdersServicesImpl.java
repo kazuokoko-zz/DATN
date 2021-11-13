@@ -1,23 +1,22 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.dao.OrderDetailsDAO;
-import com.poly.datn.entity.OrderDetails;
-import com.poly.datn.vo.CustomerVO;
-import com.poly.datn.vo.OrderDetailsVO;
-import com.poly.datn.vo.OrdersVO;
-import com.poly.datn.dao.CustomerDAO;
-import com.poly.datn.dao.OrdersDAO;
-import com.poly.datn.entity.Customer;
-import com.poly.datn.entity.Orders;
+import com.poly.datn.dao.*;
+import com.poly.datn.entity.*;
+import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrdersServicesImpl implements OrdersService {
     @Autowired
     OrdersDAO ordersDAO;
@@ -27,6 +26,11 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     OrderDetailsDAO orderDetailsDAO;
+    @Autowired
+    OrderManagementDAO orderManagementDAO;
+
+    @Autowired
+    WarrantyDAO warrantyDAO;
 
     @Override
     public OrdersVO getByIdAndUserName(Integer id, String username) throws SecurityException, NullPointerException {
@@ -47,13 +51,113 @@ public class OrdersServicesImpl implements OrdersService {
         ordersVO.setOrderDetails(orderDetailsVOS);
         return ordersVO;
     }
+//, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
+    @Override
+    public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
+        // save customer
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
+        customer = customerDAO.save(customer);
+
+        //save order
+        Orders orders = new Orders();
+        orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
+        orders.setUsername(principal.getName());
+        orders.setCustomerId(customer.getId());
+        Long totalPrice = 0L;
+        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+        for(OrderDetailsVO orderDetailsVO1: orderDetailsVO) {
+            totalPrice += orderDetailsVO1.getPrice();
+        };
+        orders.setSumprice(totalPrice);
+        orders = ordersDAO.save(orders);
+
+        // save order detail
+        List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
+        for(OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetailsVO1.setOrderId(orders.getId());
+            BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
+            orderDetailsDAO.save(orderDetails);
+        };
+        //save ordermanagement
+        OrderManagementVO orderManagementVO = new OrderManagementVO();
+        OrderManagement orderManagement = new OrderManagement();
+        orderManagementVO.setOrderId(orders.getId());
+        orderManagementVO.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagementVO.setChangedBy(principal.getName());
+        orderManagementVO.setStatus("chưa thanh toán");
+        BeanUtils.copyProperties(orderManagementVO, orderManagement);
+        orderManagement = orderManagementDAO.save(orderManagement);
+
+        BeanUtils.copyProperties(orders, ordersVO);
+        return ordersVO;
+
+    }
 
     @Override
-    public List<OrdersVO> getByUsername(String username) {
+    public List<OrdersVO> getByUsername(Principal principal) {
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        ordersDAO.getByUsername(username).forEach(orders -> {
+        ordersDAO.getByUsername(principal.getName()).forEach(orders -> {
             OrdersVO vo = new OrdersVO();
             BeanUtils.copyProperties(orders, vo);
+            ordersVOS.add(vo);
+        });
+        return ordersVOS;
+    }
+    @Override
+    public List<OrdersVO> getAll(Principal principal) {
+        List<Orders> orders = ordersDAO.findAll();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        orders.forEach(order -> {
+            OrdersVO vo = new OrdersVO();
+            BeanUtils.copyProperties(order, vo);
+
+            //listcustomer
+            Customer customer = customerDAO.findCustomerById(order.getCustomerId());
+            if(customer == null){
+
+            } else {
+                CustomerVO customerVO = new CustomerVO();
+                BeanUtils.copyProperties(customer, customerVO);
+
+                vo.setCustomer(customerVO);
+            }
+            //list ordermanager
+            List<OrderManagement> orderManagement = orderManagementDAO.findByOrderId(order.getId());
+            if(orderManagement.size() ==0){
+
+            } else {
+                List<OrderManagementVO> orderManagements = new ArrayList<>();
+                orderManagement.forEach(orderManagement1 -> {
+                    OrderManagementVO orderManagementVO = new OrderManagementVO();
+                    BeanUtils.copyProperties(orderManagement1, orderManagementVO);
+                    orderManagements.add(orderManagementVO);
+                });
+                vo.setOrderManagements(orderManagements);
+            }
+            //list order detail
+            List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(order.getId());
+            if(orderDetails.size() ==0){
+
+            } else {
+                List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
+                orderDetails.forEach(orderDetails1 -> {
+                    OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
+                    BeanUtils.copyProperties(orderDetails1, orderDetailsVO);
+                    orderDetailsVOS.add(orderDetailsVO);
+                });
+                vo.setOrderDetails(orderDetailsVOS);
+            }
+            //list warranty
+            List<Warranty> warranty = warrantyDAO.findByOrderId(order.getId());
+            if(warranty.size() == 0){
+
+            } else {
+            WarrantyVO warrantyVO = new WarrantyVO();
+            BeanUtils.copyProperties(warranty, warrantyVO);
+            vo.setWarranty(warrantyVO);
+            }
             ordersVOS.add(vo);
         });
         return ordersVOS;
