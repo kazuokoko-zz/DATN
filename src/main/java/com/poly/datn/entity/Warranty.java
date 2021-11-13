@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "Warranty")
+@Table(name = "warranty")
 public class Warranty {
     @Id
     @Column(name = "id", nullable = false)

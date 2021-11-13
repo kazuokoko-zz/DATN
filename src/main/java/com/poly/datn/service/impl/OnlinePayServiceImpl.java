@@ -53,8 +53,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         String vnp_CreateDate = formatter.format(cld.getTime());
 
         Payment payment = new Payment();
-        Customer customer = customerDAO.getById(ordersDAO.getById(payInfoVO.getOrdersId()).getCustomerId());
-        Orders orders = ordersDAO.getById(payInfoVO.getOrdersId());
+        Orders orders = ordersDAO.findById(payInfoVO.getOrdersId()).get();
+        Customer customer = customerDAO.getById(orders.getCustomerId());
 
         String vnp_OrderInfo = payInfoVO.getOrderInfo();
         String vnp_TxnRef;
@@ -226,14 +226,14 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
 
             Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
-            Orders orders = ordersDAO.getById(payment.getOrdersId());
+            Orders orders = ordersDAO.findById(payment.getOrdersId()).get();
 
             // Check checksum
             String signValue = VnpayConfig.hashAllFields(fields);
             if (signValue.equals(vnp_SecureHash)) {
 
                 boolean checkOrderId = payment.getTxnRef().equalsIgnoreCase((String) fields.get("vnp_TxnRef")); // vnp_TxnRef exists in your database
-                boolean checkAmount = orders.getSumprice().equals(fields.get("vnp_Amount")); // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
+                boolean checkAmount = (orders.getSumprice() * 100) == Long.parseLong((String) fields.get("vnp_Amount")); // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
                 boolean checkOrderStatus = payment.getStatus() == 0; // PaymnentStatus = 0 (pending)
 
 

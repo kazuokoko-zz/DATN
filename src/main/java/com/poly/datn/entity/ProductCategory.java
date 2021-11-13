@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "Product_category")
+@Table(name = "product_category")
 public class ProductCategory {
     @Id
     @Column(name = "id", nullable = false)

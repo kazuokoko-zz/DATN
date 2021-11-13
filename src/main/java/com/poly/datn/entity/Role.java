@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "role")
 public class Role {
     @Id
     @Column(name = "id", nullable = false)
