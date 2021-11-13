@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class PayInfoVO {
     public String OrderInfo;
-    public Integer amount;
     public Integer ordersId;
     public String returnURL;
 

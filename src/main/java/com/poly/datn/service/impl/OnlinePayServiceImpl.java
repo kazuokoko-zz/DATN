@@ -54,6 +54,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
         Payment payment = new Payment();
         Customer customer = customerDAO.getById(ordersDAO.getById(payInfoVO.getOrdersId()).getCustomerId());
+        Orders orders = ordersDAO.getById(payInfoVO.getOrdersId());
 
         String vnp_OrderInfo = payInfoVO.getOrderInfo();
         String vnp_TxnRef;
@@ -104,7 +105,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TmnCode = Constant.vnp_TmnCode;
 
-        int amount = payInfoVO.getAmount() * 100;
+        Long amount = orders.getSumprice() * 100;
         Map vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", Constant.vnp_Version);
         vnp_Params.put("vnp_Command", Constant.vnp_Command);
@@ -225,15 +226,15 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
 
             Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
-
+            Orders orders = ordersDAO.getById(payment.getOrdersId());
 
             // Check checksum
             String signValue = VnpayConfig.hashAllFields(fields);
             if (signValue.equals(vnp_SecureHash)) {
 
-                boolean checkOrderId = true; // vnp_TxnRef exists in your database
-                boolean checkAmount = true; // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
-                boolean checkOrderStatus = true; // PaymnentStatus = 0 (pending)
+                boolean checkOrderId = payment.getTxnRef().equalsIgnoreCase((String) fields.get("vnp_TxnRef")); // vnp_TxnRef exists in your database
+                boolean checkAmount = orders.getSumprice().equals(fields.get("vnp_Amount")); // vnp_Amount is valid (Check vnp_Amount VNPAY returns compared to the amount of the code (vnp_TxnRef) in the Your database).
+                boolean checkOrderStatus = payment.getStatus() == 0; // PaymnentStatus = 0 (pending)
 
 
                 if (checkOrderId) {
@@ -250,10 +251,11 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                                 payment.setStatus(2);
                             }
                             paymentDAO.save(payment);
+                            OrderManagement orderManagement = AutoCreate
+                                    .createOrderManagement(payment.getOrdersId(),
+                                            "Đã thanh toán", "sys");
                             if (payment.getStatus() == 1) {
-                                orderManagementDAO.save(AutoCreate
-                                        .createOrderManagement(payment.getOrdersId(),
-                                                "Đã thanh toán", "sys"));
+                                orderManagementDAO.save(orderManagement);
                             }
                             return new PayResponseVO("00", "Confirm Success");
                         } else {
