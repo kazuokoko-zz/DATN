@@ -23,6 +23,9 @@ public class CartDetail {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "price")
+    private Long price;
+
     @Column(name = "sale_id", nullable = true)
     private Integer saleId;
 
