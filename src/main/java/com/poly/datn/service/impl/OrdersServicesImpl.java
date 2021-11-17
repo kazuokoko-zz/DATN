@@ -62,7 +62,7 @@ public class OrdersServicesImpl implements OrdersService {
         //save order
         Orders orders = new Orders();
         orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
-        orders.setUsername(principal.getName());
+        orders.setUsername( principal != null ? principal.getName(): "");
         orders.setCustomerId(customer.getId());
         Long totalPrice = 0L;
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
