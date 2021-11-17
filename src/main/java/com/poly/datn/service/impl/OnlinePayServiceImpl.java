@@ -189,7 +189,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     public Object merchantcall(HttpServletRequest request) {
-
+        System.out.println("Ipn da duoc goi");
         try {
 
 	/*  IPN URL: Record payment results from VNPAY
