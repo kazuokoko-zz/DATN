@@ -4,6 +4,7 @@ import com.poly.datn.dao.*;
 import com.poly.datn.entity.Blog;
 import com.poly.datn.entity.BlogDetails;
 import com.poly.datn.service.CommentService;
+import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.entity.Product;
@@ -11,10 +12,12 @@ import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
 import org.springframework.beans.BeanUtils;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +50,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    CheckRole checkRole;
     // Begin code of MA
+
 
     @Override
     public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
-            if(products.size() > 0)
+            if (products.size() > 0)
                 products = stringFind.getMatchProduct(products, find.get());
             else
                 products = new ArrayList<>();
@@ -62,8 +69,8 @@ public class ProductServiceImpl implements ProductService {
             products = getListByCate(cate.get());
         } else if (find.isPresent()) {
             products = productDAO.findAll();
-            if(products.size() > 0)
-            products = stringFind.getMatchProduct(products, find.get());
+            if (products.size() > 0)
+                products = stringFind.getMatchProduct(products, find.get());
             else
                 products = new ArrayList<>();
         } else {
@@ -71,8 +78,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductVO> productVOS = new ArrayList<>();
-        for(Product product : products)
-         {
+        for (Product product : products) {
             ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
         }
@@ -161,5 +167,26 @@ public class ProductServiceImpl implements ProductService {
         return blogVO;
     }
     // End code of MA
+
+    //admin
+
+    @Override
+    @Transactional
+    public Object delete(Integer id, Principal principal) {
+        if (principal != null)
+            return false;
+        if (checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
+            try {
+                Product product = productDAO.getById(id);
+                product.setStatus("Không kinh doanh");
+                productDAO.save(product);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
 
 }
