@@ -19,4 +19,7 @@ public interface ProductService {
     ProductVO getById(Integer id) throws NullPointerException;
 
     List<ProductVO> getTrending();
+
+    ProductVO newProduct(ProductVO productVO, Principal principal);
+
 }

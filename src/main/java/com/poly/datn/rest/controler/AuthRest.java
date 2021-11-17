@@ -35,7 +35,7 @@ public class AuthRest {
 
     @Autowired
     JwtUtils jwtUtils;
-
+    
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
