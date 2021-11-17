@@ -17,7 +17,7 @@ public class ProductAdminRest {
     ProductService productService;
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable Integer id, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable("id") Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.delete(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }

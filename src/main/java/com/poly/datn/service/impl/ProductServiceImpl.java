@@ -173,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Object delete(Integer id, Principal principal) {
-        if (principal != null)
+        if (principal == null)
             return false;
         if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
