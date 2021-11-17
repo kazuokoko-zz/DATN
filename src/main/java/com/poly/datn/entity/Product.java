@@ -18,8 +18,11 @@ public class Product {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
     @Basic
-    @Column(name = "price", nullable = true, precision = 0)
+    @Column(name = "price",  precision = 0)
     private Long price;
+    @Basic
+    @Column(name = "warranty",  precision = 0)
+    private Integer warranty;
     @Basic
     @Column(name = "status", nullable = false, length = 20)
     private String status;

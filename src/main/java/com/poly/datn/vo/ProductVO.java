@@ -14,6 +14,8 @@ public class ProductVO {
 
     private Long price;
 
+    private Integer warranty;
+
     private List<String> photos;
 
     private String status;
