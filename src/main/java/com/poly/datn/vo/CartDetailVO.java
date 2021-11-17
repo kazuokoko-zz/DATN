@@ -13,6 +13,8 @@ public class CartDetailVO {
 
     private String productName;
 
+    private String photo;
+
     private Integer quantity;
 
     private Long price;

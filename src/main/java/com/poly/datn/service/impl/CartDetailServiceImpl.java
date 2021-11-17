@@ -1,6 +1,8 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.common.Constant;
+import com.poly.datn.dao.ProductDetailsDAO;
+import com.poly.datn.entity.Product;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
@@ -8,6 +10,7 @@ import com.poly.datn.dao.CartDetailDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.entity.CartDetail;
 import com.poly.datn.service.CartDetailService;
+import com.poly.datn.vo.ProductDetailsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +37,9 @@ public class CartDetailServiceImpl implements CartDetailService {
     CartDetailDAO cartDetailDAO;
 
     @Autowired
+    ProductDetailsDAO productDetailsDAO;
+
+    @Autowired
     AccountDAO accountDAO;
 
     @Autowired
@@ -49,9 +55,19 @@ public class CartDetailServiceImpl implements CartDetailService {
         cartDao.getCartDetailsByUsername(principal.getName()).forEach(orders -> {
             CartDetailVO vo = new CartDetailVO();
             BeanUtils.copyProperties(orders, vo);
-            vo.setProductName(productDAO.getById(vo.getProductId()).getName());
+            Product product = productDAO.getById(vo.getProductId());
+            vo.setProductName(product.getName());
             vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
             vo.setPrice(productDAO.getById(vo.getProductId()).getPrice());
+            List<String> photos = new ArrayList<>();
+            productDetailsDAO.getByProductId(product.getId()).forEach(productDetails -> {
+                if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
+                    for (String photo : productDetails.getPropertyValue().split(",")) {
+                        photos.add(photo.trim());
+                    }
+                }
+            });
+            vo.setPhoto(photos.get(0));
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
