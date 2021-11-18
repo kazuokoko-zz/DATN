@@ -59,11 +59,11 @@ public class OrdersServicesImpl implements OrdersService {
         Customer customer = new Customer();
         BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
         customer = customerDAO.save(customer);
-
+        String changeBy = principal != null ? principal.getName() : "sys";
         //save order
         Orders orders = new Orders();
         orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
-        orders.setUsername(principal != null ? principal.getName() : "sys");
+        orders.setUsername(changeBy);
         orders.setCustomerId(customer.getId());
         Long totalPrice = 0L;
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
@@ -89,7 +89,7 @@ public class OrdersServicesImpl implements OrdersService {
         BeanUtils.copyProperties(orderManagementVO, orderManagement);
         orderManagementVO.setOrderId(orders.getId());
         orderManagementVO.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-        orderManagementVO.setChangedBy(principal != null ? principal.getName() : "sys");
+        orderManagementVO.setChangedBy(changeBy);
         orderManagementVO.setStatus("Chờ xác nhận");
         orderManagement = orderManagementDAO.save(orderManagement);
 
