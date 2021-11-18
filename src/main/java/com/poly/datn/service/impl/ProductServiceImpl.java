@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
 
@@ -189,4 +190,24 @@ public class ProductServiceImpl implements ProductService {
         return false;
     }
 
+
+    @Override
+    public ProductVO newProduct(ProductVO productVO,Principal principal) {
+        if (principal == null) {
+
+        }
+        if (checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
+            try {
+                Product product = new Product();
+                BeanUtils.copyProperties(productVO,product );
+                product = productDAO.save(product);
+                productVO.setId(product.getId());
+                return productVO;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
 }
