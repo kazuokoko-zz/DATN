@@ -79,7 +79,7 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
             OrderDetails orderDetails = new OrderDetails();
             BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
-            orderDetailsVO1.setOrderId(orders.getId());
+            orderDetails.setOrderId(orders.getId());
             orderDetailsDAO.save(orderDetails);
         }
         ;
