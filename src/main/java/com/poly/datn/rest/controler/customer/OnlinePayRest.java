@@ -39,11 +39,8 @@ public class OnlinePayRest {
 
     @GetMapping("getresult/{id}")
     public ResponseEntity<ResponseDTO<Object>> getResult(
-            @PathVariable Integer id,
-            HttpServletRequest request) throws IOException {
-        return ResponseEntity.ok(ResponseDTO.builder()
-                .object(onlinePayService.getResult(id, request)
-                )
+            @PathVariable Integer id) throws IOException {
+        return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.getResult(id))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }

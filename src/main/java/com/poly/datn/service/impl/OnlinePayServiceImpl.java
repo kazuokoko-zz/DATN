@@ -182,11 +182,11 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     }
 
     @Override
-    public Boolean getResult(Integer id, HttpServletRequest request) throws IOException {
+    public PaymentVO getResult(Integer id) throws IOException {
         Payment payment = paymentDAO.getByOrdersIdEquals(id);
-
-        return payment != null ? payment.getStatus() == 1 ? true : false : false;
-
+        PaymentVO paymentVO = new PaymentVO();
+        BeanUtils.copyProperties(payment,paymentVO);
+        return paymentVO;
     }
 
     @Override
