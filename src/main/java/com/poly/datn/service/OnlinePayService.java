@@ -1,6 +1,7 @@
 package com.poly.datn.service;
 
 import com.poly.datn.vo.PayInfoVO;
+import com.poly.datn.vo.PaymentVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -12,4 +13,6 @@ public interface OnlinePayService {
     Boolean getResult(Integer id, HttpServletRequest request) throws IOException;
 
     Object merchantcall(HttpServletRequest request);
+
+    PaymentVO getPayDetail(String tranno, String trandate);
 }

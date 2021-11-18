@@ -14,6 +14,8 @@ import com.poly.datn.service.OnlinePayService;
 import com.poly.datn.utils.AutoCreate;
 import com.poly.datn.vo.PayInfoVO;
 import com.poly.datn.vo.PayResponseVO;
+import com.poly.datn.vo.PaymentVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -273,5 +275,13 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         } catch (Exception e) {
             return new PayResponseVO("99", "Unknow error");
         }
+    }
+
+    @Override
+    public PaymentVO getPayDetail(String tranno, String trandate) {
+        Payment payment = paymentDAO.getByTranNoAndTranDate(tranno,trandate);
+        PaymentVO paymentVO = new PaymentVO();
+        BeanUtils.copyProperties(payment,paymentVO);
+        return paymentVO;
     }
 }
