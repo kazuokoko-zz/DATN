@@ -192,15 +192,15 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductVO newProduct(ProductVO productVO,Principal principal) {
+    public ProductVO newProduct(ProductVO productVO, Principal principal) {
         if (principal == null) {
-
+            return null;
         }
         if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 Product product = new Product();
-                BeanUtils.copyProperties(productVO,product );
+                BeanUtils.copyProperties(productVO, product);
                 product = productDAO.save(product);
                 productVO.setId(product.getId());
                 return productVO;

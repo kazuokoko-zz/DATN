@@ -17,7 +17,7 @@ public class OnlinePayRest {
     @Autowired
     OnlinePayService onlinePayService;
 
-    @GetMapping("getpayurl")
+    @PostMapping("getpayurl")
     public ResponseEntity<ResponseDTO<Object>> doPay(@RequestBody PayInfoVO payInfoVO, HttpServletRequest request) throws IOException, ParseException {
         return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.doPay(payInfoVO, request))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
