@@ -1,5 +1,4 @@
 package com.poly.datn.rest.controler.customer;
-
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.OnlinePayService;
 import com.poly.datn.vo.PayInfoVO;
@@ -7,7 +6,6 @@ import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,6 +38,5 @@ public class OnlinePayRest {
                 )
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
-
 }
 

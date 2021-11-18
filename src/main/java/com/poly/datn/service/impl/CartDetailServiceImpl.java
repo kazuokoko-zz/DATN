@@ -67,7 +67,8 @@ public class CartDetailServiceImpl implements CartDetailService {
                     }
                 }
             });
-            vo.setPhoto(photos.get(0));
+            if (photos.size() > 0)
+                vo.setPhoto(photos.get(0));
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
