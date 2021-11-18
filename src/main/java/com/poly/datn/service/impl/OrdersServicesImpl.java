@@ -59,7 +59,7 @@ public class OrdersServicesImpl implements OrdersService {
         Customer customer = new Customer();
         BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
         customer = customerDAO.save(customer);
-        String changeBy = principal != null ? principal.getName() : "sys";
+        String changeBy = principal != null ? principal.getName() : "guest";
         //save order
         Orders orders = new Orders();
         orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
