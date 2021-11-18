@@ -78,19 +78,19 @@ public class OrdersServicesImpl implements OrdersService {
         List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
             OrderDetails orderDetails = new OrderDetails();
-            orderDetailsVO1.setOrderId(orders.getId());
             BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
+            orderDetailsVO1.setOrderId(orders.getId());
             orderDetailsDAO.save(orderDetails);
         }
         ;
         //save ordermanagement
         OrderManagementVO orderManagementVO = new OrderManagementVO();
         OrderManagement orderManagement = new OrderManagement();
+        BeanUtils.copyProperties(orderManagementVO, orderManagement);
         orderManagementVO.setOrderId(orders.getId());
         orderManagementVO.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
         orderManagementVO.setChangedBy(principal != null ? principal.getName() : "");
-        orderManagementVO.setStatus("chưa thanh toán");
-        BeanUtils.copyProperties(orderManagementVO, orderManagement);
+        orderManagementVO.setStatus("Chờ xác nhận");
         orderManagement = orderManagementDAO.save(orderManagement);
 
         BeanUtils.copyProperties(orders, ordersVO);
