@@ -84,14 +84,12 @@ public class OrdersServicesImpl implements OrdersService {
         }
         ;
         //save ordermanagement
-        OrderManagementVO orderManagementVO = new OrderManagementVO();
         OrderManagement orderManagement = new OrderManagement();
-        BeanUtils.copyProperties(orderManagementVO, orderManagement);
-        orderManagementVO.setOrderId(orders.getId());
-        orderManagementVO.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-        orderManagementVO.setChangedBy(changeBy);
-        orderManagementVO.setStatus("Chờ xác nhận");
-        orderManagement = orderManagementDAO.save(orderManagement);
+        orderManagement.setOrderId(orders.getId());
+        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagement.setChangedBy(changeBy);
+        orderManagement.setStatus("Chờ xác nhận");
+        orderManagementDAO.save(orderManagement);
 
         BeanUtils.copyProperties(orders, ordersVO);
         return ordersVO;
