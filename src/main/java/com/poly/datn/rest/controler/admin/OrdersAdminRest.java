@@ -12,7 +12,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/admin/orders")
-public class OrdersRest {
+public class OrdersAdminRest {
 
     @Autowired
     OrdersService ordersService;

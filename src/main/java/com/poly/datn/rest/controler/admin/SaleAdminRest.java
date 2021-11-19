@@ -16,7 +16,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/admin/sale")
-public class SaleRest {
+public class SaleAdminRest {
 
     @Autowired
     SaleService saleService;

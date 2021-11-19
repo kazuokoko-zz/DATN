@@ -13,7 +13,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
 @RequestMapping("/api/admin/color")
-public class ColorRest {
+public class ColorAdminRest {
     @Autowired
     ColorService colorService;
 
