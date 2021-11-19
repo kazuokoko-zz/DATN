@@ -136,13 +136,22 @@ public class OnlinePayServiceImpl implements OnlinePayService {
         vnp_Params.put("vnp_Bill_Mobile", customer.getPhone());
         vnp_Params.put("vnp_Bill_Email", customer.getEmail());
         String fullName = customer.getFullname().trim();
-        if (fullName != null && !fullName.isEmpty()) {
-            int idx = fullName.indexOf(' ');
-            String firstName = fullName.substring(0, idx);
-            String lastName = fullName.substring(fullName.lastIndexOf(' ') + 1);
-            vnp_Params.put("vnp_Bill_FirstName", firstName);
-            vnp_Params.put("vnp_Bill_LastName", lastName);
 
+        if (fullName != null && !fullName.isEmpty()) {
+            String[] name = fullName.trim().split(" ");
+            String lastName = "";
+            if (name.length > 1) {
+                String firstName = name[name.length - 1];
+                for (int i = 0; i < name.length - 1; i++) {
+                    lastName = lastName.concat(" ").concat(name[i]);
+                }
+                vnp_Params.put("vnp_Bill_FirstName", firstName);
+                vnp_Params.put("vnp_Bill_LastName", lastName);
+            } else if (name.length > 0) {
+                String firstName = name[0];
+                vnp_Params.put("vnp_Bill_FirstName", firstName);
+                vnp_Params.put("vnp_Bill_LastName", "");
+            }
         }
 
 
@@ -185,7 +194,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     public PaymentVO getResult(Integer id) throws IOException {
         Payment payment = paymentDAO.getByOrdersIdEquals(id);
         PaymentVO paymentVO = new PaymentVO();
-        BeanUtils.copyProperties(payment,paymentVO);
+        BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;
     }
 
@@ -279,9 +288,9 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
     @Override
     public PaymentVO getPayDetail(String tranno, String trandate) {
-        Payment payment = paymentDAO.getByTranNoAndTranDate(tranno,trandate);
+        Payment payment = paymentDAO.getByTranNoAndTranDate(tranno, trandate);
         PaymentVO paymentVO = new PaymentVO();
-        BeanUtils.copyProperties(payment,paymentVO);
+        BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;
     }
 }
