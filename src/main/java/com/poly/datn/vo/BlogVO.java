@@ -12,7 +12,7 @@ public class BlogVO {
     private String shortText;
     private String photo;
     private String timeCreated;
-    private String createdBy;
+    private Integer createdBy;
     private Integer type;
     private Integer productId;
     private Boolean status;

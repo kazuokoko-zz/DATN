@@ -9,6 +9,18 @@ import java.util.List;
 
 @Component
 public class StringFind {
+    public Boolean checkContains(String words1,String words2){
+        String[] bwords = words1.trim().replace("  ", " ").split(" ");
+        String[] words = words2.trim().replace("  ", " ").split(" ");
+        for (String bw : bwords) {
+            for (String w : words) {
+                if (bw.equalsIgnoreCase(w)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public List<Product> getMatchProduct(List<Product> products, String sentences) {
 

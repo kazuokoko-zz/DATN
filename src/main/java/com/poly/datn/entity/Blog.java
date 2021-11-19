@@ -27,7 +27,7 @@ public class Blog {
     private Timestamp timeCreated;
     @Basic
     @Column(name = "created_by", nullable = false, length = 30)
-    private String createdBy;
+    private Integer createdBy;
     @Basic
     @Column(name = "type", nullable = false)
     private Integer type;
@@ -71,11 +71,11 @@ public class Blog {
         this.timeCreated = timeCreated;
     }
 
-    public String getCreatedBy() {
+    public Integer getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
     }
 

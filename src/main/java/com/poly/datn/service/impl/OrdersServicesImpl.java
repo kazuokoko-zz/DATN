@@ -3,6 +3,7 @@ package com.poly.datn.service.impl;
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +41,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     ProductDAO productDAO;
+
+    @Autowired
+    StringFind stringFind;
 
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
@@ -265,16 +269,7 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     boolean checkName(Customer customer, String name) {
-        String[] cusname = customer.getFullname().trim().replace("  ", " ").split(" ");
-        String[] names = name.trim().replace("  ", " ").split(" ");
-        for (String n : names) {
-            for (String cusn : cusname) {
-                if (cusn.equalsIgnoreCase(n)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return stringFind.checkContains(customer.getFullname(), name);
     }
 
     boolean checkEmail(Customer customer, String email) {
