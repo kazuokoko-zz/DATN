@@ -4,9 +4,7 @@ import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.FavoriteDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.dao.ProductDetailsDAO;
-import com.poly.datn.entity.Account;
 import com.poly.datn.entity.Favorite;
-import com.poly.datn.entity.Product;
 import com.poly.datn.service.FavoriteService;
 import com.poly.datn.vo.FavoriteVO;
 import com.poly.datn.vo.ProductVO;
@@ -64,31 +62,42 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public FavoriteVO addToFavorite(FavoriteVO favoriteVO, Principal principal) {
+    public Object addToFavorite(FavoriteVO favoriteVO, Principal principal) {
         if (principal == null)
             return null;
-        if (productDAO.getOneProductById(favoriteVO.getProductId()) == null) {
-//            throw new NotFoundException("Lỗi không xác định");
-        }
-
-        Account account = accountDAO.findAccountByUsername(principal.getName());
-        Product product = productDAO.getOneProductById(favoriteVO.getProductId());
-        Integer idProduct = product.getId();
-        Integer idUser = account.getId();
-
-        Favorite favorite1 = new Favorite();
-        if (favoriteDAO.findFavoriteByAccountIdAndProductId(idUser, idProduct) == null) {
-            favoriteVO.setAccountId(accountDAO.findAccountByUsername(principal.getName()).getId());
-            Favorite favorite = new Favorite();
-            BeanUtils.copyProperties(favoriteVO, favorite);
-            favoriteDAO.save(favorite);
-            return favoriteVO;
+        Favorite favorite = new Favorite();
+        BeanUtils.copyProperties(favoriteVO, favorite);
+        Optional<Favorite> opt = favoriteDAO.findByProductIdEqualsAndAccountIdEquals(favoriteVO.getProductId(), favoriteVO.getAccountId());
+        if (opt.isPresent()) {
+            favoriteDAO.deleteById(opt.get().getId());
+            return false;
         } else {
-            System.out.println("lỗi");
-            favorite1 = favoriteDAO.findByProductId(favoriteVO.getProductId());
-            favoriteDAO.delete(favorite1);
-            System.out.println("xóa rồi thằng chó");
-            return favoriteVO;
+            favoriteDAO.save(favorite);
+            return true;
         }
+
+//        if (productDAO.getOneProductById(favoriteVO.getProductId()) == null) {
+////            throw new NotFoundException("Lỗi không xác định");
+//        }
+//
+//        Account account = accountDAO.findAccountByUsername(principal.getName());
+//        Product product = productDAO.getOneProductById(favoriteVO.getProductId());
+//        Integer idProduct = product.getId();
+//        Integer idUser = account.getId();
+//
+//        Favorite favorite1 = new Favorite();
+//        if (favoriteDAO.findFavoriteByAccountIdAndProductId(idUser, idProduct) == null) {
+//            favoriteVO.setAccountId(accountDAO.findAccountByUsername(principal.getName()).getId());
+//            Favorite favorite = new Favorite();
+//            BeanUtils.copyProperties(favoriteVO, favorite);
+//            favoriteDAO.save(favorite);
+//            return favoriteVO;
+//        } else {
+//            System.out.println("lỗi");
+//            favorite1 = favoriteDAO.findByProductId(favoriteVO.getProductId());
+//            favoriteDAO.delete(favorite1);
+//            System.out.println("xóa rồi thằng chó");
+//            return favoriteVO;
+//        }
     }
 }

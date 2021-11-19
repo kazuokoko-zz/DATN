@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FavoriteDAO extends JpaRepository<Favorite, Long> {
   @Query("select f from Favorite f where f.account.username=?1")
@@ -13,6 +14,8 @@ public interface FavoriteDAO extends JpaRepository<Favorite, Long> {
 
   @Query("select f from Favorite f where f.account.id=:accountId and f.product.id=:productId")
   Favorite findFavoriteByAccountIdAndProductId(Integer accountId, Integer productId);
+
+  Optional<Favorite>  findByProductIdEqualsAndAccountIdEquals(Integer productId, Integer accountId);
 
   Favorite findByProductId(Integer productId);
 
