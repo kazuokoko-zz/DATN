@@ -38,6 +38,9 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     CheckRole checkRole;
 
+    @Autowired
+    ProductDAO productDAO;
+
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
         if (principal == null) {
@@ -120,6 +123,7 @@ public class OrdersServicesImpl implements OrdersService {
             if (idok || nameok || mailok || phoneok) {
                 OrdersVO ordersVO = new OrdersVO();
                 BeanUtils.copyProperties(order, ordersVO);
+                ordersVO.setStatus(getStatus(order.getId()));
                 ordersVOS.add(ordersVO);
             }
         }
@@ -129,11 +133,12 @@ public class OrdersServicesImpl implements OrdersService {
     @Override
     public List<OrdersVO> getByUsername(Principal principal) {
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        ordersDAO.getByUsername(principal.getName()).forEach(orders -> {
+        for (Orders orders : ordersDAO.getByUsername(principal.getName())) {
             OrdersVO vo = new OrdersVO();
             BeanUtils.copyProperties(orders, vo);
+            vo.setStatus(getStatus(orders.getId()));
             ordersVOS.add(vo);
-        });
+        }
         return ordersVOS;
     }
 
@@ -141,7 +146,7 @@ public class OrdersServicesImpl implements OrdersService {
     public List<OrdersVO> getAll(Principal principal) {
         List<Orders> orders = ordersDAO.findAll();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        orders.forEach(order -> {
+        for (Orders order : orders) {
             OrdersVO vo = new OrdersVO();
             BeanUtils.copyProperties(order, vo);
 
@@ -174,11 +179,12 @@ public class OrdersServicesImpl implements OrdersService {
 
             } else {
                 List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
-                orderDetails.forEach(orderDetails1 -> {
+                for (OrderDetails orderDetails1 : orderDetails) {
                     OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
                     BeanUtils.copyProperties(orderDetails1, orderDetailsVO);
+                    orderDetailsVO.setProductName(productDAO.getById(orderDetails1.getProductId()).getName());
                     orderDetailsVOS.add(orderDetailsVO);
-                });
+                }
                 vo.setOrderDetails(orderDetailsVOS);
             }
             //list warranty
@@ -190,8 +196,9 @@ public class OrdersServicesImpl implements OrdersService {
                 BeanUtils.copyProperties(warranty, warrantyVO);
                 vo.setWarranty(warrantyVO);
             }
+            vo.setStatus(getStatus(order.getId()));
             ordersVOS.add(vo);
-        });
+        }
         return ordersVOS;
     }
 
@@ -206,9 +213,11 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderDetails orderDetails : orderDetailsDAO.findAllByOrderIdEquals(orders.getId())) {
             OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
             BeanUtils.copyProperties(orderDetails, orderDetailsVO);
+            orderDetailsVO.setProductName(productDAO.getById(orderDetails.getProductId()).getName());
             orderDetailsVOS.add(orderDetailsVO);
         }
         ordersVO.setOrderDetails(orderDetailsVOS);
+        ordersVO.setStatus(getStatus(orders.getId()));
         return ordersVO;
     }
 
@@ -243,7 +252,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
         //save ordermanagement
-        OrdersVO ordersVO = new OrdersVO();
+        OrdersVO ordersVO = getDetailOrders(orders);
         OrderManagement orderManagement = new OrderManagement();
         orderManagement.setOrderId(orders.getId());
         orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
@@ -251,6 +260,7 @@ public class OrdersServicesImpl implements OrdersService {
         orderManagement.setStatus(status);
         orderManagementDAO.save(orderManagement);
         BeanUtils.copyProperties(orders, ordersVO);
+        ordersVO.setStatus(getStatus(orders.getId()));
         return ordersVO;
     }
 
@@ -273,5 +283,10 @@ public class OrdersServicesImpl implements OrdersService {
 
     boolean checkPhone(Customer customer, String phone) {
         return customer.getPhone().equalsIgnoreCase(phone);
+    }
+
+    private String getStatus(Integer id) {
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(id);
+        return orderManagement.getStatus();
     }
 }

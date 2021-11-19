@@ -1,6 +1,5 @@
 package com.poly.datn.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -17,8 +16,9 @@ public class OrdersVO {
 
     private Long customerId;
 
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER,pattern = "##.##")
     private Long sumprice;
+
+    private String status;
 
     CustomerVO customer;
 

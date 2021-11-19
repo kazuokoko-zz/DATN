@@ -13,6 +13,8 @@ public class OrderDetailsVO {
 
     private Integer productId;
 
+    private String productName;
+
     private Integer quantity;
 
     private Long price;
