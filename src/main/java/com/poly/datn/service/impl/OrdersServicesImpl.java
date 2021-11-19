@@ -2,6 +2,7 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
+import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
 import org.springframework.beans.BeanUtils;
@@ -26,30 +27,24 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     OrderDetailsDAO orderDetailsDAO;
+
     @Autowired
     OrderManagementDAO orderManagementDAO;
 
     @Autowired
     WarrantyDAO warrantyDAO;
 
-    @Override
-    public OrdersVO getByIdAndUserName(Integer id, String username) throws SecurityException, NullPointerException {
-        Orders orders = ordersDAO.findByIdAndUsername(id, username).orElseThrow(() -> new SecurityException("Not your order"));
+    @Autowired
+    CheckRole checkRole;
 
-        Customer customer = customerDAO.findById(orders.getCustomerId()).orElseThrow(() -> new NullPointerException("Cannot find customer"));
-        OrdersVO ordersVO = new OrdersVO();
-        CustomerVO vo = new CustomerVO();
-        BeanUtils.copyProperties(customer, vo);
-        BeanUtils.copyProperties(orders, ordersVO);
-        ordersVO.setCustomer(vo);
-        List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
-        for (OrderDetails orderDetails : orderDetailsDAO.findAllByOrderIdEquals(id)) {
-            OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
-            BeanUtils.copyProperties(orderDetails, orderDetailsVO);
-            orderDetailsVOS.add(orderDetailsVO);
+    @Override
+    public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
+        if (principal == null) {
+            return null;
         }
-        ordersVO.setOrderDetails(orderDetailsVOS);
-        return ordersVO;
+        Orders orders = ordersDAO.findByIdAndUsername(id, principal.getName()).orElseThrow(() -> new SecurityException("Not your order"));
+
+        return getDetailOrders(orders);
     }
 
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
@@ -94,6 +89,16 @@ public class OrdersServicesImpl implements OrdersService {
         BeanUtils.copyProperties(orders, ordersVO);
         return ordersVO;
 
+    }
+
+    @Override
+    public OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return null;
+        }
+
+        Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
+        return getDetailOrders(orders);
     }
 
     @Override
@@ -163,5 +168,22 @@ public class OrdersServicesImpl implements OrdersService {
             ordersVOS.add(vo);
         });
         return ordersVOS;
+    }
+
+    private OrdersVO getDetailOrders(Orders orders) {
+        Customer customer = customerDAO.findById(orders.getCustomerId()).orElseThrow(() -> new NullPointerException("Cannot find customer"));
+        OrdersVO ordersVO = new OrdersVO();
+        CustomerVO vo = new CustomerVO();
+        BeanUtils.copyProperties(customer, vo);
+        BeanUtils.copyProperties(orders, ordersVO);
+        ordersVO.setCustomer(vo);
+        List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
+        for (OrderDetails orderDetails : orderDetailsDAO.findAllByOrderIdEquals(orders.getId())) {
+            OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
+            BeanUtils.copyProperties(orderDetails, orderDetailsVO);
+            orderDetailsVOS.add(orderDetailsVO);
+        }
+        ordersVO.setOrderDetails(orderDetailsVOS);
+        return ordersVO;
     }
 }

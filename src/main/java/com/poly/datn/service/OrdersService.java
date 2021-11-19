@@ -13,7 +13,9 @@ public interface OrdersService {
 
     List<OrdersVO> getAll(Principal principal);
 
-    OrdersVO getByIdAndUserName(Integer id, String username) throws SecurityException;
+    OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException;
 //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
     OrdersVO newOrder(OrdersVO ordersVO, Principal principal);
+
+    OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal);
 }
