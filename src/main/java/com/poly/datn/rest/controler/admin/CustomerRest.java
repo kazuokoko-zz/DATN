@@ -1,4 +1,4 @@
-package com.poly.datn.rest.controler.staff;
+package com.poly.datn.rest.controler.admin;
 
 
 import com.poly.datn.common.Constant;
@@ -14,7 +14,7 @@ import java.security.Principal;
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
-@RequestMapping("/api/employee/customer")
+@RequestMapping("/api/admin/customer")
 public class CustomerRest {
     @Autowired
     CustomerService customerService;

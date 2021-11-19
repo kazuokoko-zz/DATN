@@ -1,4 +1,4 @@
-package com.poly.datn.rest.controler.staff;
+package com.poly.datn.rest.controler.admin;
 
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.ColorService;
@@ -12,7 +12,7 @@ import java.security.Principal;
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
-@RequestMapping("/api/staff/color")
+@RequestMapping("/api/admin/color")
 public class ColorRest {
     @Autowired
     ColorService colorService;
