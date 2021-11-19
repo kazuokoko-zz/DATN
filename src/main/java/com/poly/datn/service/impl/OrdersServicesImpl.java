@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -50,45 +51,12 @@ public class OrdersServicesImpl implements OrdersService {
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
     @Override
     public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
-        // save customer
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
-        customer = customerDAO.save(customer);
+
         String changeBy = principal != null ? principal.getName() : "guest";
-        //save order
-        Orders orders = new Orders();
-        orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
-        orders.setUsername(changeBy);
-        orders.setCustomerId(customer.getId());
-        Long totalPrice = 0L;
-        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
-        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            totalPrice += orderDetailsVO1.getPrice();
-        }
-        ;
-        orders.setSumprice(totalPrice);
-        orders = ordersDAO.save(orders);
-
-        // save order detail
-        List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
-        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
-            OrderDetails orderDetails = new OrderDetails();
-            BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
-            orderDetails.setOrderId(orders.getId());
-            orderDetailsDAO.save(orderDetails);
-        }
-        ;
-        //save ordermanagement
-        OrderManagement orderManagement = new OrderManagement();
-        orderManagement.setOrderId(orders.getId());
-        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-        orderManagement.setChangedBy(changeBy);
-        orderManagement.setStatus("Chờ xác nhận");
-        orderManagementDAO.save(orderManagement);
-
-        BeanUtils.copyProperties(orders, ordersVO);
-        return ordersVO;
-
+        // save customer
+        Orders orders = createOders(ordersVO, changeBy);
+        saveDetails(orders, ordersVO);
+        return managerOrderStatus(orders, changeBy, "Chờ xác nhận");
     }
 
     @Override
@@ -99,6 +67,63 @@ public class OrdersServicesImpl implements OrdersService {
 
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
         return getDetailOrders(orders);
+    }
+
+    @Override
+    public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return null;
+        }
+        String changeBy = principal != null ? principal.getName() : "guest";
+        Orders orders = createOders(ordersVO, changeBy);
+        saveDetails(orders, ordersVO);
+        return managerOrderStatus(orders, changeBy, "Đã xác nhận");
+    }
+
+    @Override
+    public OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff")) ||
+                !id.isPresent() || !status.isPresent()) {
+            return null;
+        }
+        Orders orders = ordersDAO.getById(id.get());
+        return managerOrderStatus(orders, principal.getName(), status.get());
+    }
+
+    @Override
+    public List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return null;
+        }
+        List<Orders> orders = ordersDAO.findAll();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        for (Orders order : orders) {
+            Customer customer = customerDAO.findCustomerById(order.getCustomerId());
+            Boolean idok = true;
+            Boolean nameok = true;
+            Boolean mailok = true;
+            Boolean phoneok = true;
+            if (id.isPresent()) {
+                idok = id.get() == order.getId();
+            }
+            if (id.isPresent()) {
+                nameok = checkName(customer, name.get());
+            }
+            if (id.isPresent()) {
+                mailok = checkEmail(customer, email.get());
+            }
+            if (id.isPresent()) {
+                phoneok = checkPhone(customer, phone.get());
+            }
+            if (idok || nameok || mailok || phoneok) {
+                OrdersVO ordersVO = new OrdersVO();
+                BeanUtils.copyProperties(order, ordersVO);
+                ordersVOS.add(ordersVO);
+            }
+        }
+        return ordersVOS;
     }
 
     @Override
@@ -185,5 +210,68 @@ public class OrdersServicesImpl implements OrdersService {
         }
         ordersVO.setOrderDetails(orderDetailsVOS);
         return ordersVO;
+    }
+
+    private Orders createOders(OrdersVO ordersVO, String changeBy) {
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
+        customer = customerDAO.save(customer);
+        //save order
+        Orders orders = new Orders();
+        orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
+        orders.setUsername(changeBy);
+        orders.setCustomerId(customer.getId());
+        Long totalPrice = 0L;
+        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
+            totalPrice += orderDetailsVO1.getPrice();
+        }
+        orders.setSumprice(totalPrice);
+        return ordersDAO.save(orders);
+    }
+
+    private void saveDetails(Orders orders, OrdersVO ordersVO) {
+        // save order detail
+        List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
+        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
+            OrderDetails orderDetails = new OrderDetails();
+            BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
+            orderDetails.setOrderId(orders.getId());
+            orderDetailsDAO.save(orderDetails);
+        }
+    }
+
+    private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
+        //save ordermanagement
+        OrdersVO ordersVO = new OrdersVO();
+        OrderManagement orderManagement = new OrderManagement();
+        orderManagement.setOrderId(orders.getId());
+        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagement.setChangedBy(changeBy);
+        orderManagement.setStatus(status);
+        orderManagementDAO.save(orderManagement);
+        BeanUtils.copyProperties(orders, ordersVO);
+        return ordersVO;
+    }
+
+    boolean checkName(Customer customer, String name) {
+        String[] cusname = customer.getFullname().trim().replace("  ", " ").split(" ");
+        String[] names = name.trim().replace("  ", " ").split(" ");
+        for (String n : names) {
+            for (String cusn : cusname) {
+                if (cusn.equalsIgnoreCase(n)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean checkEmail(Customer customer, String email) {
+        return customer.getEmail().equalsIgnoreCase(email);
+    }
+
+    boolean checkPhone(Customer customer, String phone) {
+        return customer.getPhone().equalsIgnoreCase(phone);
     }
 }

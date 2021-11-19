@@ -7,6 +7,7 @@ import com.poly.datn.vo.OrdersVO;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrdersService {
     List<OrdersVO> getByUsername(Principal principal);
@@ -18,4 +19,10 @@ public interface OrdersService {
     OrdersVO newOrder(OrdersVO ordersVO, Principal principal);
 
     OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal);
+
+    OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);
+
+    OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal);
+
+    List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone);
 }
