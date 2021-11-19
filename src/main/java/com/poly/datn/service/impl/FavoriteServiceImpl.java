@@ -4,6 +4,7 @@ import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.FavoriteDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.dao.ProductDetailsDAO;
+import com.poly.datn.entity.Account;
 import com.poly.datn.entity.Favorite;
 import com.poly.datn.service.FavoriteService;
 import com.poly.datn.vo.FavoriteVO;
@@ -65,9 +66,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     public Object addToFavorite(FavoriteVO favoriteVO, Principal principal) {
         if (principal == null)
             return null;
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if (account == null)
+            return null;
+
         Favorite favorite = new Favorite();
-        BeanUtils.copyProperties(favoriteVO, favorite);
-        Optional<Favorite> opt = favoriteDAO.findByProductIdEqualsAndAccountIdEquals(favoriteVO.getProductId(), favoriteVO.getAccountId());
+        favorite.setAccountId(account.getId());
+        favorite.setProductId(favoriteVO.getProductId());
+        Optional<Favorite> opt = favoriteDAO.findByProductIdEqualsAndAccountIdEquals(favoriteVO.getProductId(), account.getId());
         if (opt.isPresent()) {
             favoriteDAO.deleteById(opt.get().getId());
             return false;
