@@ -51,10 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandle).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers("/api/authentication/login", "/api/authentication/forgot", "/api/authentication/create").permitAll()
+                .authorizeRequests().anyRequest().permitAll();
+//                .antMatchers("/api/authentication/login", "/api/authentication/forgot", "/api/authentication/create").permitAll()
 //                .antMatchers("/api/customer/orders**","/api/customer/cart**","/api/customer/account**").authenticated()
-                .antMatchers("/api/customer/**").permitAll();
+//                .antMatchers("/api/customer/**").permitAll();
 //                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
