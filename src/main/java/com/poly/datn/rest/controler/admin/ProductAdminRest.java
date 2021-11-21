@@ -1,13 +1,11 @@
 package com.poly.datn.rest.controler.admin;
 
 import com.poly.datn.common.Constant;
+import com.poly.datn.service.ProductCategoryService;
 import com.poly.datn.service.ProductColorService;
 import com.poly.datn.service.ProductDetailService;
 import com.poly.datn.service.ProductService;
-import com.poly.datn.vo.ProductColorVO;
-import com.poly.datn.vo.ProductDetailsVO;
-import com.poly.datn.vo.ProductVO;
-import com.poly.datn.vo.ResponseDTO;
+import com.poly.datn.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +26,9 @@ public class ProductAdminRest {
 
     @Autowired
     ProductDetailService productDetailService;
+
+    @Autowired
+    ProductCategoryService productCategoryService;
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable("id") Integer id, Principal principal) {
@@ -59,6 +60,10 @@ public class ProductAdminRest {
     @PostMapping("newproductcolor/{id}")
     public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("newproductcategory/{id}")
+    public ResponseEntity<ResponseDTO<Object>> newProductCategory(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductCategoryVO> productCategoryVOS, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productCategoryService.newProductCategory(id, productCategoryVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PutMapping("update")

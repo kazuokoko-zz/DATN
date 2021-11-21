@@ -32,6 +32,7 @@ public class ProductColorServiceImpl implements ProductColorService {
     public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Principal principal) {
 
         if (principal == null) {
+            return null;
         }
         if (!(checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) || !id.isPresent()) {
