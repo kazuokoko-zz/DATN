@@ -3,6 +3,7 @@ package com.poly.datn.service.impl;
 import com.poly.datn.common.Constant;
 import com.poly.datn.dao.ProductDetailsDAO;
 import com.poly.datn.entity.Product;
+import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
@@ -60,13 +61,13 @@ public class CartDetailServiceImpl implements CartDetailService {
             vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
             vo.setPrice(productDAO.getById(vo.getProductId()).getPrice());
             List<String> photos = new ArrayList<>();
-            productDetailsDAO.getByProductId(product.getId()).forEach(productDetails -> {
+            for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(product.getId())) {
                 if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                     for (String photo : productDetails.getPropertyValue().split(",")) {
                         photos.add(photo.trim());
                     }
                 }
-            });
+            }
             if (photos.size() > 0)
                 vo.setPhoto(photos.get(0));
             cartDetailVOS.add(vo);

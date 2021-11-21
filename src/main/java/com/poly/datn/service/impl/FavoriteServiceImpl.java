@@ -6,6 +6,7 @@ import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.dao.ProductDetailsDAO;
 import com.poly.datn.entity.Account;
 import com.poly.datn.entity.Favorite;
+import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.FavoriteService;
 import com.poly.datn.vo.FavoriteVO;
 import com.poly.datn.vo.ProductVO;
@@ -48,13 +49,13 @@ public class FavoriteServiceImpl implements FavoriteService {
                 ProductVO productVOS = new ProductVO();
 //               productVO = productVO.add(product1);
                 BeanUtils.copyProperties(productVO, productVOS);
-                productDetailsDAO.getByProductId(productVO.getId()).forEach(productDetails -> {
+                for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(productVO.getId())) {
                     if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                         for (String photo : productDetails.getPropertyValue().split(",")) {
                             photos.add(photo.trim());
                         }
                     }
-                });
+                }
                 productVOS.setPhotos(photos);
                 productVO2.add(productVOS);
             });
@@ -82,28 +83,5 @@ public class FavoriteServiceImpl implements FavoriteService {
             return true;
         }
 
-//        if (productDAO.getOneProductById(favoriteVO.getProductId()) == null) {
-////            throw new NotFoundException("Lỗi không xác định");
-//        }
-//
-//        Account account = accountDAO.findAccountByUsername(principal.getName());
-//        Product product = productDAO.getOneProductById(favoriteVO.getProductId());
-//        Integer idProduct = product.getId();
-//        Integer idUser = account.getId();
-//
-//        Favorite favorite1 = new Favorite();
-//        if (favoriteDAO.findFavoriteByAccountIdAndProductId(idUser, idProduct) == null) {
-//            favoriteVO.setAccountId(accountDAO.findAccountByUsername(principal.getName()).getId());
-//            Favorite favorite = new Favorite();
-//            BeanUtils.copyProperties(favoriteVO, favorite);
-//            favoriteDAO.save(favorite);
-//            return favoriteVO;
-//        } else {
-//            System.out.println("lỗi");
-//            favorite1 = favoriteDAO.findByProductId(favoriteVO.getProductId());
-//            favoriteDAO.delete(favorite1);
-//            System.out.println("xóa rồi thằng chó");
-//            return favoriteVO;
-//        }
     }
 }
