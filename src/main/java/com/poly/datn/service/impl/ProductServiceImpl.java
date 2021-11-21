@@ -1,14 +1,11 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
-import com.poly.datn.entity.Blog;
-import com.poly.datn.entity.BlogDetails;
+import com.poly.datn.entity.*;
 import com.poly.datn.service.CommentService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
-import com.poly.datn.entity.Product;
-import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductService;
 import org.springframework.beans.BeanUtils;
 
@@ -90,10 +87,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
-        productDAO.findTrend().forEach(product -> {
+        for (Product product : productDAO.findTrend()) {
             ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
-        });
+        }
         return productVOS;
     }
 
@@ -127,15 +124,15 @@ public class ProductServiceImpl implements ProductService {
         ProductVO productVO = new ProductVO();
         BeanUtils.copyProperties(product, productVO);
         List<ProductColorVO> productColorVOS = new ArrayList<>();
-        productColorDAO.getByProductId(productVO.getId()).forEach(productColor -> {
+        for (ProductColor productColor : productColorDAO.getByProductId(productVO.getId())) {
             ProductColorVO productColorVO = new ProductColorVO();
             BeanUtils.copyProperties(productColor, productColorVO);
             productColorVOS.add(productColorVO);
-        });
+        }
         productVO.setProductColors(productColorVOS);
         List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
         List<String> photos = new ArrayList<>();
-        productDetailsDAO.getByProductId(productVO.getId()).forEach(productDetails -> {
+        for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(productVO.getId())) {
             ProductDetailsVO productDetailsVO = new ProductDetailsVO();
             if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                 for (String photo : productDetails.getPropertyValue().split(",")) {
@@ -145,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
                 BeanUtils.copyProperties(productDetails, productDetailsVO);
                 productDetailsVOS.add(productDetailsVO);
             }
-        });
+        }
         productVO.setProductDetails(productDetailsVOS);
         productVO.setPhotos(photos);
         return productVO;
@@ -209,5 +206,17 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return null;
+    }
+
+    @Override
+    public ProductVO update(ProductVO productVO, Principal principal) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) || productVO.getId() == null) {
+            return null;
+        }
+        Product product = new Product();
+        BeanUtils.copyProperties(productVO, product);
+        productDAO.save(product);
+        return getById(product.getId());
     }
 }

@@ -51,12 +51,18 @@ public class ProductAdminRest {
     }
 
     @PostMapping("newproductdetail/{id}")
-    public ResponseEntity<ResponseDTO<Object>> newProductDetail(@RequestParam("id") Optional<Integer> id, @RequestBody List<ProductDetailsVO> productDetailsVOS, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> newProductDetail(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductDetailsVO> productDetailsVOS, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productDetailService.newProductDetail(id, productDetailsVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
 
     @PostMapping("newproductcolor")
     public ResponseEntity<ResponseDTO<Object>> newProductColor(@RequestBody List<ProductColorVO> productColorVOS, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(productColorVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<ResponseDTO<Object>> update(@RequestBody ProductVO productVO, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.update(productVO, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }
