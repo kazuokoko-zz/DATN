@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ProductDetailsDAO extends JpaRepository<ProductDetails, Long> {
 
-    @Query("select  p from ProductDetails  p where  p.productId=:id")
-    List<ProductDetails> getByProductId(int id);
+    List<ProductDetails> findAllByProductId(Integer id);
+
+    void deleteAllByProductId(Integer productId);
 }

@@ -4,7 +4,8 @@ import com.poly.datn.vo.ProductDetailsVO;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductDetailService {
-    List<ProductDetailsVO> newProductDetail(List<ProductDetailsVO> productDetailsVO, Principal principal);
+    List<ProductDetailsVO> newProductDetail(Optional<Integer> id, List<ProductDetailsVO> productDetailsVOS, Principal principal);
 }
