@@ -56,11 +56,11 @@ public class ProductAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(productDetailService.newProductDetail(id, productDetailsVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-
     @PostMapping("newproductcolor/{id}")
     public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @PostMapping("newproductcategory/{id}")
     public ResponseEntity<ResponseDTO<Object>> newProductCategory(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductCategoryVO> productCategoryVOS, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productCategoryService.newProductCategory(id, productCategoryVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
