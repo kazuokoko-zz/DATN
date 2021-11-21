@@ -264,7 +264,7 @@ public class OrdersServicesImpl implements OrdersService {
         orderManagement.setStatus(status);
         orderManagementDAO.save(orderManagement);
         BeanUtils.copyProperties(orders, ordersVO);
-        ordersVO.setStatus(getStatus(orders.getId()));
+        ordersVO.setStatus(status);
         return ordersVO;
     }
 
