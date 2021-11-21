@@ -61,7 +61,7 @@ public class CartDetailServiceImpl implements CartDetailService {
             vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
             vo.setPrice(productDAO.getById(vo.getProductId()).getPrice());
             List<String> photos = new ArrayList<>();
-            for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(product.getId())) {
+            for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(product.getId())) {
                 if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                     for (String photo : productDetails.getPropertyValue().split(",")) {
                         photos.add(photo.trim());

@@ -34,7 +34,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
         }
-        productDetailsDAO.deleteAllByProductId(id.get());
+        productDetailsDAO.deleteAllByProductIdEquals(id.get());
         for (ProductDetailsVO productDetailsVO : productDetailsVOS) {
             ProductDetails productDetails = new ProductDetails();
             BeanUtils.copyProperties(productDetailsVO, productDetails);
@@ -43,7 +43,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
         productDetailsVOS = new ArrayList<>();
 
-        for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(id.get())) {
+        for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(id.get())) {
             ProductDetailsVO productDetailsVO = new ProductDetailsVO();
             BeanUtils.copyProperties(productDetails, productDetailsVO);
             productDetailsVOS.add(productDetailsVO);

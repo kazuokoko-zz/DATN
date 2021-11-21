@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
         ProductVO productVO = new ProductVO();
         BeanUtils.copyProperties(product, productVO);
         List<ProductColorVO> productColorVOS = new ArrayList<>();
-        for (ProductColor productColor : productColorDAO.getByProductId(productVO.getId())) {
+        for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(productVO.getId())) {
             ProductColorVO productColorVO = new ProductColorVO();
             BeanUtils.copyProperties(productColor, productColorVO);
             productColorVOS.add(productColorVO);
@@ -132,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
         productVO.setProductColors(productColorVOS);
         List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
         List<String> photos = new ArrayList<>();
-        for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(productVO.getId())) {
+        for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(productVO.getId())) {
             ProductDetailsVO productDetailsVO = new ProductDetailsVO();
             if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                 for (String photo : productDetails.getPropertyValue().split(",")) {

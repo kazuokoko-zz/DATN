@@ -49,7 +49,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                 ProductVO productVOS = new ProductVO();
 //               productVO = productVO.add(product1);
                 BeanUtils.copyProperties(productVO, productVOS);
-                for (ProductDetails productDetails : productDetailsDAO.findAllByProductId(productVO.getId())) {
+                for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(productVO.getId())) {
                     if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
                         for (String photo : productDetails.getPropertyValue().split(",")) {
                             photos.add(photo.trim());

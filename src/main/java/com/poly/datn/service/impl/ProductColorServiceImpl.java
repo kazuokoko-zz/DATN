@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,30 +29,28 @@ public class ProductColorServiceImpl implements ProductColorService {
     CheckRole checkRole;
 
     @Override
-    public List<ProductColorVO> newProductColor(List<ProductColorVO> productColorVOS, Principal principal) {
+    public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Principal principal) {
 
         if (principal == null) {
         }
-        if (checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff")) {
-            try {
-                List<ProductColorVO> productColorVOS1 = new ArrayList<>();
-                for (ProductColorVO productColorVO : productColorVOS) {
-
-                    ProductColor productColor = new ProductColor();
-                    ProductColorVO productColorVO1 = new ProductColorVO();
-                    BeanUtils.copyProperties(productColorVO , productColor );
-                    productColor = productColorDAO.save(productColor);
-                    productColorVO.setId(productColor.getId());
-                    productColorVOS1.add(productColorVO);
-
-                }
-                ;
-                return productColorVOS1;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) || !id.isPresent()) {
+            return null;
         }
-        return null;
+        productColorDAO.deleteAllByProductIdEquals(id.get());
+
+        for (ProductColorVO productColorVO : productColorVOS) {
+            ProductColor productColor = new ProductColor();
+            BeanUtils.copyProperties(productColorVO, productColor);
+            productColor.setProductId(id.get());
+            productColorDAO.save(productColor);
+        }
+        productColorVOS = new ArrayList<>();
+        for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(id.get())) {
+            ProductColorVO productColorVO = new ProductColorVO();
+            BeanUtils.copyProperties(productColor, productColorVO);
+            productColorVOS.add(productColorVO);
+        }
+        return productColorVOS;
     }
 }

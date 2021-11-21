@@ -10,8 +10,11 @@ import java.util.List;
 
 @EnableJpaRepositories
 public interface ProductColorDAO extends JpaRepository<ProductColor, Integer> {
-    @Query("SELECT  p from ProductColor p where  p.productId=:id")
-    List<ProductColor> getByProductId(@Param("id") Integer id);
+
+    List<ProductColor> findAllByProductIdEquals(Integer id);
 
    ProductColor findByColorId(Integer id);
+
+
+    void deleteAllByProductIdEquals(Integer productId);
 }
