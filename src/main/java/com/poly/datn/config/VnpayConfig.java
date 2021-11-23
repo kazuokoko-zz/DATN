@@ -59,7 +59,7 @@ public class VnpayConfig {
 
         } catch (UnsupportedEncodingException ex) {
             digest = "";
-            // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
+//             Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
             // null, ex);
         } catch (NoSuchAlgorithmException ex) {
             // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
