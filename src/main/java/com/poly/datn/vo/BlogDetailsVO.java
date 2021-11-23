@@ -8,7 +8,7 @@ public class BlogDetailsVO {
 
     private Long id;
     private Integer blogId;
-    private Short type;
+    private String type;
     private Short ordinal;
     private String content;
 
