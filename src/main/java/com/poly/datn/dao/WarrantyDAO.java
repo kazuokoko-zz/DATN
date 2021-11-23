@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface WarrantyDAO extends JpaRepository<Warranty, Integer> {
     List<Warranty> findByOrderId(Integer orderId);
+    Warranty findOneByOrderId(Integer orderId);
 }
