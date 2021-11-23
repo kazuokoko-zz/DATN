@@ -26,7 +26,7 @@ public class Warranty {
     private Date expiredDate;
     @Basic
     @Column(name = "status", nullable = false)
-    private Boolean status;
+    private Integer status;
 
     public Integer getId() {
         return id;
@@ -68,11 +68,11 @@ public class Warranty {
         this.expiredDate = expiredDate;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
