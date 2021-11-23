@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface WarrantyService {
     List<WarrantyVO> getAll(Principal principal);
-    List<WarrantyVO> getByUsername(Principal principal) throws NotFoundException;
-    WarrantyVO newWarranty(WarrantyVO warrantyVO, Principal principal) throws NotFoundException;
+    List<WarrantyVO> getByUsername(Principal principal);
+    WarrantyVO newWarranty(WarrantyVO warrantyVO, Principal principal);
 }

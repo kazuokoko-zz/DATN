@@ -34,7 +34,8 @@ public class WarrantyRest {
 //    }
 
     @PostMapping("new")
-    public SuccessResponse newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal)  {
+    public SuccessResponse newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal) {
+        warrantyService.newWarranty(warrantyVO, principal);
         return new SuccessResponse();
     }
 
