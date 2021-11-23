@@ -92,6 +92,8 @@ public class WarrantyServiceImpl implements WarrantyService {
         try {
             Warranty warranty = new Warranty();
 
+
+
             List<Orders> orders = ordersDAO.findOneById(warrantyVO.getOrderId());
             if(orders.size() == 0){
                 throw new Exception("common.error.not-found");
