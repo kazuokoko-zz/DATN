@@ -19,6 +19,8 @@ public class WarrantyRest {
     @Autowired
     WarrantyService warrantyService;
 
+
+
     @GetMapping("get")
     public ResponseEntity<ResponseDTO<Object>> getListWarranty(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.getAll(principal))
