@@ -33,10 +33,11 @@ public class FileController {
     public ResponseEntity<ResponseDTO<Object>> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/upload/downloadFile/")
-                .path(fileName)
-                .toUriString();
+        String fileDownloadUri = "http://150.95.105.29:8800/api/upload/downloadFile/".concat(fileName);
+//                = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/api/upload/downloadFile/")
+//                .path(fileName)
+//                .toUriString();
 
 
         String fileContentType = file.getContentType();
