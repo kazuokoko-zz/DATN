@@ -16,5 +16,6 @@ public interface ProductColorDAO extends JpaRepository<ProductColor, Integer> {
    ProductColor findByColorId(Integer id);
 
 
+
     void deleteAllByProductIdEquals(Integer productId);
 }

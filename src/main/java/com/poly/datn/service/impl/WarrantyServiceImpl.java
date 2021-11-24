@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -62,13 +63,13 @@ public class WarrantyServiceImpl implements WarrantyService {
         try {
             List<Orders> orders = ordersDAO.findByUsername(principal.getName());
             if(orders.size() == 0){
-                throw new RuntimeException("common.error.not-found");
+                throw new NotFoundException("common.error.not-found");
             }
             List<WarrantyVO> warrantyVOS = new ArrayList<>();
             for (Orders orders1 : orders) {
                 Warranty warranties = warrantyDAO.findOneByOrderId(orders1.getId());
                 if(warranties == null){
-                    throw new RuntimeException("common.error.not-found");
+                    throw new NotFoundException("common.error.not-found");
                 }
                 WarrantyVO warrantyVO = new WarrantyVO();
                 BeanUtils.copyProperties(warranties, warrantyVO);
@@ -96,7 +97,7 @@ public class WarrantyServiceImpl implements WarrantyService {
 
             List<Orders> orders = ordersDAO.findOneById(warrantyVO.getOrderId());
             if(orders.size() == 0){
-                throw new Exception("common.error.not-found");
+                throw new NotFoundException("common.error.not-found");
             }
 
             BeanUtils.copyProperties(warrantyVO, warranty);
