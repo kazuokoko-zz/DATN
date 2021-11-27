@@ -1,7 +1,6 @@
 package com.poly.datn.entity;
 
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,10 +34,6 @@ public class Account {
     
     @Column(name = "user_status", nullable = false)
     private Boolean userStatus;
-//    
-//    @Nullable
-//    @Column(name = "passwordresetkey", nullable = true, length = 255)
-//    private String passwordresetKey;
 
 
     @OneToMany(mappedBy = "account")
