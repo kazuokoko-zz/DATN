@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.datn.jwt.dto.InfoAccount;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
+import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.AccountVO;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.entity.Account;
@@ -32,6 +33,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     SendMail sendMail;
 
+    @Autowired
+    CheckRole checkRole;
     public List<ResetPassworDTO> resetPassworDTO = new ArrayList<>();
 
     @Override
@@ -61,6 +64,23 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountVO changePassword() {
         return null;
+    }
+
+    @Override
+    public List<AccountVO> findAll(Principal principal) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))
+               ) {
+            return null;
+        }
+        List<Account> accounts = accountDAO.findAll();
+        List<AccountVO> accountVOS = new ArrayList<>();
+        for (Account account : accounts){
+            AccountVO accountVO = new AccountVO();
+            BeanUtils.copyProperties(account, accountVO);
+            accountVOS.add(accountVO);
+        }
+        return accountVOS;
     }
 
 
