@@ -1,7 +1,6 @@
 package com.poly.datn.vo;
 
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 @Data
 public class FavoriteVO {
