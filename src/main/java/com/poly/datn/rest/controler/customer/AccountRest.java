@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
+import com.poly.datn.validation.common.response.SuccessResponse;
 import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @RestController
@@ -34,6 +36,27 @@ public class AccountRest {
     }
 
     //End code of MA
-
-
+//    @PostMapping("resetpass")
+//    public ResponseEntity<ResponseDTO<Object>> updateResetPasswordToken(@RequestParam String email){
+//        try {
+//            return ResponseEntity.ok(ResponseDTO.builder().object(accountService.updateResetPasswordToken(email))
+//                    .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+//        } catch (Exception e){
+//            throw  new RuntimeException(e);
+//        }
+//    }
+    @PostMapping("resetpass")
+    public SuccessResponse updateResetPasswordToken(@RequestParam String email){
+        try {
+            accountService.updateResetPasswordToken(email);
+            return new SuccessResponse();
+        } catch (Exception e){
+            throw  new RuntimeException(e);
+        }
+    }
+    @PostMapping("checkTokenReset")
+    public  SuccessResponse checkTokenResetPass(@RequestParam String token){
+        accountService.checkToken(token);
+        return new SuccessResponse();
+    }
 }

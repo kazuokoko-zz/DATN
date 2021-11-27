@@ -1,9 +1,13 @@
 package com.poly.datn.entity;
 
+import lombok.Data;
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "account")
 public class Account {
     @Id
@@ -31,6 +35,10 @@ public class Account {
     @Basic
     @Column(name = "user_status", nullable = false)
     private Boolean userStatus;
+//    @Basic
+//    @Nullable
+//    @Column(name = "passwordresetkey", nullable = true, length = 255)
+//    private String passwordresetKey;
 
     public Integer getId() {
         return id;

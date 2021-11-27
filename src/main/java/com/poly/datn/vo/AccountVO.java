@@ -15,7 +15,6 @@ public class AccountVO {
     private Boolean userStatus;
 
 
-
     List<BlogVO> blogs;
     List<AccountRoleVO> accountRoles;
     List<OrderManagementVO> orderManagements;
