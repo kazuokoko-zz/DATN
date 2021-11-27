@@ -1,8 +1,5 @@
 package com.poly.datn.entity;
 
-
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 
 @Entity
