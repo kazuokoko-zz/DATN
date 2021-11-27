@@ -28,6 +28,11 @@ public class AccountRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.findByUsername(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @GetMapping("findAll")
+    public ResponseEntity<ResponseDTO<Object>> getAll(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.findAll(principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 
     @PutMapping("update")
     public ResponseEntity<ResponseDTO<Object>> updateAccount(@RequestBody JsonNode jsonNode, Principal principal) {

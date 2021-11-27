@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.List;
 
 public interface AccountService {
 
@@ -18,6 +19,7 @@ public interface AccountService {
     AccountVO findByUsername(Principal principal);
 
     AccountVO changePassword();
+    List<AccountVO> findAll(Principal principal);
 
     void updateResetPasswordToken(String email) throws MessagingException, UnsupportedEncodingException;
 
