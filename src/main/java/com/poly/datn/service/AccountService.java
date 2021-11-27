@@ -14,15 +14,16 @@ import java.util.List;
 
 public interface AccountService {
 
-     AccountVO updateAccount(JsonNode jsonNode, Principal principal);
+    AccountVO updateAccount(JsonNode jsonNode, Principal principal);
 
     AccountVO findByUsername(Principal principal);
 
-    AccountVO changePassword();
+    Boolean changePassword(ResetPassworDTO resetPassworDTO);
+
     List<AccountVO> findAll(Principal principal);
 
     void updateResetPasswordToken(String email) throws MessagingException, UnsupportedEncodingException;
 
-    void checkToken(String token);
+    Boolean checkToken(String token);
 //    void updatePassword(String email);
 }

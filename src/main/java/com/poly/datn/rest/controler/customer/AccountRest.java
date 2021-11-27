@@ -28,6 +28,7 @@ public class AccountRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.findByUsername(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @GetMapping("findAll")
     public ResponseEntity<ResponseDTO<Object>> getAll(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.findAll(principal))
@@ -50,18 +51,25 @@ public class AccountRest {
 //            throw  new RuntimeException(e);
 //        }
 //    }
-    @PostMapping("resetpass")
-    public SuccessResponse updateResetPasswordToken(@RequestParam String email){
+    @PutMapping("resetpass")
+    public SuccessResponse updateResetPasswordToken(@RequestParam String email) {
         try {
             accountService.updateResetPasswordToken(email);
             return new SuccessResponse();
-        } catch (Exception e){
-            throw  new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-    @PostMapping("checkTokenReset")
-    public  SuccessResponse checkTokenResetPass(@RequestParam String token){
-        accountService.checkToken(token);
-        return new SuccessResponse();
+//    @PostMapping("checkTokenReset")
+//    public  SuccessResponse checkTokenResetPass(@RequestParam String token){
+//        accountService.checkToken(token);
+//        return new SuccessResponse();
+//    }
+//}
+
+    @PutMapping("checkTokenReset")
+    public ResponseEntity<ResponseDTO<Object>> checkTokenResetPass(@RequestParam String token) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkToken(token))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }

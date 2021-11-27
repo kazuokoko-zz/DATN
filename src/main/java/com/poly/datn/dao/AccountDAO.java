@@ -18,7 +18,7 @@ public interface AccountDAO extends JpaRepository<Account, Integer> {
 
     Optional<Account> findByUsername(String username);
 
-   //END OF MA CODE
+    //END OF MA CODE
 //   @Query("select a from Account a where  a.passwordresetKey =:token")
 //    Account findByToken(String token);
     //dong cua sql o duoi
@@ -26,4 +26,7 @@ public interface AccountDAO extends JpaRepository<Account, Integer> {
 
     @Query(value = "select a from Account a where a.email=:email")
     Account findOneByEmail(@Param("email") String email);
+
+//    @Query(nativeQuery = true, value = "update account a set a.password=:password where a.email=:email")
+//    void changePass(@Param("password") String password, @Param("email") String email);
 }

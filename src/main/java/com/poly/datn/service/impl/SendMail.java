@@ -17,7 +17,7 @@ public class SendMail {
     JavaMailSender javaMailSender;
 
     //quên pass
-    public void sentMail(String email, String resetLink) throws MessagingException, UnsupportedEncodingException {
+    public void sentResetPasswordMail(String email, String resetLink) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -26,11 +26,12 @@ public class SendMail {
         String mailSubject = "Reset password account";
 
         String mailContent = "<p><b>Hello</b> </p>"
-                            + "<p>You have requested to reset password. </p>"
-                            + "<p>Click the link below to change your password: </p>"
-                            + "<p><a href=\""  + resetLink + "\">Change you password</a></b> </p>"
-                            + "<p>Ignore this email if you do remember your password, or you have not made the request </p>"
-                            + "<img src='cid:logoImage'/>";
+                + "<p>You have requested to reset password. </p>"
+                + "<p>Click the link below to change your password: </p>"
+                + "<p><a href=\"" + resetLink + "\">Change you password</a></b> </p>"
+                + "<p>Ignore this email if you do remember your password, or you have not made the request </p>"
+                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </p>"
+                + "<img src='cid:logoImage'/>";
 
         helper.setFrom("socstorehanoi@gmail.com", "SOC Store");
         helper.setTo(email);
@@ -40,5 +41,5 @@ public class SendMail {
         ClassPathResource resource = new ClassPathResource("/static/logoshop.png");
         helper.addInline("logoImage", resource);
         javaMailSender.send(message);
-     }
+    }
 }

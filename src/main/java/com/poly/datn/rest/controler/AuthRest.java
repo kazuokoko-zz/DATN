@@ -7,6 +7,9 @@ import com.poly.datn.jwt.dto.JwtResponse;
 import com.poly.datn.jwt.dto.LoginRequest;
 import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.UserDetailsImpl;
+import com.poly.datn.jwt.dto.ResetPassworDTO;
+import com.poly.datn.service.AccountService;
+import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +38,10 @@ public class AuthRest {
 
     @Autowired
     JwtUtils jwtUtils;
-    
+
+    @Autowired
+    AccountService accountService;
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -55,5 +61,10 @@ public class AuthRest {
         return true;
     }
 
+    @PutMapping("/forgot")
+    public ResponseEntity<ResponseDTO<Object>> updatepassforgot(@RequestBody ResetPassworDTO resetPassworDTO) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.changePassword(resetPassworDTO))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 
 }
