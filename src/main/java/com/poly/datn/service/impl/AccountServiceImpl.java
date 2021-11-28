@@ -3,7 +3,9 @@ package com.poly.datn.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.datn.dao.AccountDAO;
+import com.poly.datn.dao.AccountRoleDAO;
 import com.poly.datn.entity.Account;
+import com.poly.datn.entity.AccountRole;
 import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.service.AccountService;
@@ -27,6 +29,9 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountDAO accountDAO;
+
+    @Autowired
+    AccountRoleDAO accountRoleDAO;
 
     @Autowired
     SendMail sendMail;
@@ -145,7 +150,12 @@ public class AccountServiceImpl implements AccountService {
         account = new Account();
         BeanUtils.copyProperties(accountVO, account);
         account.setId(null);
-        accountDAO.save(account);
+        account.setUserStatus(true);
+        account = accountDAO.save(account);
+        AccountRole accountRole = new AccountRole();
+        accountRole.setAccountId(account.getId());
+        accountRole.setRoleId(3);
+        accountRoleDAO.save(accountRole);
         return true;
     }
 

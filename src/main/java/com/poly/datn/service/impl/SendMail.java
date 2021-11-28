@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @Service
 public class SendMail {
@@ -18,9 +19,6 @@ public class SendMail {
 
     //quên pass
     public void sentResetPasswordMail(String email, String resetLink) throws MessagingException, UnsupportedEncodingException {
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 
         String mailSubject = "Reset password account";
@@ -33,13 +31,29 @@ public class SendMail {
                 + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </p>"
                 + "<img src='cid:logoImage'/>";
 
+        sendMail(mailContent, mailSubject, email);
+
+
+    }
+
+    private void sendMail(String content, String subject, String email) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+
         helper.setFrom("socstorehanoi@gmail.com", "SOC Store");
         helper.setTo(email);
 
-        helper.setSubject(mailSubject);
-        helper.setText(mailContent, true);
+        helper.setSubject(subject);
+        helper.setText(content, true);
         ClassPathResource resource = new ClassPathResource("/static/logoshop.png");
         helper.addInline("logoImage", resource);
         javaMailSender.send(message);
+    }
+
+    private void sendMail(String content, String subject, List<String> mails) throws MessagingException, UnsupportedEncodingException {
+        for (String mail : mails) {
+            sendMail(content, subject, mail);
+        }
     }
 }
