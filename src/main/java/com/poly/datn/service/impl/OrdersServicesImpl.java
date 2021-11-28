@@ -68,6 +68,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
         }
@@ -78,6 +81,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
         }
@@ -89,6 +95,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff")) ||
                 !id.isPresent() || !status.isPresent()) {
@@ -100,6 +109,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;

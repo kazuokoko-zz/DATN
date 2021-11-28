@@ -65,6 +65,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountVO> findAll(Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))
         ) {

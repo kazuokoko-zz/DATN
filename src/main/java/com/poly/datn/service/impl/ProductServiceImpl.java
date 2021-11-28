@@ -209,6 +209,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductVO update(ProductVO productVO, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) || productVO.getId() == null) {
             return null;

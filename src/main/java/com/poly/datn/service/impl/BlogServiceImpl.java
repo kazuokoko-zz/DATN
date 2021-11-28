@@ -87,6 +87,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogVO getABlog(Integer id, Principal principal) {
+        if (principal == null) return null;
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -97,6 +98,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public List<BlogVO> getListAdmin(Optional<Integer> pid, Optional<String> title, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -123,6 +127,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Boolean deleteById(Optional<Integer> id, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff")) ||
                 !id.isPresent()) {
@@ -141,6 +148,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogVO create(BlogVO blogVO, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -161,6 +171,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogVO update(BlogVO blogVO, Optional<Integer> id, Principal principal) throws ParseException {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff")) ||
                 !id.isPresent()) {
