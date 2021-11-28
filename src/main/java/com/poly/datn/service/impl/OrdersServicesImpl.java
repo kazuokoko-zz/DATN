@@ -52,7 +52,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         Orders orders = ordersDAO.findByIdAndUsername(id, principal.getName()).orElseThrow(() -> new SecurityException("Not your order"));
 
-        return getDetailOrders(orders);
+        return getDetailOrders(orders, "Chờ xác nhận");
     }
 
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
@@ -73,7 +73,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
 
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
-        return getDetailOrders(orders);
+        return getDetailOrders(orders, null);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class OrdersServicesImpl implements OrdersService {
         return ordersVOS;
     }
 
-    private OrdersVO getDetailOrders(Orders orders) {
+    private OrdersVO getDetailOrders(Orders orders, String status) {
         Customer customer = customerDAO.findById(orders.getCustomerId()).orElseThrow(() -> new NullPointerException("Cannot find customer"));
         OrdersVO ordersVO = new OrdersVO();
         CustomerVO vo = new CustomerVO();
@@ -221,7 +221,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderDetailsVOS.add(orderDetailsVO);
         }
         ordersVO.setOrderDetails(orderDetailsVOS);
-        ordersVO.setStatus(getStatus(orders.getId()));
+        ordersVO.setStatus(status != null ? status : getStatus(orders.getId()));
         return ordersVO;
     }
 
@@ -256,7 +256,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
         //save ordermanagement
-        OrdersVO ordersVO = getDetailOrders(orders);
+        OrdersVO ordersVO = getDetailOrders(orders, status);
         OrderManagement orderManagement = new OrderManagement();
         orderManagement.setOrderId(orders.getId());
         orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
