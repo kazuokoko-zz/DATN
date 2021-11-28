@@ -90,17 +90,18 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new NotFoundException("common.error.not-found");
         }
-        if (resetPassworDTOS.size() > 0) {
-            for (ResetPassworDTO resetPassworDTO : resetPassworDTOS) {
-                if (!jwtUtils.validateJwtToken(resetPassworDTO.getToken())) {
-                    resetPassworDTOS.remove(resetPassworDTO);
-                    continue;
-                }
-                if (jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()).equals(account.getEmail())) {
-                    resetPassworDTOS.remove(resetPassworDTO);
-                }
-            }
-        }
+
+//        if (resetPassworDTOS.size() > 0) {
+//            for (ResetPassworDTO resetPassworDTO : resetPassworDTOS) {
+//                if (!jwtUtils.validateJwtToken(resetPassworDTO.getToken())) {
+//                    resetPassworDTOS.remove(resetPassworDTO);
+//                    continue;
+//                }
+//                if (jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()).equals(account.getEmail())) {
+//                    resetPassworDTOS.remove(resetPassworDTO);
+//                }
+//            }
+//        }
         String token = jwtUtils.getTokenByUserName(account.getEmail(), 15 * 60 * 1000);
         ResetPassworDTO resetPassworDTO = new ResetPassworDTO();
         BeanUtils.copyProperties(account, resetPassworDTO);
@@ -108,8 +109,9 @@ public class AccountServiceImpl implements AccountService {
         if (resetPassworDTO.getToken() == null) {
             throw new NotFoundException("common.error.not-found");
         }
+        refreshTokenList(resetPassworDTO.getToken());
 //        resetPassworDTO.setTimecreate(System.currentTimeMillis());
-        resetPassworDTO.setClick(0);
+//        resetPassworDTO.setClick(0);
         resetPassworDTOS.add(resetPassworDTO);
         String resetLink = "http://150.95.105.29/change/reset_password?token=" + resetPassworDTO.getToken();
         System.out.println(resetLink);
@@ -122,32 +124,29 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         for (ResetPassworDTO resetPassworDTO : resetPassworDTOS) {
-            if (jwtUtils.getUserNameFromJwtToken(token).equals(jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()))) {
+            if (jwtUtils.getUserNameFromJwtToken(token).equals(jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()))
+                    && jwtUtils.getIssuedAtFromJwtToken(token).getTime() == jwtUtils.getIssuedAtFromJwtToken(resetPassworDTO.getToken()).getTime()) {
                 return true;
             }
         }
         return false;
-//        if (resetPassworDTO.size() > 0) {
-//            resetPassworDTO.forEach(resetPassworDTO1 -> {
-//                if (resetPassworDTO1.getPasswordresetKey().equals(token)) {
-//                    Long timeNow = System.currentTimeMillis();
-//                    Long timeCreate = resetPassworDTO1.getTimecreate();
-//                    //900000
-//                    if (timeNow - timeCreate > 90) {
-//                        resetPassworDTO.remove(resetPassworDTO1);
-//                        throw new NotFoundException("common.error.not-found");
-//                    }
-//                    resetPassworDTO1.setClick(1);
-//                    resetPassworDTO.add(resetPassworDTO1);
-//                    System.out.println("danh sach token " + resetPassworDTO);
-//                } else {
-//                    throw new NotFoundException("common.error.not-found");
-//                }
-//
-//            });
-//        } else {
-//            throw new NotFoundException("common.error.not-found");
-//        }
+    }
+
+    @Override
+    public Boolean create(AccountVO accountVO) {
+        Account account = accountDAO.findAccountByUsername(accountVO.getUsername());
+        if (account != null) {
+            return false;
+        }
+        account = accountDAO.findOneByEmail(accountVO.getEmail());
+        if (account != null) {
+            return false;
+        }
+        account = new Account();
+        BeanUtils.copyProperties(accountVO, account);
+        account.setId(null);
+        accountDAO.save(account);
+        return true;
     }
 
 
@@ -158,11 +157,25 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountDAO.findOneByEmail(email);
             account.setPassword(resetPassworDTO.getPassword());
             accountDAO.save(account);
-//            accountDAO.changePass(resetPassworDTO.getPassword(), email);
+            refreshTokenList(resetPassworDTO.getToken());
             return true;
         }
         return false;
 
+    }
+
+    public void refreshTokenList(String token) {
+        if (resetPassworDTOS.size() > 0) {
+            for (ResetPassworDTO resetPassworDTO : resetPassworDTOS) {
+                if (!jwtUtils.validateJwtToken(resetPassworDTO.getToken())) {
+                    resetPassworDTOS.remove(resetPassworDTO);
+                    continue;
+                }
+                if (jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()).equals(jwtUtils.getUserNameFromJwtToken(token))) {
+                    resetPassworDTOS.remove(resetPassworDTO);
+                }
+            }
+        }
     }
 
     public void updatePassword(ResetPassworDTO resetPassworDTO) {

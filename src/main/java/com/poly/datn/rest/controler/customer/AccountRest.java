@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.validation.common.response.SuccessResponse;
+import com.poly.datn.vo.AccountVO;
 import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,12 @@ public class AccountRest {
     @PutMapping("update")
     public ResponseEntity<ResponseDTO<Object>> updateAccount(@RequestBody JsonNode jsonNode, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.updateAccount(jsonNode, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("create")
+    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody AccountVO accountVO) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.create(accountVO))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
