@@ -25,7 +25,7 @@ public class OnlinePayRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-    @GetMapping("merchantipn")
+    @RequestMapping("merchantipn")
     public ResponseEntity<ResponseDTO<Object>> merchantIpn(HttpServletRequest request) throws IOException {
         return ResponseEntity.ok(ResponseDTO.builder().object(onlinePayService.merchantcall(request))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
