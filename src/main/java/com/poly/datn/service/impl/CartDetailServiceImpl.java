@@ -97,17 +97,20 @@ public class CartDetailServiceImpl implements CartDetailService {
             return null;
         }
         CartDetail cartDetail = new CartDetail();
-        if (cartDetailVO.getId() == null) {
+        Integer productId = cartDetailVO.getProductId();
+        Integer userId = accountDAO.findAccountByUsername(principal.getName()).getId();
+        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId);
+        if (cartDetail1 == null) {
+
             BeanUtils.copyProperties(cartDetailVO, cartDetail);
             cartDetail.setUserId(accountDAO.findAccountByUsername(principal.getName()).getId());
             cartDetail = cartDetailDAO.save(cartDetail);
-
         } else if (cartDetailVO.getQuantity() <= 0) {
-            cartDetailDAO.deleteById(cartDetailVO.getId());
+            cartDetailDAO.deleteById(cartDetail1.getId());
             return null;
         } else {
-            cartDetail = cartDetailDAO.getById(cartDetailVO.getId());
-            cartDetail.setQuantity(cartDetailVO.getQuantity());
+            BeanUtils.copyProperties(cartDetail1, cartDetail);
+            cartDetail.setQuantity(cartDetailVO.getQuantity() + cartDetail.getQuantity());
             cartDetailDAO.save(cartDetail);
         }
         BeanUtils.copyProperties(cartDetail, cartDetailVO);
