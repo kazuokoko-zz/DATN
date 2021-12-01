@@ -23,4 +23,6 @@ public interface ProductService {
     ProductVO newProduct(ProductVO productVO, Principal principal);
 
     ProductVO update(ProductVO productVO, Principal principal);
+
+    List<ProductVO> getByPrice(Optional<Long> start, Optional<Long> end);
 }

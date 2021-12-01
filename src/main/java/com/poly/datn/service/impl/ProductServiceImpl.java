@@ -86,6 +86,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductVO> getByPrice(Optional<Long> start, Optional<Long> end) {
+        List<ProductVO> productVOS = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        if (start.isPresent() && end.isPresent()) {
+            products = productDAO.findAllByPriceBetween(start.get(), end.get());
+        } else if (start.isPresent() || end.isPresent()) {
+            if (start.isPresent()) {
+                products = productDAO.findAllByPriceGreaterThanEqual(start.get());
+            } else {
+                products = productDAO.findAllByPriceLessThanEqual(end.get());
+            }
+        } else {
+            products = productDAO.findAll();
+        }
+        for (Product product : products) {
+            ProductVO productVO = convertToVO(product);
+            productVOS.add(productVO);
+        }
+        return productVOS;
+    }
+
+    @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
         for (Product product : productDAO.findTrend()) {
@@ -221,4 +243,5 @@ public class ProductServiceImpl implements ProductService {
         productDAO.save(product);
         return getById(product.getId());
     }
+
 }
