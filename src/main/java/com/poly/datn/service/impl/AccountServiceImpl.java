@@ -118,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
 //        resetPassworDTO.setTimecreate(System.currentTimeMillis());
 //        resetPassworDTO.setClick(0);
         resetPassworDTOS.add(resetPassworDTO);
-        String resetLink = "http://150.95.105.29/change/reset_password?token=" + resetPassworDTO.getToken();
+        String resetLink = "http://localhost:8080/change/reset_password?token=" + resetPassworDTO.getToken();
         System.out.println(resetLink);
         sendMail.sentResetPasswordMail(email, resetLink);
         System.out.println("list reset" + resetPassworDTOS);
