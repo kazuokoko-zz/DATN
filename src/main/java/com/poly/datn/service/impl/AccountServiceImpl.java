@@ -95,18 +95,6 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new NotFoundException("common.error.not-found");
         }
-
-//        if (resetPassworDTOS.size() > 0) {
-//            for (ResetPassworDTO resetPassworDTO : resetPassworDTOS) {
-//                if (!jwtUtils.validateJwtToken(resetPassworDTO.getToken())) {
-//                    resetPassworDTOS.remove(resetPassworDTO);
-//                    continue;
-//                }
-//                if (jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken()).equals(account.getEmail())) {
-//                    resetPassworDTOS.remove(resetPassworDTO);
-//                }
-//            }
-//        }
         String token = jwtUtils.getTokenByUserName(account.getEmail(), 15 * 60 * 1000);
         ResetPassworDTO resetPassworDTO = new ResetPassworDTO();
         BeanUtils.copyProperties(account, resetPassworDTO);
@@ -115,12 +103,10 @@ public class AccountServiceImpl implements AccountService {
             throw new NotFoundException("common.error.not-found");
         }
         refreshTokenList(resetPassworDTO.getToken());
-//        resetPassworDTO.setTimecreate(System.currentTimeMillis());
-//        resetPassworDTO.setClick(0);
         resetPassworDTOS.add(resetPassworDTO);
         String resetLink = "http://localhost:8080/resetpass?token=" + resetPassworDTO.getToken();
         System.out.println(resetLink);
-        sendMail.sentResetPasswordMail(email, resetLink);
+        sendMail.sentResetPasswordMail(email, resetLink, account.getFullname());
         System.out.println("list reset" + resetPassworDTOS);
     }
 
@@ -138,7 +124,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Boolean create(AccountVO accountVO) {
+    public Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
         Account account = accountDAO.findAccountByUsername(accountVO.getUsername());
         if (account != null) {
             return false;
@@ -156,6 +142,7 @@ public class AccountServiceImpl implements AccountService {
         accountRole.setAccountId(account.getId());
         accountRole.setRoleId(3);
         accountRoleDAO.save(accountRole);
+        sendMail.sentMailRegister(account.getEmail(), account.getFullname());
         return true;
     }
 
