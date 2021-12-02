@@ -127,13 +127,13 @@ public class OrdersServicesImpl implements OrdersService {
             if (id.isPresent()) {
                 idok = id.get() == order.getId();
             }
-            if (id.isPresent()) {
+            if (name.isPresent()) {
                 nameok = checkName(customer, name.get());
             }
-            if (id.isPresent()) {
+            if (email.isPresent()) {
                 mailok = checkEmail(customer, email.get());
             }
-            if (id.isPresent()) {
+            if (phone.isPresent()) {
                 phoneok = checkPhone(customer, phone.get());
             }
             if (idok || nameok || mailok || phoneok) {
