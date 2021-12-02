@@ -26,6 +26,6 @@ public interface AccountService {
 
     Boolean checkToken(String token);
 
-    Boolean create(AccountVO accountVO);
+    Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException;
 //    void updatePassword(String email);
 }
