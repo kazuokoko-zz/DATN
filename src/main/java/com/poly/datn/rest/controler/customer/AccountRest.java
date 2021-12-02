@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
 @RestController
@@ -43,7 +45,7 @@ public class AccountRest {
     }
 
     @PutMapping("create")
-    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody AccountVO accountVO) {
+    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.create(accountVO))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }

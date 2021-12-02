@@ -34,6 +34,18 @@ public class SendMail {
 
         sendMail(mailContent, mailSubject, email);
     }
+    public void sentMailOrder(String email, String name) throws MessagingException, UnsupportedEncodingException {
+        String homeLink = "http://150.95.105.29/";
+        String mailSubject = "Đặt hàng thành công Socstore";
+        String mailContent = "<p><b>Hello "+ name+"</b> </p>"
+                + "<p>Bạn đã tạo tài khoản thành công trên hệ thống của Socstore</p>"
+                + "<p>Hãy thường xuyên kiểm tra email để nhận những tin công nghệ mới nhất nhé</p>"
+                + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
+                +"<p><b>Trân trọng </b> </b></p>"
+                + "----------------------------------------------------------------------------------</b> </b>"
+                + "<img src='cid:logoImage'/>";
+        sendMail(mailContent, mailSubject, email);
+    }
     public void sentMailRegister(String email, String name) throws MessagingException, UnsupportedEncodingException {
         String homeLink = "http://150.95.105.29/";
         String mailSubject = "Tạo tài khoản thành công Socstore";
@@ -45,8 +57,6 @@ public class SendMail {
                 + "----------------------------------------------------------------------------------</b> </b>"
                 + "<img src='cid:logoImage'/>";
         sendMail(mailContent, mailSubject, email);
-
-
     }
 
     private void sendMail(String content, String subject, String email) throws MessagingException, UnsupportedEncodingException {
