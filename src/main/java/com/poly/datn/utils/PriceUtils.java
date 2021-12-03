@@ -35,7 +35,7 @@ public class PriceUtils {
         return saleVOS;
     }
 
-    public Long maxDiscountAtPresentOf(Integer productId) {
+    public ProductSale getSaleHavingMaxDiscountOf(Integer productId) {
         List<SaleVO> saleVOList = getSaleNow();
         List<ProductSale> prs = new ArrayList<>();
         for (SaleVO saleVO : saleVOList) {
@@ -49,11 +49,15 @@ public class PriceUtils {
             prs.add(productSale);
         }
         if (prs.isEmpty())
-            return 0L;
+            return null;
 
         Collections.sort(prs, Comparator.comparingLong(ProductSale::getDiscount).reversed());
+        return prs.get(0);
+    }
 
-        return prs.get(0).getDiscount();
+    public Long maxDiscountAtPresentOf(Integer productId) {
+        ProductSale productSale = getSaleHavingMaxDiscountOf(productId);
+        return productSale != null ? productSale.getDiscount() : 0L;
 
         /**
          *
