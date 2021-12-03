@@ -3,6 +3,7 @@ package com.poly.datn.service.impl;
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
@@ -44,6 +45,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     StringFind stringFind;
+
+    @Autowired
+    PriceUtils priceUtils;
 
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
@@ -261,6 +265,7 @@ public class OrdersServicesImpl implements OrdersService {
             OrderDetails orderDetails = new OrderDetails();
             BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
             orderDetails.setOrderId(orders.getId());
+            orderDetails.setDiscount(priceUtils.maxDiscountAtPresentOf(orderDetails.getProductId()));
             orderDetailsDAO.save(orderDetails);
         }
     }
