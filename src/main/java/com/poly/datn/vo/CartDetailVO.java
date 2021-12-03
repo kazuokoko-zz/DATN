@@ -19,7 +19,7 @@ public class CartDetailVO {
 
     private Long price;
 
-    private Integer discount;
+    private Long discount;
 
     AccountVO account;
 

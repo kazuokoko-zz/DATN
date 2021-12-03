@@ -14,13 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,15 +141,16 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public Integer getCurrentSaleOf(Integer productId) {
+    public Long getCurrentSaleOf(Integer productId) {
         List<Sale> sales = saleDAO.findSalesAt(Timestamp.valueOf(LocalDateTime.now()));
         for (Sale sale : sales) {
             Optional<ProductSale> productSale = productSaleDAO.findByProductIdEqualsAndSaleIdEquals(productId, sale.getId());
             if (productSale.isPresent())
                 return productSale.get().getDiscount();
         }
-        return 0;
+        return 0L;
     }
+
     @Override
     public SaleVO newSale(SaleVO saleVO, Principal principal) {
         Sale sale = new Sale();
@@ -160,6 +159,7 @@ public class SaleServiceImpl implements SaleService {
         saleVO.setId(sale.getId());
         return saleVO;
     }
+
     @Override
     public ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal) {
         ProductSale productSale = new ProductSale();
