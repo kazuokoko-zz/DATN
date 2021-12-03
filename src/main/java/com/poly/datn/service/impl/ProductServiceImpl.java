@@ -1,8 +1,10 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.common.Constant;
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
 import com.poly.datn.service.CommentService;
+import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
@@ -10,6 +12,7 @@ import com.poly.datn.service.ProductService;
 import org.springframework.beans.BeanUtils;
 
 import java.security.Principal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import org.springframework.beans.BeansException;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,8 +55,72 @@ public class ProductServiceImpl implements ProductService {
     CommentService commentService;
 
     @Autowired
+    SaleService saleService;
+
+    @Autowired
     CheckRole checkRole;
+
+    @Autowired
+    SaleDAO saleDAO;
+
+    @Autowired
+    ProductSaleDAO productSaleDAO;
     // Begin code of MA
+
+
+    private List<SaleVO> saleVOList;
+
+    public List<SaleVO> getSaleNow() {
+                Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+                List<Sale> saleList = saleDAO.findSalesAt(timestamp);
+                List<SaleVO> saleVOS = new ArrayList<>();
+                saleList.forEach(sale -> {
+                    SaleVO saleVO = new SaleVO();
+                    BeanUtils.copyProperties(sale, saleVO);
+                    saleVOS.add(saleVO);
+                });
+                return saleVOS;
+            }
+
+    public Long priceProductBefforSale(Integer productId){
+        Long bonusProduct = 0L;
+
+        saleVOList = getSaleNow();
+
+        for (SaleVO saleVO:  saleVOList) {
+            if(saleVO.getStatus().equals("Đã kết thúc")){
+                bonusProduct = 0L;
+            }
+            else {
+                ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productId, saleVO.getId());
+                if (productSale == null) {
+                    bonusProduct = 0L;
+                } else {
+                    if (productSale.getQuantity() <= 0) {
+                        bonusProduct = 0L;
+                        saleVO.setStatus("Đã kết thúc");
+                        Sale sale = new Sale();
+                        BeanUtils.copyProperties(saleVO, sale);
+                        saleDAO.save(sale);
+                    } else {
+//                        if(){
+                        bonusProduct = productSale.getDiscount().longValue();
+
+                        productSale.setQuantity(productSale.getQuantity() - 1);
+                        if (productSale.getQuantity() <= 0) {
+                            Sale sale = new Sale();
+                            saleVO.setStatus("Đã kết thúc");
+                            BeanUtils.copyProperties(saleVO, sale);
+                            saleDAO.save(sale);
+
+                        }
+                        }
+//                    }
+                }
+            }
+        }
+        return bonusProduct;
+    }
 
 
     @Override
@@ -78,6 +146,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductVO> productVOS = new ArrayList<>();
         for (Product product : products) {
+
             ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
         }
@@ -111,6 +180,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
         for (Product product : productDAO.findTrend()) {
+
             ProductVO productVO = convertToVO(product);
             productVOS.add(productVO);
         }
@@ -123,6 +193,9 @@ public class ProductServiceImpl implements ProductService {
         List<ProductCategory> productCategories = productCategoryDAO.findAllByCategoryIdEquals(cateId);
         for (ProductCategory productCategory : productCategories) {
             Optional<Product> optionalProduct = productDAO.findById(productCategory.getProductId());
+
+            List<ProductVO> productVOS = new ArrayList<>();
+
             if (optionalProduct.isPresent()) {
                 products.add(optionalProduct.get());
             }
@@ -168,6 +241,8 @@ public class ProductServiceImpl implements ProductService {
         }
         productVO.setProductDetails(productDetailsVOS);
         productVO.setPhotos(photos);
+        productVO.setDiscount(priceProductBefforSale( productVO.getId()));
+
         return productVO;
     }
 

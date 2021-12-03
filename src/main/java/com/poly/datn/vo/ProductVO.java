@@ -20,6 +20,8 @@ public class ProductVO {
 
     private String status;
 
+    private Long Discount;
+
 
     List<OrderDetailsVO> orderDetails;
 
