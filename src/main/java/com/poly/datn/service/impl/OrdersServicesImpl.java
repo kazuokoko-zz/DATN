@@ -49,6 +49,9 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     PriceUtils priceUtils;
 
+    @Autowired
+    ProductSaleDAO productSaleDAO;
+
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
         if (principal == null) {
@@ -267,6 +270,11 @@ public class OrdersServicesImpl implements OrdersService {
             orderDetails.setOrderId(orders.getId());
             orderDetails.setDiscount(priceUtils.maxDiscountAtPresentOf(orderDetails.getProductId()));
             orderDetailsDAO.save(orderDetails);
+            ProductSale productSale = priceUtils.getSaleHavingMaxDiscountOf(orderDetails.getProductId());
+            if (productSale == null)
+                continue;
+            productSale.setQuantity(productSale.getQuantity() - orderDetails.getQuantity());
+            productSaleDAO.save(productSale);
         }
     }
 
