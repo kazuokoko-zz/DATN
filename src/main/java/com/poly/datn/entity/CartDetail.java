@@ -1,6 +1,5 @@
 package com.poly.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,16 +22,14 @@ public class CartDetail {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "sale_id", nullable = true)
-    private Integer saleId;
+    @Column(name = "discount")
+    private Integer discount;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonIgnore
     Account account;
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    @JsonIgnore
     Product product;
 
     public Account getAccount() {
