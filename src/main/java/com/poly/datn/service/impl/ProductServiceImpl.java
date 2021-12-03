@@ -221,6 +221,7 @@ public class ProductServiceImpl implements ProductService {
 
             Product product = new Product();
             BeanUtils.copyProperties(productVO, product);
+            product.setStatus("Chưa thêm đủ thông");
             product = productDAO.save(product);
             productVO.setId(product.getId());
             return productVO;

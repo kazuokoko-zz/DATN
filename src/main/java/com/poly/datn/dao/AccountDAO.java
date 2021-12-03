@@ -27,6 +27,8 @@ public interface AccountDAO extends JpaRepository<Account, Integer> {
     @Query(value = "select a from Account a where a.email=:email")
     Account findOneByEmail(@Param("email") String email);
 
+    @Query(value = "select a.email, a.fullname from Account a")
+    List<Account> findAllEmail();
 //    @Query(nativeQuery = true, value = "update account a set a.password=:password where a.email=:email")
 //    void changePass(@Param("password") String password, @Param("email") String email);
 }

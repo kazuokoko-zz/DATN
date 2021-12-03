@@ -1,13 +1,20 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.vo.mailSender.InfoSendBlog;
+import com.poly.datn.vo.mailSender.InfoSendMailRPass;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -17,23 +24,54 @@ public class SendMail {
     @Autowired
     JavaMailSender javaMailSender;
 
+    @Autowired
+    private Configuration config;
     //quên pass
-    public void sentResetPasswordMail(String email, String resetLink, String name) throws MessagingException, UnsupportedEncodingException {
+    public void sentResetPasswordMail(String email, String resetLink, String name) throws MessagingException, IOException, TemplateException {
+        InfoSendMailRPass infoSendMail = new InfoSendMailRPass();
+        infoSendMail.setName(name);
+        infoSendMail.setResetLink(resetLink);
+        String mailSubject = "Quên mật khẩu";
 
-        String mailSubject = "Quên mật khẩu Socstore";
-
-        String mailContent = "<p><b>Xin chào"+ name+"</b></b> </p>"
-                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
-                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
-                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
-                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
-                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
-                +"<p><b>Trân trọng </b> </b></p>"
-                + "----------------------------------------------------------------------------------</b> </b>"
-                + "<img src='cid:logoImage'/>";
+        Template t = config.getTemplate("mailRPass.ftl");
+        String mailContent =  FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendMail);
+//                "<p><b>Xin chào"+ name+"</b></b> </p>"
+//                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
+//                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
+//                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
+//                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
+//                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
+//                +"<p><b>Trân trọng </b> </b></p>"
+//                + "----------------------------------------------------------------------------------</b> </b>"
+//                + "<img src='cid:logoImage'/>";
 
         sendMail(mailContent, mailSubject, email);
     }
+    public void sentBlogMail(List<InfoSendBlog> infoSendBlogs) throws MessagingException, IOException, TemplateException {
+        for (InfoSendBlog blog : infoSendBlogs) {
+
+            String mailSubject = blog.getTitle();
+            Template t = config.getTemplate("mailRPass.ftl");
+
+            List<String>  email = blog.getEmail();
+            String EmailAcc;
+//            for(EmailAcc email1 : email){
+                String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendBlogs);
+//                "<p><b>Xin chào"+ name+"</b></b> </p>"
+//                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
+//                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
+//                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
+//                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
+//                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
+//                +"<p><b>Trân trọng </b> </b></p>"
+//                + "----------------------------------------------------------------------------------</b> </b>"
+//                + "<img src='cid:logoImage'/>";
+
+                sendMail(mailContent, mailSubject, email);
+            }
+        }
+//    }
+
     public void sentMailOrder(String email, String name) throws MessagingException, UnsupportedEncodingException {
         String homeLink = "http://150.95.105.29/";
         String mailSubject = "Đặt hàng thành công Socstore";

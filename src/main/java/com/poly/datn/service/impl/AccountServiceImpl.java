@@ -11,6 +11,7 @@ import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.AccountVO;
+import freemarker.template.TemplateException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -90,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public void updateResetPasswordToken(String email) throws MessagingException, UnsupportedEncodingException {
+    public void updateResetPasswordToken(String email) throws MessagingException, IOException, TemplateException {
         Account account = accountDAO.findOneByEmail(email);
         if (account == null) {
             throw new NotFoundException("common.error.not-found");
