@@ -5,6 +5,7 @@ import com.poly.datn.dao.ProductDetailsDAO;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.SaleService;
+import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CartDetailDAO;
@@ -46,6 +47,8 @@ public class CartDetailServiceImpl implements CartDetailService {
     @Autowired
     SaleService saleService;
 
+    @Autowired
+    PriceUtils priceUtils;
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
@@ -70,6 +73,8 @@ public class CartDetailServiceImpl implements CartDetailService {
             }
             if (photos.size() > 0)
                 vo.setPhoto(photos.get(0));
+            vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
+            vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
