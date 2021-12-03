@@ -1,6 +1,8 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.ProductColorDAO;
+import com.poly.datn.dao.ProductDAO;
+import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductColor;
 import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.ProductColorService;
@@ -26,8 +28,12 @@ public class ProductColorServiceImpl implements ProductColorService {
     ProductColorDAO productColorDAO;
 
     @Autowired
+    ProductDAO  productDAO;
+
+    @Autowired
     CheckRole checkRole;
 
+    private Integer productId;
     @Override
     public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Principal principal) {
 
@@ -44,8 +50,12 @@ public class ProductColorServiceImpl implements ProductColorService {
             ProductColor productColor = new ProductColor();
             BeanUtils.copyProperties(productColorVO, productColor);
             productColor.setProductId(id.get());
-            productColorDAO.save(productColor);
+            productColor = productColorDAO.save(productColor);
+            productId = productColor.getProductId();
         }
+        Product product = productDAO.getOneProductById(productId);
+        product.setStatus("đã hoàn thành nhập thông tin");
+        productDAO.save(product);
         productColorVOS = new ArrayList<>();
         for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(id.get())) {
             ProductColorVO productColorVO = new ProductColorVO();

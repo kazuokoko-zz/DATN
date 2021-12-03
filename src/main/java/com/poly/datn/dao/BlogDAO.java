@@ -14,4 +14,7 @@ public interface BlogDAO extends JpaRepository<Blog, Integer> {
 
 
     List<Blog> findAllByProductIdEquals(Integer integer);
+
+
+    List<Blog> findAllInHour();
 }

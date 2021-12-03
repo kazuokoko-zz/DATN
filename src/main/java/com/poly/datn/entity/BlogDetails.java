@@ -1,13 +1,14 @@
 package com.poly.datn.entity;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "blog_details")
-public class BlogDetails {
+public class BlogDetails implements Comparable<BlogDetails>{
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,9 @@ public class BlogDetails {
     @Basic
     @Column(name = "content", nullable = false, length = -1)
     private String content;
+    @Basic
+    @Column(name = "stt", nullable = true)
+    private String stt;
 
 
     @ManyToOne
@@ -33,5 +37,11 @@ public class BlogDetails {
 
     public Blog getBlog() {
         return blog;
+    }
+
+
+    @Override
+    public int compareTo(@NotNull BlogDetails o) {
+        return this.getStt().compareTo(o.getStt());
     }
 }
