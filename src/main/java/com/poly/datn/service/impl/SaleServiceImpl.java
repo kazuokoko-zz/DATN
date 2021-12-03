@@ -8,16 +8,19 @@ import com.poly.datn.entity.ProductSale;
 import com.poly.datn.entity.Sale;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.vo.ProductSaleVO;
 import com.poly.datn.vo.SaleVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +141,7 @@ public class SaleServiceImpl implements SaleService {
             return null;
         }
     }
+
     @Override
     public Integer getCurrentSaleOf(Integer productId) {
         List<Sale> sales = saleDAO.findSalesAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -148,4 +152,21 @@ public class SaleServiceImpl implements SaleService {
         }
         return 0;
     }
+    @Override
+    public SaleVO newSale(SaleVO saleVO, Principal principal) {
+        Sale sale = new Sale();
+        BeanUtils.copyProperties(saleVO, sale);
+        sale = saleDAO.save(sale);
+        saleVO.setId(sale.getId());
+        return saleVO;
+    }
+    @Override
+    public ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal) {
+        ProductSale productSale = new ProductSale();
+        BeanUtils.copyProperties(productSaleVO, productSale);
+        productSale = productSaleDAO.save(productSale);
+        productSaleVO.setId(productSale.getId());
+        return productSaleVO;
+    }
+
 }
