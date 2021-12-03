@@ -1,5 +1,6 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.entity.Blog;
 import com.poly.datn.vo.mailSender.InfoSendBlog;
 import com.poly.datn.vo.mailSender.InfoSendMailRPass;
 import freemarker.template.Configuration;
@@ -16,16 +17,21 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SendMail {
-
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
     @Autowired
     JavaMailSender javaMailSender;
 
     @Autowired
     private Configuration config;
+
     //quên pass
     public void sentResetPasswordMail(String email, String resetLink, String name) throws MessagingException, IOException, TemplateException {
         InfoSendMailRPass infoSendMail = new InfoSendMailRPass();
@@ -34,7 +40,7 @@ public class SendMail {
         String mailSubject = "Quên mật khẩu";
 
         Template t = config.getTemplate("mailRPass.ftl");
-        String mailContent =  FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendMail);
+        String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendMail);
 //                "<p><b>Xin chào"+ name+"</b></b> </p>"
 //                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
 //                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
@@ -47,51 +53,65 @@ public class SendMail {
 
         sendMail(mailContent, mailSubject, email);
     }
-    public void sentBlogMail(List<InfoSendBlog> infoSendBlogs) throws MessagingException, IOException, TemplateException {
-        for (InfoSendBlog blog : infoSendBlogs) {
 
-            String mailSubject = blog.getTitle();
-            Template t = config.getTemplate("mailRPass.ftl");
+    public void sentBlogMail(Map<String, String> account, Blog blog) throws MessagingException, IOException, TemplateException {
+        InfoSendBlog infoSendBlog = new InfoSendBlog();
+        infoSendBlog.setCreatedBy(blog.getCreatedBy());
+        infoSendBlog.setPhoto(blog.getPhoto());
+        infoSendBlog.setShortText(blog.getShortText());
+        infoSendBlog.setTimeCreated(sdf.format(Date.from(blog.getTimeCreated().toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant())));
+        Template template = config.getTemplate("mailNewBlog.ftl");
 
-            List<String>  email = blog.getEmail();
-            String EmailAcc;
-//            for(EmailAcc email1 : email){
-                String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendBlogs);
-//                "<p><b>Xin chào"+ name+"</b></b> </p>"
-//                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
-//                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
-//                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
-//                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
-//                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
-//                +"<p><b>Trân trọng </b> </b></p>"
-//                + "----------------------------------------------------------------------------------</b> </b>"
-//                + "<img src='cid:logoImage'/>";
-
-                sendMail(mailContent, mailSubject, email);
-            }
+        for (Map.Entry<String, String> entry : account.entrySet()) {
+            infoSendBlog.setName(entry.getValue());
+            infoSendBlog.setEmail(entry.getKey());
+            String content = FreeMarkerTemplateUtils.processTemplateIntoString(template, infoSendBlog);
+            sendMail(content, "Blog Mới từ socstore", entry.getKey());
         }
+//
+//        String mailSubject = infoSendBlog.getTitle();
+//        Template t = config.getTemplate("mailRPass.ftl");
+//
+//        String email = InfoSendBlog.getEmail();
+////        String EmailAcc;
+////            for(EmailAcc email1 : email){
+//        String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendBlogs);
+////                "<p><b>Xin chào"+ name+"</b></b> </p>"
+////                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
+////                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
+////                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
+////                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
+////                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
+////                +"<p><b>Trân trọng </b> </b></p>"
+////                + "----------------------------------------------------------------------------------</b> </b>"
+////                + "<img src='cid:logoImage'/>";
+//
+//        sendMail(mailContent, mailSubject, email);
+
+    }
 //    }
 
     public void sentMailOrder(String email, String name) throws MessagingException, UnsupportedEncodingException {
         String homeLink = "http://150.95.105.29/";
         String mailSubject = "Đặt hàng thành công Socstore";
-        String mailContent = "<p><b>Hello "+ name+"</b> </p>"
+        String mailContent = "<p><b>Hello " + name + "</b> </p>"
                 + "<p>Bạn đã tạo tài khoản thành công trên hệ thống của Socstore</p>"
                 + "<p>Hãy thường xuyên kiểm tra email để nhận những tin công nghệ mới nhất nhé</p>"
                 + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
-                +"<p><b>Trân trọng </b> </b></p>"
+                + "<p><b>Trân trọng </b> </b></p>"
                 + "----------------------------------------------------------------------------------</b> </b>"
                 + "<img src='cid:logoImage'/>";
         sendMail(mailContent, mailSubject, email);
     }
+
     public void sentMailRegister(String email, String name) throws MessagingException, UnsupportedEncodingException {
         String homeLink = "http://150.95.105.29/";
         String mailSubject = "Tạo tài khoản thành công Socstore";
-        String mailContent = "<p><b>Hello "+ name+"</b> </p>"
+        String mailContent = "<p><b>Hello " + name + "</b> </p>"
                 + "<p>Bạn đã tạo tài khoản thành công trên hệ thống của Socstore</p>"
                 + "<p>Hãy thường xuyên kiểm tra email để nhận những tin công nghệ mới nhất nhé</p>"
                 + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
-                +"<p><b>Trân trọng </b> </b></p>"
+                + "<p><b>Trân trọng </b> </b></p>"
                 + "----------------------------------------------------------------------------------</b> </b>"
                 + "<img src='cid:logoImage'/>";
         sendMail(mailContent, mailSubject, email);
@@ -113,7 +133,7 @@ public class SendMail {
         for (String mail : mails) {
             try {
                 sendMail(content, subject, mail);
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 

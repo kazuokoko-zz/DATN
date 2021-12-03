@@ -74,7 +74,6 @@ public class OrdersServicesImpl implements OrdersService {
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
         }
-
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
         return getDetailOrders(orders, null);
     }
