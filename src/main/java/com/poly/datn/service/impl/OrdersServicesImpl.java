@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -83,6 +84,27 @@ public class OrdersServicesImpl implements OrdersService {
         }
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
         return getDetailOrders(orders, null);
+    }
+
+    @Override
+    public boolean cancerOrder(Integer id, Principal principal) {
+        if (principal == null) {
+            return false;
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return false;
+        }
+        Optional<Orders> orders =  ordersDAO.findById(id);
+        if(orders.isPresent()){
+            throw  new NotFoundException("api.error.API-003");
+        }
+        Orders orders1 = orders.get();
+        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
+        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagement.setChangedBy(principal.getName());
+        orderManagement.setStatus("Đơn hàng đã hủy");
+        orderManagementDAO.save(orderManagement);
+        return true;
     }
 
     @Override
@@ -291,6 +313,8 @@ public class OrdersServicesImpl implements OrdersService {
         ordersVO.setStatus(status);
         return ordersVO;
     }
+
+//    private void
 
     boolean checkName(Customer customer, String name) {
         return stringFind.checkContains(customer.getFullname(), name);
