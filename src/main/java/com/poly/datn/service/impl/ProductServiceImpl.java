@@ -120,6 +120,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductCategoryVO selectCate(Integer pid, Integer cid, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
+        if (!checkRole.isHavePermition(principal.getName(), "Director")
+                && !checkRole.isHavePermition(principal.getName(), "Staff"))
+            return null;
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setProductId(pid);
+        productCategory.setCategoryId(cid);
+        productCategory = productCategoryDAO.save(productCategory);
+        ProductCategoryVO productCategoryVO = new ProductCategoryVO();
+        BeanUtils.copyProperties(productCategory, productCategoryVO);
+        return productCategoryVO;
+    }
+
+    @Override
+    public Boolean unSelectCate(Integer pid, Integer cid, Principal principal) {
+        if (principal == null) {
+            return false;
+        }
+        if (!checkRole.isHavePermition(principal.getName(), "Director")
+                && !checkRole.isHavePermition(principal.getName(), "Staff"))
+            return false;
+        productCategoryDAO.unSelect(pid, cid);
+        return true;
+    }
+
+    @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
         for (Product product : productDAO.findTrend()) {

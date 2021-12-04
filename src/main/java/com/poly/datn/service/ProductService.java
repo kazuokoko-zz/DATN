@@ -1,5 +1,6 @@
 package com.poly.datn.service;
 
+import com.poly.datn.vo.ProductCategoryVO;
 import com.poly.datn.vo.ProductVO;
 import com.poly.datn.entity.Product;
 
@@ -25,4 +26,8 @@ public interface ProductService {
     ProductVO update(ProductVO productVO, Principal principal);
 
     List<ProductVO> getByPrice(Optional<Long> start, Optional<Long> end);
+
+    ProductCategoryVO selectCate(Integer pid, Integer cid, Principal principal);
+
+    Boolean unSelectCate(Integer pid, Integer cid, Principal principal);
 }

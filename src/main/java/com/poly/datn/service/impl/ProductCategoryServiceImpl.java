@@ -1,12 +1,10 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.dao.ProductCategoryDAO;
 import com.poly.datn.entity.ProductCategory;
-import com.poly.datn.entity.ProductColor;
+import com.poly.datn.service.ProductCategoryService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductCategoryVO;
-import com.poly.datn.dao.ProductCategoryDAO;
-import com.poly.datn.service.ProductCategoryService;
-import com.poly.datn.vo.ProductColorVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,4 +58,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         return productCategoryVOS;
     }
+
+
 }

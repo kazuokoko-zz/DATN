@@ -1,6 +1,5 @@
 package com.poly.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -30,7 +29,6 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "type", insertable = false, updatable = false)
-    @JsonIgnore
     Category fatherCate;
 
 

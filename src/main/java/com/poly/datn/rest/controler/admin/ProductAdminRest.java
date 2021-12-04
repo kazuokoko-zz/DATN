@@ -70,4 +70,18 @@ public class ProductAdminRest {
     public ResponseEntity<ResponseDTO<Object>> update(@RequestBody ProductVO productVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.update(productVO, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
+    @PutMapping("selectcate")
+    public ResponseEntity<ResponseDTO<Object>> selectCate(@RequestParam("pid") Integer pid, @RequestParam("cid") Integer cid, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.selectCate(pid, cid, principal))
+                .code(Constant.RESPONSEDTO_CODE)
+                .message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("unselectcate")
+    public ResponseEntity<ResponseDTO<Object>> unSelectCate(@RequestParam("pid") Integer pid, @RequestParam("cid") Integer cid, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.unSelectCate(pid, cid, principal))
+                .code(Constant.RESPONSEDTO_CODE)
+                .message(Constant.RESPONSEDTO_MESS).build());
+    }
+
 }
