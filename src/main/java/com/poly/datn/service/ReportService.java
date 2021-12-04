@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ReportService {
     List<OrdersVO> getListUnComfirmOrders(Principal principal);
+
+    Integer getNumberOfUnConfirmOrder(Principal principal);
 }
