@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.AccountRoleDAO;
+import com.poly.datn.dao.RoleDAO;
 import com.poly.datn.entity.Account;
 import com.poly.datn.entity.AccountRole;
+import com.poly.datn.entity.Role;
 import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.service.AccountService;
@@ -34,6 +36,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     AccountRoleDAO accountRoleDAO;
+
+    @Autowired
+    RoleDAO roleDAO;
 
     @Autowired
     SendMail sendMail;
@@ -85,9 +90,40 @@ public class AccountServiceImpl implements AccountService {
         for (Account account : accounts) {
             AccountVO accountVO = new AccountVO();
             BeanUtils.copyProperties(account, accountVO);
+            accountVO.setRoles(getRoleforAccount(account.getId()));
             accountVOS.add(accountVO);
         }
         return accountVOS;
+    }
+
+
+    @Override
+    public AccountVO findByUsernameAdmin(Integer id, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))
+        ) {
+            return null;
+        }
+        Account account = accountDAO.findById(id).orElse(null);
+        if (account == null)
+            return null;
+        AccountVO accountVO = new AccountVO();
+        BeanUtils.copyProperties(account, accountVO);
+        accountVO.setRoles(getRoleforAccount(account.getId()));
+        return accountVO;
+    }
+
+    private List<String> getRoleforAccount(Integer accountId) {
+        List<String> roles = new ArrayList<>();
+        for (AccountRole accountRole : accountRoleDAO.findAllByAccountIdEquals(accountId)) {
+            Role role = roleDAO.getById(accountRole.getRoleId());
+            if (role != null)
+                roles.add(role.getRoleName());
+        }
+        return roles;
     }
 
 
