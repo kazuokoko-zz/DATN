@@ -241,13 +241,21 @@ public class ProductServiceImpl implements ProductService {
             BeanUtils.copyProperties(productVO, product);
             product.setStatus("Chưa thêm đủ thông");
             product = productDAO.save(product);
+
+            List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
+            List<ProductCategory> productCategories = new ArrayList<>();
+            for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
+                ProductCategory productCategory = new ProductCategory();
+                productCategoryVO1.setProductId(product.getId());
+                BeanUtils.copyProperties(productCategoryVO1, productCategory);
+                productCategories.add(productCategory);
+            }
+            productCategoryDAO.saveAll(productCategories);
             productVO.setId(product.getId());
             return productVO;
-
         }
         return null;
     }
-
     @Override
     public ProductVO update(ProductVO productVO, Principal principal) {
         if (principal == null) {
@@ -260,6 +268,16 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(productVO, product);
         productDAO.save(product);
+
+        List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
+        List<ProductCategory> productCategories = new ArrayList<>();
+        productCategoryDAO.deleteAllByProductIdEquals(product.getId());
+        for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
+            ProductCategory productCategory = new ProductCategory();
+            BeanUtils.copyProperties(productCategoryVO1, productCategory);
+            productCategories.add(productCategory);
+        }
+        productCategoryDAO.saveAll(productCategories);
         return getById(product.getId());
     }
 
