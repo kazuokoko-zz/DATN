@@ -289,6 +289,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     @Override
     public PaymentVO getPayDetail(String tranno, String trandate) {
         Payment payment = paymentDAO.getByTranNoAndTranDate(tranno, trandate);
+        if (payment == null)
+            return null;
         PaymentVO paymentVO = new PaymentVO();
         BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;
