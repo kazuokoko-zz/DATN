@@ -24,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -191,8 +189,10 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     }
 
     @Override
-    public PaymentVO getResult(Integer id) throws IOException {
+    public PaymentVO getResult(Integer id) {
         Payment payment = paymentDAO.getByOrdersIdEquals(id);
+        if (payment == null)
+            return null;
         PaymentVO paymentVO = new PaymentVO();
         BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;
