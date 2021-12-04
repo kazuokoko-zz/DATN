@@ -45,9 +45,26 @@ public class SaleAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.newSale(saleVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @PostMapping("updateSale")
+    public ResponseEntity<ResponseDTO<Object>> updateSale(SaleVO saleVO,Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.updateSale(saleVO, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
     @PostMapping("newProductSale")
     public ResponseEntity<ResponseDTO<Object>> newProductSale(ProductSaleVO productSaleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.newProductSale(productSaleVO ,
+                        principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("updateProductSale")
+    public ResponseEntity<ResponseDTO<Object>> updateProductSale(ProductSaleVO productSaleVO, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.updateProductSale(productSaleVO ,
+                        principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("stopProductSale")
+    public ResponseEntity<ResponseDTO<Object>> stopProductSale(Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.deleteProductSale(id ,
                         principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
