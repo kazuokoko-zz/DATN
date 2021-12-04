@@ -22,6 +22,9 @@ public interface OrdersService {
 
     boolean cancerOrder(Integer id, Principal principal);
 
+    boolean confimOrder(Integer id, Principal principal);
+
+
     OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);
 
     OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal);

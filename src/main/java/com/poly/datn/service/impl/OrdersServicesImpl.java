@@ -108,6 +108,27 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     @Override
+    public boolean confimOrder(Integer id, Principal principal) {
+        if (principal == null) {
+            return false;
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return false;
+        }
+        Optional<Orders> orders =  ordersDAO.findById(id);
+        if(orders.isPresent()){
+            throw  new NotFoundException("api.error.API-003");
+        }
+        Orders orders1 = orders.get();
+        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
+        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagement.setChangedBy(principal.getName());
+        orderManagement.setStatus("Đã xác nhận");
+        orderManagementDAO.save(orderManagement);
+        return true;
+    }
+
+    @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
         if (principal == null) {
             return null;
