@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.time.*;
 import java.util.List;
 
 @Service
@@ -49,5 +51,72 @@ public class ReportServiceImpl implements ReportService {
     public Integer getNumberOfUnConfirmOrder(Principal principal) {
         return getListUnComfirmOrders(principal).size();
     }
+    @Override
+    public Integer sumOrderInMonth(Principal principal) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String month = String.valueOf(localDateTime.getMonth().getValue());
+        String year = String.valueOf(localDateTime.getYear());
+
+        YearMonth yearMonth = YearMonth.of( Integer.valueOf(year), Integer.valueOf(month));
+        LocalDate firstOfMonth = yearMonth.atDay( 1 );
+        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+
+
+        LocalDate last = yearMonth.atEndOfMonth();
+        Timestamp endTime = Timestamp.valueOf(last.atTime(23,59,59));
+
+//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+
+        return ordersDAO.countOrdersBy(startTime,endTime);
+    }
+
+    @Override
+    public Integer sumCancerOrderInMonth(Principal principal) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String month = String.valueOf(localDateTime.getMonth().getValue());
+        String year = String.valueOf(localDateTime.getYear());
+
+        YearMonth yearMonth = YearMonth.of( Integer.valueOf(year), Integer.valueOf(month));
+        LocalDate firstOfMonth = yearMonth.atDay( 1 );
+        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+
+
+        LocalDate last = yearMonth.atEndOfMonth();
+        Timestamp endTime = Timestamp.valueOf(last.atTime(23,59,59));
+
+//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+
+        return ordersDAO.countCancerOrdersBy(startTime,endTime);
+    }
+
+    @Override
+    public Integer sumSuccessOrderInMonth(Principal principal) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String month = String.valueOf(localDateTime.getMonth().getValue());
+        String year = String.valueOf(localDateTime.getYear());
+
+        YearMonth yearMonth = YearMonth.of( Integer.valueOf(year), Integer.valueOf(month));
+        LocalDate firstOfMonth = yearMonth.atDay( 1 );
+        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+
+
+        LocalDate last = yearMonth.atEndOfMonth();
+        Timestamp endTime = Timestamp.valueOf(last.atTime(23,59,59));
+
+//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+
+        return ordersDAO.countSuccessOrdersBy(startTime,endTime);
+    }
+
+    @Override
+    public List<OrdersVO> getListCancerOrderInMonth(Principal principal) {
+        return null;
+    }
+
+    @Override
+    public List<OrdersVO> getListComfimOrderInMonth(Principal principal) {
+        return null;
+    }
+
 
 }
