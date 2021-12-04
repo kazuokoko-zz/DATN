@@ -14,4 +14,6 @@ public interface ReportService {
 
     List<OrdersVO> getListCancerOrderInMonth(Principal principal);
     List<OrdersVO> getListComfimOrderInMonth(Principal principal);
+
+    Integer getNumberOfUnConfirmOrder(Principal principal);
 }
