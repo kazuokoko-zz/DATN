@@ -8,7 +8,7 @@ public class ProductSaleVO {
     private Integer id;
     private Integer productId;
     private Integer saleId;
-    private Integer discount;
+    private Long discount;
     private Integer quantity;
 
 

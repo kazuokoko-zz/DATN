@@ -19,5 +19,13 @@ public interface SaleService {
 
     SaleVO newSale(SaleVO saleVO, Principal principal);
 
+    SaleVO updateSale(SaleVO saleVO, Principal principal);
+
+    boolean stopSale(Integer id, Principal principal);
+
     ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal);
+
+    ProductSaleVO updateProductSale(ProductSaleVO productSaleVO, Principal principal);
+
+    boolean deleteProductSale(Integer id, Principal principal);
 }

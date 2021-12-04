@@ -13,4 +13,5 @@ public interface ProductSaleDAO extends JpaRepository<ProductSale, Integer> {
 
     ProductSale findByProductIdAndSaleId(Integer productId, Integer saleId);
     List<ProductSale> findByProductId(Integer productId);
+   ProductSale findOneById(Integer id);
 }

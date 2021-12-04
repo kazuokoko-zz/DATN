@@ -323,6 +323,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
         //save ordermanagement
+
+
+
         OrdersVO ordersVO = getDetailOrders(orders, status);
         OrderManagement orderManagement = new OrderManagement();
         orderManagement.setOrderId(orders.getId());
