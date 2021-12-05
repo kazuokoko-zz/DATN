@@ -94,9 +94,9 @@ public class OrdersServicesImpl implements OrdersService {
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return false;
         }
-        Optional<Orders> orders =  ordersDAO.findById(id);
-        if(orders.isPresent()){
-            throw  new NotFoundException("api.error.API-003");
+        Optional<Orders> orders = ordersDAO.findById(id);
+        if (orders.isPresent()) {
+            throw new NotFoundException("api.error.API-003");
         }
         Orders orders1 = orders.get();
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
@@ -115,9 +115,9 @@ public class OrdersServicesImpl implements OrdersService {
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return false;
         }
-        Optional<Orders> orders =  ordersDAO.findById(id);
-        if(orders.isPresent()){
-            throw  new NotFoundException("api.error.API-003");
+        Optional<Orders> orders = ordersDAO.findById(id);
+        if (orders.isPresent()) {
+            throw new NotFoundException("api.error.API-003");
         }
         Orders orders1 = orders.get();
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
@@ -324,13 +324,18 @@ public class OrdersServicesImpl implements OrdersService {
     private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
         //save ordermanagement
 
-
+        String note = "";
+        if (status == "Đã xác nhận") {
+            OrderManagement last = orderManagementDAO.getLastManager(orders.getId());
+            note = "Đã thanh toán";
+        }
 
         OrdersVO ordersVO = getDetailOrders(orders, status);
         OrderManagement orderManagement = new OrderManagement();
         orderManagement.setOrderId(orders.getId());
         orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
         orderManagement.setChangedBy(changeBy);
+        orderManagement.setNote(note);
         orderManagement.setStatus(status);
         orderManagementDAO.save(orderManagement);
         BeanUtils.copyProperties(orders, ordersVO);
@@ -356,4 +361,6 @@ public class OrdersServicesImpl implements OrdersService {
         OrderManagement orderManagement = orderManagementDAO.getLastManager(id);
         return orderManagement.getStatus();
     }
+
+
 }

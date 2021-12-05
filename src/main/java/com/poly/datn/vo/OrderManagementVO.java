@@ -19,6 +19,8 @@ public class OrderManagementVO {
 
     private String status;
 
+    private String note;
+
 
     AccountVO account;
 

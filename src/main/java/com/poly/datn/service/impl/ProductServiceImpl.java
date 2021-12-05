@@ -2,11 +2,13 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
+import com.poly.datn.service.AutoTask.AutoTaskService;
 import com.poly.datn.service.CommentService;
 import com.poly.datn.service.ProductService;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.PriceUtils;
+import com.poly.datn.utils.ProductUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +26,8 @@ import java.util.Optional;
 @Transactional
 public class ProductServiceImpl implements ProductService {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss aa");
+    @Autowired
+    ProductUtils productUtils;
 
     @Autowired
     ProductDAO productDAO;
@@ -90,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductVO> productVOS = new ArrayList<>();
         for (Product product : products) {
 
-            ProductVO productVO = convertToVO(product);
+            ProductVO productVO = productUtils.convertToVO(product);
             productVOS.add(productVO);
         }
 
@@ -113,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
             products = productDAO.findAll();
         }
         for (Product product : products) {
-            ProductVO productVO = convertToVO(product);
+            ProductVO productVO = productUtils.convertToVO(product);
             productVOS.add(productVO);
         }
         return productVOS;
@@ -151,10 +155,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
-        for (Product product : productDAO.findTrend()) {
-
-            ProductVO productVO = convertToVO(product);
-            productVOS.add(productVO);
+        if (AutoTaskService.trending.size() < 8) {
+            for (TrendingVO trendingVO : AutoTaskService.trending) {
+                productVOS.add(trendingVO.getProductVO());
+            }
+        } else {
+            for (int i = 0; i < 8; i++) {
+                productVOS.add(AutoTaskService.trending.get(i).getProductVO());
+            }
         }
         return productVOS;
     }
@@ -178,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductVO getById(Integer id) throws NullPointerException {
         Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
-        ProductVO productVO = convertToVO(product);
+        ProductVO productVO = productUtils.convertToVO(product);
         try {
             productVO.setBlogs(getBlogByProductIdAndType(productVO.getId(), 1));
         } catch (NullPointerException e) {
@@ -188,35 +196,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private ProductVO convertToVO(Product product) {
-        ProductVO productVO = new ProductVO();
-        BeanUtils.copyProperties(product, productVO);
-        List<ProductColorVO> productColorVOS = new ArrayList<>();
-        for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(productVO.getId())) {
-            ProductColorVO productColorVO = new ProductColorVO();
-            BeanUtils.copyProperties(productColor, productColorVO);
-            productColorVOS.add(productColorVO);
-        }
-        productVO.setProductColors(productColorVOS);
-        List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
-        List<String> photos = new ArrayList<>();
-        for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(productVO.getId())) {
-            ProductDetailsVO productDetailsVO = new ProductDetailsVO();
-            if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
-                for (String photo : productDetails.getPropertyValue().split(",")) {
-                    photos.add(photo.trim());
-                }
-            } else {
-                BeanUtils.copyProperties(productDetails, productDetailsVO);
-                productDetailsVOS.add(productDetailsVO);
-            }
-        }
-        productVO.setProductDetails(productDetailsVOS);
-        productVO.setPhotos(photos);
-        productVO.setDiscount(priceUtils.maxDiscountAtPresentOf(productVO.getId()));
-
-        return productVO;
-    }
+//    private ProductVO convertToVO(Product product) {
+//        ProductVO productVO = new ProductVO();
+//        BeanUtils.copyProperties(product, productVO);
+//        List<ProductColorVO> productColorVOS = new ArrayList<>();
+//        for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(productVO.getId())) {
+//            ProductColorVO productColorVO = new ProductColorVO();
+//            BeanUtils.copyProperties(productColor, productColorVO);
+//            productColorVOS.add(productColorVO);
+//        }
+//        productVO.setProductColors(productColorVOS);
+//        List<ProductDetailsVO> productDetailsVOS = new ArrayList<>();
+//        List<String> photos = new ArrayList<>();
+//        for (ProductDetails productDetails : productDetailsDAO.findAllByProductIdEquals(productVO.getId())) {
+//            ProductDetailsVO productDetailsVO = new ProductDetailsVO();
+//            if (productDetails.getPropertyName().equalsIgnoreCase("photo")) {
+//                for (String photo : productDetails.getPropertyValue().split(",")) {
+//                    photos.add(photo.trim());
+//                }
+//            } else {
+//                BeanUtils.copyProperties(productDetails, productDetailsVO);
+//                productDetailsVOS.add(productDetailsVO);
+//            }
+//        }
+//        productVO.setProductDetails(productDetailsVOS);
+//        productVO.setPhotos(photos);
+//        productVO.setDiscount(priceUtils.maxDiscountAtPresentOf(productVO.getId()));
+//
+//        return productVO;
+//    }
 
 
     private BlogVO getBlogByProductIdAndType(Integer productId, Integer type) throws NullPointerException {
@@ -285,6 +293,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
     @Override
     public ProductVO update(ProductVO productVO, Principal principal) {
         if (principal == null) {

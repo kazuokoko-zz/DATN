@@ -26,16 +26,25 @@ public class ReportController {
         return ResponseEntity.ok(ResponseDTO.builder().object(reportService.getListUnComfirmOrders(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @GetMapping("getCountOrder")
     public ResponseEntity<ResponseDTO<Object>> getCountOrder(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumOrderInMonth(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
+    @GetMapping("trending")
+    public ResponseEntity<ResponseDTO<Object>> getTrending(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(reportService.getTrendingAdmin(principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
     @GetMapping("getCancerCountOrder")
     public ResponseEntity<ResponseDTO<Object>> getCancerCountOrder(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumCancerOrderInMonth(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @GetMapping("getComfimCountOrder")
     public ResponseEntity<ResponseDTO<Object>> getComfimCountOrder(Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumSuccessOrderInMonth(principal))

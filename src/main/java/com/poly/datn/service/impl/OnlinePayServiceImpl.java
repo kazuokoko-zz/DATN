@@ -257,14 +257,13 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                             payment.setBankTranNo((String) fields.get("vnp_TransactionNo"));
                             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                                 payment.setStatus(1);
-
                             } else {
                                 payment.setStatus(2);
                             }
                             paymentDAO.save(payment);
                             OrderManagement orderManagement = AutoCreate
                                     .createOrderManagement(payment.getOrdersId(),
-                                            "Đã thanh toán", "sys");
+                                            "Chờ xác nhận", "sys", "Đã thanh toán");
                             if (payment.getStatus() == 1) {
                                 orderManagementDAO.save(orderManagement);
                             }
