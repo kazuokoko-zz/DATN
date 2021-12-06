@@ -20,6 +20,6 @@ public interface CategoryDAO extends JpaRepository<Category, Integer> {
     @Query("select  c from Category  c where  c.type =:id")
     List<Category> findChildCategories(@Param("id") Integer id);
 
-    Category findOneById(Integer id)
+    Category findOneById(Integer id);
 
 }
