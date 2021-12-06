@@ -12,7 +12,6 @@ import com.poly.datn.dao.CartDetailDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.entity.CartDetail;
 import com.poly.datn.service.CartDetailService;
-import com.poly.datn.vo.ProductDetailsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

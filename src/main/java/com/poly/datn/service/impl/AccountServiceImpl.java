@@ -16,6 +16,7 @@ import com.poly.datn.vo.AccountVO;
 import freemarker.template.TemplateException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -169,7 +170,11 @@ public class AccountServiceImpl implements AccountService {
         }
         account = accountDAO.findOneByEmail(accountVO.getEmail());
         if (account != null) {
-            return false;
+           throw new DuplicateKeyException("api.error.API-004");
+        }
+        account = accountDAO.findAccountByUsername(accountVO.getUsername());
+        if (account != null) {
+            throw new DuplicateKeyException("api.error.API-004");
         }
         account = new Account();
         BeanUtils.copyProperties(accountVO, account);
