@@ -184,11 +184,11 @@ public class AccountServiceImpl implements AccountService {
     public Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
         Account account = accountDAO.findAccountByUsername(accountVO.getUsername());
         if (account != null) {
-            throw new DuplicateKeyException("api.error.API-004");
+            return false;
         }
         account = accountDAO.findOneByEmail(accountVO.getEmail());
         if (account != null) {
-           throw new DuplicateKeyException("api.error.API-004");
+            return false;
         }
         account = new Account();
         BeanUtils.copyProperties(accountVO, account);
