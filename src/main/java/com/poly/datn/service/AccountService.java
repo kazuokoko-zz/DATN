@@ -29,5 +29,8 @@ public interface AccountService {
     Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException;
 
     AccountVO findByUsernameAdmin(Integer id, Principal principal);
+
+    Boolean checkEmail(String email);
+    Boolean checkUsername(String username);
 //    void updatePassword(String email);
 }

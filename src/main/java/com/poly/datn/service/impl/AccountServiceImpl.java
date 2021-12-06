@@ -117,6 +117,24 @@ public class AccountServiceImpl implements AccountService {
         return accountVO;
     }
 
+    @Override
+    public Boolean checkEmail(String email) {
+        Account account = accountDAO.findOneByEmail(email);
+        if (account != null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkUsername(String username) {
+        Account account = accountDAO.findAccountByUsername(username);
+        if (account != null) {
+            return false;
+        }
+        return true;
+    }
+
     private List<String> getRoleforAccount(Integer accountId) {
         List<String> roles = new ArrayList<>();
         for (AccountRole accountRole : accountRoleDAO.findAllByAccountIdEquals(accountId)) {
@@ -166,15 +184,11 @@ public class AccountServiceImpl implements AccountService {
     public Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
         Account account = accountDAO.findAccountByUsername(accountVO.getUsername());
         if (account != null) {
-            return false;
+            throw new DuplicateKeyException("api.error.API-004");
         }
         account = accountDAO.findOneByEmail(accountVO.getEmail());
         if (account != null) {
            throw new DuplicateKeyException("api.error.API-004");
-        }
-        account = accountDAO.findAccountByUsername(accountVO.getUsername());
-        if (account != null) {
-            throw new DuplicateKeyException("api.error.API-004");
         }
         account = new Account();
         BeanUtils.copyProperties(accountVO, account);
