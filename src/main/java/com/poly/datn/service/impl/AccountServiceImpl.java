@@ -12,8 +12,10 @@ import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.vo.AccountRegisterVO;
 import com.poly.datn.vo.AccountVO;
 import freemarker.template.TemplateException;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import javax.mail.MessagingException;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
@@ -181,17 +186,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
-        Account account = accountDAO.findAccountByUsername(accountVO.getUsername());
-        if (account != null) {
-            return false;
+    public AccountRegisterVO create(@Valid AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException {
+        if(accountRegisterVO.getUsername() == ""|| accountRegisterVO.getFullname() == ""|| accountRegisterVO.getEmail()== "" || accountRegisterVO.getPassword() == ""){
+            throw new NotImplementedException("Tham số không đúng");
         }
-        account = accountDAO.findOneByEmail(accountVO.getEmail());
+        Account account = accountDAO.findAccountByUsername(accountRegisterVO.getUsername());
         if (account != null) {
-            return false;
+            throw new DuplicateKeyException("common.error.dupplicate");
+        }
+        account = accountDAO.findOneByEmail(accountRegisterVO.getEmail());
+        if (account != null) {
+            throw new DuplicateKeyException("common.error.dupplicate");
         }
         account = new Account();
-        BeanUtils.copyProperties(accountVO, account);
+        BeanUtils.copyProperties(accountRegisterVO, account);
         account.setId(null);
         account.setUserStatus(true);
         account = accountDAO.save(account);
@@ -200,7 +208,7 @@ public class AccountServiceImpl implements AccountService {
         accountRole.setRoleId(3);
         accountRoleDAO.save(accountRole);
         sendMail.sentMailRegister(account.getEmail(), account.getFullname());
-        return true;
+        return accountRegisterVO;
     }
 
 
