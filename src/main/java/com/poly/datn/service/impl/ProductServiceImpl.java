@@ -11,10 +11,12 @@ import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.ProductUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
@@ -69,6 +71,8 @@ public class ProductServiceImpl implements ProductService {
     PriceUtils priceUtils;
     // Begin code of MA
 
+    @Autowired
+    CategoryDAO categoryDAO;
 
     @Override
     public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
@@ -276,14 +280,24 @@ public class ProductServiceImpl implements ProductService {
 
             Product product = new Product();
             BeanUtils.copyProperties(productVO, product);
-            product.setStatus("Chưa thêm đủ thông");
+            product.setStatus("Chưa thêm đủ thông tin");
             product = productDAO.save(product);
 
             List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
+            if(productCategoryVO == null){
+                throw new NotImplementedException("Chưa thêm category");
+            }
             List<ProductCategory> productCategories = new ArrayList<>();
+
             for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
+
+                Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
+                if(category == null){
+                    throw new NotImplementedException("Chưa thêm category");
+                }
                 ProductCategory productCategory = new ProductCategory();
                 productCategoryVO1.setProductId(product.getId());
+                productCategoryVO1.setCategoryId(category.getId());
                 BeanUtils.copyProperties(productCategoryVO1, productCategory);
                 productCategories.add(productCategory);
             }
