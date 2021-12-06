@@ -81,4 +81,15 @@ public class AccountRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkToken(token))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
+    @PutMapping("checkEmail")
+    public ResponseEntity<ResponseDTO<Object>> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkEmail(email))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("checkUsername")
+    public ResponseEntity<ResponseDTO<Object>> checkUsername(@RequestParam String username) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkUsername(username))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 }
