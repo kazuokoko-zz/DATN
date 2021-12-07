@@ -6,14 +6,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.validation.common.response.SuccessResponse;
-import com.poly.datn.vo.AccountVO;
+import com.poly.datn.vo.AccountRegisterVO;
 import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
@@ -45,9 +46,9 @@ public class AccountRest {
     }
 
     @PutMapping("create")
-    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody AccountVO accountVO) throws MessagingException, UnsupportedEncodingException {
-        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.create(accountVO))
-                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public SuccessResponse create(@Valid @RequestBody AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException {
+        accountService.create(accountRegisterVO);
+        return new SuccessResponse();
     }
 
     //End code of MA
@@ -79,6 +80,17 @@ public class AccountRest {
     @PutMapping("checkTokenReset")
     public ResponseEntity<ResponseDTO<Object>> checkTokenResetPass(@RequestParam String token) {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkToken(token))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("checkEmail")
+    public ResponseEntity<ResponseDTO<Object>> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkEmail(email))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("checkUsername")
+    public ResponseEntity<ResponseDTO<Object>> checkUsername(@RequestParam String username) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.checkUsername(username))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }

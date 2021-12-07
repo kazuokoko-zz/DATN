@@ -3,10 +3,12 @@ package com.poly.datn.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
+import com.poly.datn.vo.AccountRegisterVO;
 import com.poly.datn.vo.AccountVO;
 import freemarker.template.TemplateException;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
@@ -26,8 +28,11 @@ public interface AccountService {
 
     Boolean checkToken(String token);
 
-    Boolean create(AccountVO accountVO) throws MessagingException, UnsupportedEncodingException;
+    AccountRegisterVO create(AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException;
 
     AccountVO findByUsernameAdmin(Integer id, Principal principal);
+
+    Boolean checkEmail(String email);
+    Boolean checkUsername(String username);
 //    void updatePassword(String email);
 }
