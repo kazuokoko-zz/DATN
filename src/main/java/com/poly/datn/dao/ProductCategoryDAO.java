@@ -15,6 +15,8 @@ public interface ProductCategoryDAO extends JpaRepository<ProductCategory, Long>
 
     List<ProductCategory> findAllByProductIdEquals(Integer productId);
 
+    ProductCategory findOneById(Long productId);
+
     @Query("delete from ProductCategory c where c.productId=:pid and c.categoryId=:cid")
     void unSelect(@Param("pid") Integer productId, @Param("cid") Integer categoryId);
 }
