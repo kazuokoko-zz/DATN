@@ -21,6 +21,7 @@ import org.webjars.NotFoundException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,8 +75,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     CategoryDAO categoryDAO;
 
-    @Override
-    public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
+    public List<ProductVO> getListP(Optional<Integer> cate, Optional<String> find){
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
@@ -101,8 +101,38 @@ public class ProductServiceImpl implements ProductService {
             ProductVO productVO = productUtils.convertToVO(product);
             productVOS.add(productVO);
         }
-
         return productVOS;
+    }
+
+    @Override
+    public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
+        List<ProductVO> productVOS =  this.getListP(cate, find);
+        List<ProductVO> productVO = new ArrayList<>();
+        for (ProductVO productVO1 : productVOS
+        ) {
+            if(productVO1.getStatus().equals("Đã xóa") ) {
+                continue;
+            } else {
+                productVO.add(productVO1);
+            }
+        }
+        return productVO;
+    }
+
+    @Override
+    public List<ProductVO> getListDelete(Optional<Integer> cate, Optional<String> find) {
+        List<ProductVO> productVOS =  this.getListP(cate, find);
+        List<ProductVO> productVO = new ArrayList<>();
+        for (ProductVO productVO1 : productVOS
+        ) {
+//            productVO1.getStatus().equals("Không kinh doanh") || productVO1.getStatus().equals("Ngừng kinh doanh") ||
+            if( productVO1.getStatus().equals("Đã xóa") ) {
+                productVO.add(productVO1);
+            } else {
+                continue;
+            }
+        }
+        return productVO;
     }
 
     @Override
@@ -259,7 +289,31 @@ public class ProductServiceImpl implements ProductService {
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 Product product = productDAO.getById(id);
-                product.setStatus("Không kinh doanh");
+                if(product == null){
+                    throw new NotFoundException("api.error.API-003");
+                }
+                product.setStatus("Đã xóa");
+                productDAO.save(product);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
+    @Override
+    @Transactional
+    public Object dontSell(Integer id, Principal principal) {
+        if (principal == null)
+            return false;
+        if (checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff")) {
+            try {
+                Product product = productDAO.getById(id);
+                if(product == null){
+                    throw new NotFoundException("api.error.API-003");
+                }
+                product.setStatus("Ngừng kinh doanh");
                 productDAO.save(product);
                 return true;
             } catch (Exception e) {
@@ -277,10 +331,12 @@ public class ProductServiceImpl implements ProductService {
         }
         if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
-
             Product product = new Product();
             BeanUtils.copyProperties(productVO, product);
             product.setStatus("Chưa thêm đủ thông tin");
+            if(productVO.equals("Không kinh doanh")){
+                product.setStatus("Không kinh doanh");
+            }
             product = productDAO.save(product);
 
             List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
@@ -316,6 +372,9 @@ public class ProductServiceImpl implements ProductService {
         if (!(checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) || productVO.getId() == null) {
             return null;
+        }
+        if(productDAO.getOneProductById(productVO.getId()) == null){
+            throw new NotFoundException("api.error.API-003");
         }
         Product product = new Product();
         BeanUtils.copyProperties(productVO, product);

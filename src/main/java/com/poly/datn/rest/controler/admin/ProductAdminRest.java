@@ -30,15 +30,24 @@ public class ProductAdminRest {
     @Autowired
     ProductCategoryService productCategoryService;
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable("id") Integer id, Principal principal) {
+    @PutMapping("delete/{id}")
+    public ResponseEntity<ResponseDTO<Object>> deleteProduct(@PathVariable("id") Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.delete(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("dontSell/{id}")
+    public ResponseEntity<ResponseDTO<Object>> dontSellProduct(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.dontSell(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping
     public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @GetMapping("getListDelete")
+    public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDelete(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping("{id}")
