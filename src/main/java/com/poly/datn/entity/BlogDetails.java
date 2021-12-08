@@ -23,7 +23,7 @@ public class BlogDetails implements Comparable<BlogDetails> {
     @Column(name = "ordinal", nullable = false)
     private Short ordinal;
     @Basic
-    @Column(name = "content", nullable = false, length = -1)
+    @Column(name = "content", nullable = false)
     private String content;
 
 
