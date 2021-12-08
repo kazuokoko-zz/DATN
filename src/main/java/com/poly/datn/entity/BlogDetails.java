@@ -17,13 +17,13 @@ public class BlogDetails implements Comparable<BlogDetails> {
     @Column(name = "blog_id", nullable = false)
     private Integer blogId;
     @Basic
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = true)
     private String type;
     @Basic
-    @Column(name = "ordinal", nullable = false)
+    @Column(name = "ordinal", nullable = true)
     private Short ordinal;
     @Basic
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = true)
     private String content;
 
 

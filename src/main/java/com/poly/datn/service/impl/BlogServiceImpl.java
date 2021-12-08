@@ -164,13 +164,17 @@ public class BlogServiceImpl implements BlogService {
         } else {
             blog.setType(2);
         }
-        blog = blogDAO.save(blog);
+        blog.setStatus(true);
         List<BlogDetailsVO> blogDetails = blogVO.getBlogDetails();
+        if(blogDetails.size() <=0){
+            blog.setStatus(false);
+        }
+        blog = blogDAO.save(blog);
         List<BlogDetails> blogDetails1 = new ArrayList<>();
         for (BlogDetailsVO blogDetailsVO: blogDetails
              ) {
             BlogDetails blogDetailsVO1 = new BlogDetails();
-            BeanUtils.copyProperties(blogDetails1, blogDetailsVO1);
+            BeanUtils.copyProperties(blogDetailsVO, blogDetailsVO1);
             blogDetailsVO1.setBlogId(blog.getId());
             blogDetails1.add(blogDetailsVO1);
         }

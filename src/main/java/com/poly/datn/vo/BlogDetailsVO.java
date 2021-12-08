@@ -11,8 +11,6 @@ public class BlogDetailsVO {
     private String type;
     private Short ordinal;
     private String content;
-
-
     BlogVO blog;
 
 }
