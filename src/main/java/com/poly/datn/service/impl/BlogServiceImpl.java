@@ -171,6 +171,7 @@ public class BlogServiceImpl implements BlogService {
              ) {
             BlogDetails blogDetailsVO1 = new BlogDetails();
             BeanUtils.copyProperties(blogDetails1, blogDetailsVO1);
+            blogDetailsVO1.setBlogId(blog.getId());
             blogDetails1.add(blogDetailsVO1);
         }
         blogDetails1 = blogDetailsDAO.saveAll(blogDetails1);
