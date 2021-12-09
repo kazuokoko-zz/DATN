@@ -214,7 +214,7 @@ public class OrdersServicesImpl implements OrdersService {
                 orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
                 orderManagement1.setChangedBy(principal.getName());
                 orderManagement1.setOrderId(orders.getId());
-                orderManagement1.setStatus("Giao hàng thành công");
+                orderManagement1.setStatus(orderManagement.getStatus());
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
                 orderManagementDAO.save(orderManagement1);
                 return true;
