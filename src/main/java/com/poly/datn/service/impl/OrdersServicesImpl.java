@@ -112,7 +112,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
         if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
-            throw new NotImplementedException("Không thể hủy sản phẩm này");
+            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement.setChangedBy(principal.getName());
@@ -140,18 +140,21 @@ public class OrdersServicesImpl implements OrdersService {
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
-        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
         if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
-            throw new NotImplementedException("Không thể hủy sản phẩm này");
+            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement.setChangedBy(principal.getName());
             orderManagement.setStatus("Đã xác nhận");
-            if (noteOrderManagementVo.getNote() == null) {
-                orderManagement.setNote("Thực hiện xác nhận đơn hàng");
+            String note = "";
+            if (noteOrderManagementVo.getNote().isBlank()) {
+                OrderManagement last = orderManagementDAO.getLastManager(orders.getId());
+                if (orders.getTypePayment().equals(Boolean.TRUE)) note = last.getNote();
             } else {
                 orderManagement.setNote(noteOrderManagementVo.getNote());
             }
+            orderManagement.setNote(note);
             orderManagementDAO.save(orderManagement);
             return true;
         }
