@@ -46,4 +46,14 @@ public class OrdersAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.updateOrderAdmin(id, status, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @PutMapping("confimOrder")
+    public ResponseEntity<ResponseDTO<Object>> confimOrder(@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimOrder(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("cancerOrder")
+    public ResponseEntity<ResponseDTO<Object>> cancerOrder(@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.cancerOrder(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 }
