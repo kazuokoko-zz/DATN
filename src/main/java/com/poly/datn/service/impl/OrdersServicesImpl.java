@@ -111,13 +111,13 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
             throw new NotImplementedException("Không thể hủy sản phẩm này");
         } else {
             orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement.setChangedBy(principal.getName());
             orderManagement.setStatus("Đã hủy");
-            if (noteOrderManagementVo.getNote() == null){
+            if (noteOrderManagementVo.getNote() == null) {
                 orderManagement.setNote("Thực hiện hủy đơn hàng");
             } else {
                 orderManagement.setNote(noteOrderManagementVo.getNote());
@@ -141,13 +141,13 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
             throw new NotImplementedException("Không thể hủy sản phẩm này");
         } else {
             orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement.setChangedBy(principal.getName());
             orderManagement.setStatus("Đã xác nhận");
-            if (noteOrderManagementVo.getNote() == null){
+            if (noteOrderManagementVo.getNote() == null) {
                 orderManagement.setNote("Thực hiện xác nhận đơn hàng");
             } else {
                 orderManagement.setNote(noteOrderManagementVo.getNote());
@@ -329,6 +329,7 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
             totalPrice += orderDetailsVO1.getPrice();
         }
+        orders.setTypePayment(false);
         orders.setSumprice(totalPrice);
         return ordersDAO.save(orders);
     }
