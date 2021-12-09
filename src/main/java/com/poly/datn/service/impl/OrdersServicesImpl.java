@@ -180,6 +180,7 @@ public class OrdersServicesImpl implements OrdersService {
             OrderManagement orderManagement1 = new OrderManagement();
             orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement1.setChangedBy(principal.getName());
+            orderManagement1.setOrderId(orders.getId());
             orderManagement1.setStatus("Giao hàng thành công");
             if (noteOrderManagementVo.getNote() == ""){
                 orderManagement1.setNote("Thực hiện xác nhận đã giao hàng thành công");
