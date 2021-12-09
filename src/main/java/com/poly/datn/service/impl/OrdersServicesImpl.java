@@ -175,7 +175,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
         if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
-            throw new NotImplementedException("Không thể cập nhập sản phẩm này");
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
             orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
@@ -205,7 +205,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
         if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
-            throw new NotImplementedException("Không thể cập nhập sản phẩm này");
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             if (noteOrderManagementVo.getNote() == ""){
                 return false;
