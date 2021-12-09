@@ -21,7 +21,6 @@ import org.webjars.NotFoundException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -198,6 +197,16 @@ public class ProductServiceImpl implements ProductService {
                 productVOS.add(AutoTaskService.trending.get(i).getProductVO());
             }
         }
+        return productVOS;
+    }
+
+    @Override
+    public List<ProductVO> getMostNew() {
+        List<ProductVO> productVOS = new ArrayList<>();
+//        for (Product  product: productDAO.
+//             ) {
+//
+//        }
         return productVOS;
     }
 

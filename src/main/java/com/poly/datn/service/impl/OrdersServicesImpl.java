@@ -336,8 +336,10 @@ public class OrdersServicesImpl implements OrdersService {
 
         String note = "";
         if (status == "Đã xác nhận") {
+            if (orders.getTypePayment().equals(Boolean.TRUE)) note = "Đã thanh toán";
+        } else {
             OrderManagement last = orderManagementDAO.getLastManager(orders.getId());
-            note = "Đã thanh toán";
+            if (orders.getTypePayment().equals(Boolean.TRUE)) note = last.getNote();
         }
 
         OrdersVO ordersVO = getDetailOrders(orders, status);

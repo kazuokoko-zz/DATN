@@ -26,7 +26,9 @@ public class Orders {
     @Basic
     @Column(name = "sumprice", nullable = false, precision = 0)
     private Long sumprice;
-
+    @Basic
+    @Column(name = "type_payment", nullable = false, precision = 0)
+    private Boolean typePayment;
 
 //    @OneToOne
 //    @JoinColumn(name = "customer_id", insertable = false ,updatable  = false)
