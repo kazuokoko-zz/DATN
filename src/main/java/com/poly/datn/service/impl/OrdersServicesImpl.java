@@ -393,7 +393,7 @@ public class OrdersServicesImpl implements OrdersService {
         Long totalPrice = 0L;
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            totalPrice += orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount();
+            totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
         }
         if (totalPrice != orders.getSumprice()) {
             throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
@@ -407,6 +407,9 @@ public class OrdersServicesImpl implements OrdersService {
         // save order detail
         List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
+            if (orderDetailsVO1.getQuantity().equals(0)) {
+                continue;
+            }
             OrderDetails orderDetails = new OrderDetails();
             BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
             orderDetails.setOrderId(orders.getId());
