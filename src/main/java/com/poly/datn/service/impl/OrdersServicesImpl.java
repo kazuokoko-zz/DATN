@@ -192,6 +192,36 @@ public class OrdersServicesImpl implements OrdersService {
         }
     }
     @Override
+    public boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        if (principal == null) {
+            return false;
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            return false;
+        }
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
+        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+            throw new NotImplementedException("Không thể cập nhập sản phẩm này");
+        } else {
+            if (noteOrderManagementVo.getNote() == ""){
+                return false;
+            } else {
+                OrderManagement orderManagement1 = new OrderManagement();
+                orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+                orderManagement1.setChangedBy(principal.getName());
+                orderManagement1.setOrderId(orders.getId());
+                orderManagement1.setStatus("Giao hàng thành công");
+                orderManagement1.setNote(noteOrderManagementVo.getNote());
+                orderManagementDAO.save(orderManagement1);
+                return true;
+            }
+        }
+    }
+    @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
         if (principal == null) {
             return null;
