@@ -81,7 +81,10 @@ public class OrdersServicesImpl implements OrdersService {
         saveDetails(orders, ordersVO);
         OrdersVO vo = managerOrderStatus(orders, changeBy, "Chờ xác nhận");
         if (principal != null) {
-            cartDetailDAO.removeFromCartById(accountDAO.findAccountByUsername(principal.getName()).getId());
+            List<CartDetail> details = cartDetailDAO.getCartDetailsByUsername(principal.getName());
+            for (CartDetail detail : details){
+                cartDetailDAO.deleteById(detail.getId());
+            }
         }
         return vo;
     }

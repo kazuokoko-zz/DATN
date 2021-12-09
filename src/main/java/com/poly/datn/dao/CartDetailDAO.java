@@ -17,6 +17,4 @@ public interface CartDetailDAO extends JpaRepository<CartDetail, Integer> {
     @Query(value = "select  c from CartDetail  c where c.productId=:productId and c.userId=:userId")
     CartDetail findOneByProductIdAndUserId(@Param("productId") Integer productId, @Param("userId") Integer userId);
 
-    @Query("delete from  CartDetail c where  c.userId=:uid")
-    void removeFromCartById(@Param("uid") Integer uid);
 }
