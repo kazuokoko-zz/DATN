@@ -149,8 +149,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderManagement.setStatus("Đã xác nhận");
             String note = "";
             if (noteOrderManagementVo.getNote().isBlank()) {
-                OrderManagement last = orderManagementDAO.getLastManager(orders.getId());
-                if (orders.getTypePayment().equals(Boolean.TRUE)) note = last.getNote();
+                note = "Thực hiện hủy đơn hàng";
             } else {
                 orderManagement.setNote(noteOrderManagementVo.getNote());
             }
