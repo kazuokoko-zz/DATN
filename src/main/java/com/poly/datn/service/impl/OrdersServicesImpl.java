@@ -7,6 +7,8 @@ import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
+import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,7 +99,7 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     @Override
-    public boolean cancerOrder(Integer id, Principal principal) {
+    public boolean cancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
         if (principal == null) {
             return false;
         }
@@ -109,32 +111,50 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
-        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-        orderManagement.setChangedBy(principal.getName());
-        orderManagement.setStatus("Đã hủy");
-        orderManagementDAO.save(orderManagement);
-        return true;
+        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+            throw new NotImplementedException("Không thể hủy sản phẩm này");
+        } else {
+            orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+            orderManagement.setChangedBy(principal.getName());
+            orderManagement.setStatus("Đã hủy");
+            if (noteOrderManagementVo.getNote() == null){
+                orderManagement.setNote("Thực hiện hủy đơn hàng");
+            } else {
+                orderManagement.setNote(noteOrderManagementVo.getNote());
+            }
+            orderManagementDAO.save(orderManagement);
+            return true;
+        }
+
     }
 
     @Override
-    public boolean confimOrder(Integer id, Principal principal) {
+    public boolean confimOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
         if (principal == null) {
             return false;
         }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return false;
         }
-        Optional<Orders> orders = ordersDAO.findById(id);
-        if (orders.isPresent()) {
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
-        Orders orders1 = orders.get();
-        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
-        orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-        orderManagement.setChangedBy(principal.getName());
-        orderManagement.setStatus("Đã xác nhận");
-        orderManagementDAO.save(orderManagement);
-        return true;
+        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
+        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+            throw new NotImplementedException("Không thể hủy sản phẩm này");
+        } else {
+            orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+            orderManagement.setChangedBy(principal.getName());
+            orderManagement.setStatus("Đã xác nhận");
+            if (noteOrderManagementVo.getNote() == null){
+                orderManagement.setNote("Thực hiện xác nhận đơn hàng");
+            } else {
+                orderManagement.setNote(noteOrderManagementVo.getNote());
+            }
+            orderManagementDAO.save(orderManagement);
+            return true;
+        }
     }
 
     @Override
