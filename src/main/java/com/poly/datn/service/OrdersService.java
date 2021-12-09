@@ -25,6 +25,7 @@ public interface OrdersService {
 
     boolean confimOrder(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
     boolean confimSell(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
+    boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
 
 
     OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);
