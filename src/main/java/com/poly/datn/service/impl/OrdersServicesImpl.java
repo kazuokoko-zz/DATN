@@ -53,6 +53,12 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     ProductSaleDAO productSaleDAO;
 
+    @Autowired
+    CartDetailDAO cartDetailDAO;
+
+    @Autowired
+    AccountDAO accountDAO;
+
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
         if (principal == null) {
@@ -71,7 +77,11 @@ public class OrdersServicesImpl implements OrdersService {
         // save customer
         Orders orders = createOders(ordersVO, changeBy);
         saveDetails(orders, ordersVO);
-        return managerOrderStatus(orders, changeBy, "Chờ xác nhận");
+        OrdersVO vo = managerOrderStatus(orders, changeBy, "Chờ xác nhận");
+        if (principal != null) {
+            cartDetailDAO.removeFromCartById(accountDAO.findAccountByUsername(principal.getName()).getId());
+        }
+        return vo;
     }
 
     @Override
