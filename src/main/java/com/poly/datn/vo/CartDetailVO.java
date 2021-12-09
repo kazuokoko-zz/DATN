@@ -22,6 +22,11 @@ public class CartDetailVO {
 
     private Long discount;
 
+    private Integer colorId;
+
+
+
+
     AccountVO account;
 
     ProductVO product;

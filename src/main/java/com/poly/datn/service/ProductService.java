@@ -19,6 +19,8 @@ public interface ProductService {
 
     List<ProductVO> getListDelete(Optional<Integer> cate, Optional<String> find);
 
+    List<ProductVO> getMostNew();
+
     List<Product> getListByCate(Integer cateId);
 
     ProductVO getById(Integer id) throws NullPointerException;

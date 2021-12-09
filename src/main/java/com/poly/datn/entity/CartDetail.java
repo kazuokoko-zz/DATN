@@ -25,6 +25,9 @@ public class CartDetail {
     @Column(name = "discount")
     private Integer discount;
 
+    @Column(name = "color_id")
+    private Integer colorId;
+
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     Account account;
