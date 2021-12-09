@@ -389,7 +389,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         System.out.println(totalPrice);
         System.out.println(ordersVO.getSumprice());
-        if (totalPrice != ordersVO.getSumprice()) {
+        if (!totalPrice.equals(ordersVO.getSumprice())) {
             throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
         }
 
