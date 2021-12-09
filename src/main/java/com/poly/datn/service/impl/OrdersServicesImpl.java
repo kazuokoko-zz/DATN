@@ -395,7 +395,7 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
             totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
         }
-        if (totalPrice != orders.getSumprice()) {
+        if (totalPrice != ordersVO.getSumprice()) {
             throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
         }
         orders.setTypePayment(false);
