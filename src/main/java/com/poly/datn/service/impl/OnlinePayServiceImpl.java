@@ -261,6 +261,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                                 payment.setStatus(2);
                             }
                             paymentDAO.save(payment);
+                            orders.setTypePayment(true);
+                            ordersDAO.save(orders);
                             OrderManagement orderManagement = AutoCreate
                                     .createOrderManagement(payment.getOrdersId(),
                                             "Chờ xác nhận", "sys", "Đã thanh toán");

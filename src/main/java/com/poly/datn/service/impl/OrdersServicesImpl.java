@@ -111,10 +111,11 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
-            throw new NotImplementedException("Không thể hủy sản phẩm này");
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
+            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
+            orderManagement1.setOrderId(orders.getId());
             orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement1.setChangedBy(principal.getName());
             orderManagement1.setStatus("Đã hủy");
@@ -143,11 +144,12 @@ public class OrdersServicesImpl implements OrdersService {
         }
         OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
         if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
-            throw new NotImplementedException("Không thể xác nhận sản phẩm này");
+            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
             orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement1.setChangedBy(principal.getName());
+            orderManagement1.setOrderId(orders.getId());
             orderManagement1.setStatus("Đã xác nhận");
             if (noteOrderManagementVo.getNote() == ""){
                 orderManagement1.setNote("Thực hiện xác nhận đơn hàng");
@@ -360,6 +362,7 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
             totalPrice += orderDetailsVO1.getPrice();
         }
+        orders.setTypePayment(false);
         orders.setSumprice(totalPrice);
         return ordersDAO.save(orders);
     }
