@@ -119,7 +119,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
             orderManagement1.setChangedBy(principal.getName());
             orderManagement1.setStatus("Đã hủy");
-            if (noteOrderManagementVo.getNote() == ""){
+            if (noteOrderManagementVo.getNote() == "") {
                 orderManagement1.setNote("Thực hiện hủy đơn hàng");
             } else {
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
@@ -143,7 +143,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
             throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -151,7 +151,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderManagement1.setChangedBy(principal.getName());
             orderManagement1.setOrderId(orders.getId());
             orderManagement1.setStatus("Đã xác nhận");
-            if (noteOrderManagementVo.getNote() == ""){
+            if (noteOrderManagementVo.getNote() == "") {
                 orderManagement1.setNote("Thực hiện xác nhận đơn hàng");
             } else {
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
@@ -174,7 +174,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -182,7 +182,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderManagement1.setChangedBy(principal.getName());
             orderManagement1.setOrderId(orders.getId());
             orderManagement1.setStatus("Giao hàng thành công");
-            if (noteOrderManagementVo.getNote() == ""){
+            if (noteOrderManagementVo.getNote() == "") {
                 orderManagement1.setNote("Thực hiện xác nhận đã giao hàng thành công");
             } else {
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
@@ -191,6 +191,7 @@ public class OrdersServicesImpl implements OrdersService {
             return true;
         }
     }
+
     @Override
     public boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
         if (principal == null) {
@@ -204,10 +205,10 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if(orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")){
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
-            if (noteOrderManagementVo.getNote() == ""){
+            if (noteOrderManagementVo.getNote() == "") {
                 return false;
             } else {
                 OrderManagement orderManagement1 = new OrderManagement();
@@ -221,6 +222,7 @@ public class OrdersServicesImpl implements OrdersService {
             }
         }
     }
+
     @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
         if (principal == null) {
@@ -391,7 +393,10 @@ public class OrdersServicesImpl implements OrdersService {
         Long totalPrice = 0L;
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            totalPrice += orderDetailsVO1.getPrice();
+            totalPrice += orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount();
+        }
+        if (totalPrice != orders.getSumprice()) {
+            throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
         }
         orders.setTypePayment(false);
         orders.setSumprice(totalPrice);
