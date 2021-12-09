@@ -104,15 +104,14 @@ public class OrdersServicesImpl implements OrdersService {
         if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return false;
         }
-        Optional<Orders> orders = ordersDAO.findById(id);
-        if (orders.isPresent()) {
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
-        Orders orders1 = orders.get();
-        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders1.getId());
+        OrderManagement orderManagement = orderManagementDAO.findOneByOrderId(orders.getId());
         orderManagement.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
         orderManagement.setChangedBy(principal.getName());
-        orderManagement.setStatus("Đơn hàng đã hủy");
+        orderManagement.setStatus("Đã hủy");
         orderManagementDAO.save(orderManagement);
         return true;
     }
