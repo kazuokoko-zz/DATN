@@ -4,6 +4,7 @@ import com.poly.datn.entity.Orders;
 import com.poly.datn.vo.CustomerVO;
 import com.poly.datn.vo.OrderDetailsVO;
 import com.poly.datn.vo.OrdersVO;
+import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 
 import java.security.Principal;
 import java.util.List;
@@ -20,9 +21,9 @@ public interface OrdersService {
 
     OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal);
 
-    boolean cancerOrder(Integer id, Principal principal);
+    boolean cancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
 
-    boolean confimOrder(Integer id, Principal principal);
+    boolean confimOrder(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
 
 
     OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);

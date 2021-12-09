@@ -4,6 +4,7 @@ import com.poly.datn.common.Constant;
 import com.poly.datn.service.OrdersService;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.vo.ResponseDTO;
+import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,13 +48,13 @@ public class OrdersAdminRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @PutMapping("confimOrder")
-    public ResponseEntity<ResponseDTO<Object>> confimOrder(@RequestParam Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimOrder(id, principal))
+    public ResponseEntity<ResponseDTO<Object>> confimOrder(@RequestBody NoteOrderManagementVo noteOrderManagementVo, @RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimOrder(noteOrderManagementVo,id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @PutMapping("cancerOrder")
-    public ResponseEntity<ResponseDTO<Object>> cancerOrder(@RequestParam Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.cancerOrder(id, principal))
+    public ResponseEntity<ResponseDTO<Object>> cancerOrder(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.cancerOrder(noteOrderManagementVo, id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }
