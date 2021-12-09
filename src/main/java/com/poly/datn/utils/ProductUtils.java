@@ -1,10 +1,13 @@
 package com.poly.datn.utils;
 
+import com.poly.datn.dao.ColorDAO;
 import com.poly.datn.dao.ProductColorDAO;
 import com.poly.datn.dao.ProductDetailsDAO;
+import com.poly.datn.entity.Color;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductColor;
 import com.poly.datn.entity.ProductDetails;
+import com.poly.datn.vo.ColorVO;
 import com.poly.datn.vo.ProductColorVO;
 import com.poly.datn.vo.ProductDetailsVO;
 import com.poly.datn.vo.ProductVO;
@@ -23,6 +26,8 @@ public class ProductUtils {
     ProductDetailsDAO productDetailsDAO;
     @Autowired
     PriceUtils priceUtils;
+    @Autowired
+    ColorDAO colorDAO;
 
     public ProductVO convertToVO(Product product) {
         ProductVO productVO = new ProductVO();
@@ -31,6 +36,11 @@ public class ProductUtils {
         for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(productVO.getId())) {
             ProductColorVO productColorVO = new ProductColorVO();
             BeanUtils.copyProperties(productColor, productColorVO);
+            Color color = new Color();
+            color = colorDAO.findColorById(productColorVO.getColorId());
+            ColorVO colorVO = new ColorVO();
+            BeanUtils.copyProperties(color, colorVO);
+            productColorVO.setColor(colorVO);
             productColorVOS.add(productColorVO);
         }
         productVO.setProductColors(productColorVOS);

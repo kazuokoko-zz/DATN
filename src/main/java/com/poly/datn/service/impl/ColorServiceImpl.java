@@ -8,7 +8,6 @@ import com.poly.datn.entity.ProductColor;
 import com.poly.datn.service.ColorService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ColorVO;
-import com.poly.datn.vo.ProductColorVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -37,27 +36,39 @@ public class ColorServiceImpl implements ColorService {
     ProductColorDAO productColorDAO;
 
     @Override
-    public List<ColorVO> getColor(Principal principal) {
-        if(principal == null){
-            log.error(Constant.NOT_LOGGED_IN);
-            return null;
-        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
-            List<ColorVO> colorVO = new ArrayList<>();
+    public List<ColorVO> getColor() {
+
+        List<ColorVO> colorVO = new ArrayList<>();
         colorDAO.findAll().forEach(color -> {
             ColorVO vo = new ColorVO();
             BeanUtils.copyProperties(color, vo);
             colorVO.add(vo);
         });
+        return colorVO;
+    }
+
+    @Override
+    public List<ColorVO> getColor(Principal principal) {
+        if (principal == null) {
+            log.error(Constant.NOT_LOGGED_IN);
+            return null;
+        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
+            List<ColorVO> colorVO = new ArrayList<>();
+            colorDAO.findAll().forEach(color -> {
+                ColorVO vo = new ColorVO();
+                BeanUtils.copyProperties(color, vo);
+                colorVO.add(vo);
+            });
             return colorVO;
 
-    } else {
-        return null;
-    }
+        } else {
+            return null;
+        }
     }
 
     @Override
     public ColorVO addColor(ColorVO colorVO, Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
@@ -78,17 +89,17 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public ColorVO updateColor(ColorVO colorVO, Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
             Optional<Color> optionalColor = colorDAO.findById(colorVO.getId());
-        if(optionalColor.isPresent()){
-            Color entityColor = new Color();
-            BeanUtils.copyProperties(colorVO, entityColor);
-            colorDAO.save(entityColor);
-        }
-        return  colorVO;
+            if (optionalColor.isPresent()) {
+                Color entityColor = new Color();
+                BeanUtils.copyProperties(colorVO, entityColor);
+                colorDAO.save(entityColor);
+            }
+            return colorVO;
         } else {
             return null;
         }
@@ -96,12 +107,12 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public Color deleteColor(Integer id, Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
-            Color color= colorDAO.findColorById(id);
-            if(color != null) {
+            Color color = colorDAO.findColorById(id);
+            if (color != null) {
                 colorDAO.delete(color);
                 ProductColor productColor = productColorDAO.findByColorId(color.getId());
                 if (productColor != null) {
@@ -113,8 +124,8 @@ public class ColorServiceImpl implements ColorService {
             } else {
                 return null;
             }
-    } else {
-        return null;
-    }
+        } else {
+            return null;
+        }
     }
 }

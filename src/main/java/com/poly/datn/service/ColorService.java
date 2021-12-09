@@ -7,6 +7,8 @@ import java.security.Principal;
 import java.util.List;
 
 public interface ColorService {
+    List<ColorVO> getColor();
+
     List<ColorVO> getColor(Principal principal);
     ColorVO addColor(ColorVO colorVO, Principal principal);
     ColorVO updateColor(ColorVO colorVO, Principal principal);
