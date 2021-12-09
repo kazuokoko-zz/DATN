@@ -28,6 +28,9 @@ public class OrderDetails {
     @Basic
     @Column(name = "discount", nullable = false, precision = 0)
     private Long discount;
+    @Basic
+    @Column(name = "color_id")
+    private Integer colorId;
 
 
 

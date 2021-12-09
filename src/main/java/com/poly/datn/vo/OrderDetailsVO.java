@@ -21,6 +21,8 @@ public class OrderDetailsVO {
 
     private Long discount;
 
+    private Integer colorId;
+
 
     OrdersVO orders;
 
