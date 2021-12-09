@@ -382,6 +382,17 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     private Orders createOders(OrdersVO ordersVO, String changeBy) {
+        Long totalPrice = 0L;
+        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
+            totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
+        }
+        System.out.println(totalPrice);
+        System.out.println(ordersVO.getSumprice());
+        if (totalPrice != ordersVO.getSumprice()) {
+            throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
+        }
+
         Customer customer = new Customer();
         BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
         customer = customerDAO.save(customer);
@@ -390,14 +401,6 @@ public class OrdersServicesImpl implements OrdersService {
         orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
         orders.setUsername(changeBy);
         orders.setCustomerId(customer.getId());
-        Long totalPrice = 0L;
-        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
-        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
-        }
-        if (totalPrice != ordersVO.getSumprice()) {
-            throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
-        }
         orders.setTypePayment(false);
         orders.setSumprice(totalPrice);
         return ordersDAO.save(orders);
