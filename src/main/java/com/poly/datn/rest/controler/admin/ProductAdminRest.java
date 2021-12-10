@@ -43,11 +43,11 @@ public class ProductAdminRest {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @GetMapping("getListDelete")
     public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDelete(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDeleteAdmin(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping("{id}")

@@ -117,9 +117,24 @@ public class ProductServiceImpl implements ProductService {
         }
         return productVO;
     }
+    @Override
+    public List<ProductVO> getListAdmin(Optional<Integer> cate, Optional<String> find) {
+        List<ProductVO> productVOS =  this.getListP(cate, find);
+        List<ProductVO> productVO = new ArrayList<>();
+        for (ProductVO productVO1 : productVOS
+        ) {
+            if(productVO1.getStatus().equals("Đã xóa") || productVO1.getStatus().equals("Không kinh doanh") || productVO1.getStatus().equals("Ngừng kinh doanh")
+            ) {
+                continue;
+            } else {
+                productVO.add(productVO1);
+            }
+        }
+        return productVO;
+    }
 
     @Override
-    public List<ProductVO> getListDelete(Optional<Integer> cate, Optional<String> find) {
+    public List<ProductVO> getListDeleteAdmin(Optional<Integer> cate, Optional<String> find) {
         List<ProductVO> productVOS =  this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS

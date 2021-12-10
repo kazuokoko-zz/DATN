@@ -16,8 +16,9 @@ public interface ProductService {
     Object dontSell(Integer id, Principal principal);
 
     List<ProductVO> getList(Optional<Integer> cate, Optional<String> find);
+    List<ProductVO> getListAdmin(Optional<Integer> cate, Optional<String> find);
 
-    List<ProductVO> getListDelete(Optional<Integer> cate, Optional<String> find);
+    List<ProductVO> getListDeleteAdmin(Optional<Integer> cate, Optional<String> find);
 
     List<ProductVO> getMostNew();
 
