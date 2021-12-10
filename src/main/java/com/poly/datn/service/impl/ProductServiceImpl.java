@@ -125,7 +125,6 @@ public class ProductServiceImpl implements ProductService {
         ) {
             if( productVO1.getStatus().equals("Đang bán")) {
                 productVO.add(productVO1);
-
             } else {
                 continue;
             }
