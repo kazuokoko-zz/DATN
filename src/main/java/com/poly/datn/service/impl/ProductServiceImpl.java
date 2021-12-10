@@ -123,11 +123,10 @@ public class ProductServiceImpl implements ProductService {
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
         ) {
-            if(productVO1.getStatus().equals("Đã xóa") || productVO1.getStatus().equals("Không kinh doanh") || productVO1.getStatus().equals("Ngừng kinh doanh")
-            ) {
-                continue;
-            } else {
+            if( productVO1.getStatus().equals("Đang bán")) {
                 productVO.add(productVO1);
+            } else {
+                continue;
             }
         }
         return productVO;
