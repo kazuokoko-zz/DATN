@@ -42,12 +42,12 @@ public class ProductAdminRest {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @GetMapping("getListDelete")
-    public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDeleteAdmin(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDeleteAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping("{id}")
