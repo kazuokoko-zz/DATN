@@ -371,9 +371,9 @@ public class ProductServiceImpl implements ProductService {
             Product product = new Product();
             BeanUtils.copyProperties(productVO, product);
             product.setStatus("Chưa thêm đủ thông tin");
-            if(productVO.getStatus().equals("Không kinh doanh")){
-                product.setStatus("Không kinh doanh");
-            }
+//            if(productVO.getStatus() != "" || productVO.getStatus().equals("Không kinh doanh")){
+//                product.setStatus("Không kinh doanh");
+//            }
             product = productDAO.save(product);
 
             List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
