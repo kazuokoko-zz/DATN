@@ -114,7 +114,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -146,7 +146,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -177,7 +177,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -208,7 +208,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")  ||orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             if (noteOrderManagementVo.getNote() == "") {
@@ -469,6 +469,16 @@ public class OrdersServicesImpl implements OrdersService {
 
     private String getStatus(Integer id) {
         OrderManagement orderManagement = orderManagementDAO.getLastManager(id);
+        if(orderManagement == null){
+            OrderManagement orderManagement1 = new OrderManagement();
+            orderManagement1.setOrderId(id);
+            orderManagement1.setStatus("Đơn hàng lỗi");
+            orderManagement1.setChangedBy("SYSTEM");
+            orderManagement1.setNote("Đơn hàng lỗi, hệ thống tự thêm trạng thái");
+            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+            orderManagement1 = orderManagementDAO.save(orderManagement1);
+            return orderManagement1.getStatus();
+        }
         return orderManagement.getStatus();
     }
 
