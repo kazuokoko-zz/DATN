@@ -35,7 +35,7 @@ public class ProductColorServiceImpl implements ProductColorService {
 
     private Integer productId;
     @Override
-    public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Principal principal) {
+    public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, String statusProduct,Principal principal) {
 
         if (principal == null) {
             return null;
@@ -54,7 +54,12 @@ public class ProductColorServiceImpl implements ProductColorService {
             productId = productColor.getProductId();
         }
         Product product = productDAO.getOneProductById(productId);
-        product.setStatus("đã hoàn thành nhập thông tin");
+        if(statusProduct.equals("Không kinh doanh") || statusProduct.equals("Đang bán") ){
+            product.setStatus(statusProduct);
+        }
+        else {
+            product.setStatus("đã hoàn thành nhập thông tin");
+        }
         productDAO.save(product);
         productColorVOS = new ArrayList<>();
         for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(id.get())) {
