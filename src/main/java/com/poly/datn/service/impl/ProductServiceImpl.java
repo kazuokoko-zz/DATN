@@ -124,7 +124,9 @@ public class ProductServiceImpl implements ProductService {
         }
         if (!checkRole.isHavePermition(principal.getName(), "Director")
                 && !checkRole.isHavePermition(principal.getName(), "Staff"))
-        {return null;}
+        {
+            return null;
+        }
         List<ProductVO> productVOS =  this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
@@ -369,7 +371,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = new Product();
             BeanUtils.copyProperties(productVO, product);
             product.setStatus("Chưa thêm đủ thông tin");
-            if(productVO.equals("Không kinh doanh")){
+            if(productVO.getStatus().equals("Không kinh doanh")){
                 product.setStatus("Không kinh doanh");
             }
             product = productDAO.save(product);
@@ -408,14 +410,25 @@ public class ProductServiceImpl implements ProductService {
                 || checkRole.isHavePermition(principal.getName(), "Staff")) || productVO.getId() == null) {
             return null;
         }
-        if(productDAO.getOneProductById(productVO.getId()) == null){
+        Product product = productDAO.getOneProductById(productVO.getId());
+        if(product == null){
             throw new NotFoundException("api.error.API-003");
         }
-        Product product = new Product();
         BeanUtils.copyProperties(productVO, product);
+        if(productVO.getStatus().equals("Không kinh doanh")
+                || productVO.getStatus().equals("Đang bán")
+                || productVO.getStatus().equals("Hết hàng")
+                || productVO.getStatus().equals("Hàng sắp về")){
+            product.setStatus(productVO.getStatus());
+        } else {
+            product.setStatus(product.getStatus());
+        }
         productDAO.save(product);
 
         List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
+        if(productCategoryVO == null){
+            throw new NotImplementedException("Chưa thêm category");
+        }
         List<ProductCategory> productCategories = new ArrayList<>();
         productCategoryDAO.deleteAllByProductIdEquals(product.getId());
         for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {

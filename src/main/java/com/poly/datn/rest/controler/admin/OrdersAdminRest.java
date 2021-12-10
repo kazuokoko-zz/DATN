@@ -62,6 +62,11 @@ public class OrdersAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimSell(noteOrderManagementVo, id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @GetMapping("getWarranty/{orderId}")
+    public ResponseEntity<ResponseDTO<Object>> getWarranty(@PathVariable Integer orderId, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getWarranty( orderId,  principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
     @PostMapping("updateNote")
     public ResponseEntity<ResponseDTO<Object>> updateNoteOrderManagement(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.updateNoteOrderManagement(noteOrderManagementVo, id, principal))

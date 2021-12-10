@@ -15,6 +15,10 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
     List<Orders> getByUsername(@Param("username") String username);
 
     Optional<Orders> findByIdAndUsername(Integer id, String username);
+    @Query(nativeQuery = true,value ="select * from orders c where" +
+                     " c.id in(select order_id from warranty w where w.order_id =:order_id " +
+                    "and w.product_id =:product_id)")
+    Orders findOneByIdForWarranty(@Param("order_id") Integer order_id,@Param("product_id") Integer product_id);
 
 //    @Query(nativeQuery = true,value = "select count(*) from Orders o where CONVERT(varchar,dateadd(d,-(day(getdate()-1)),getdate()),106)")
 //    @Query(value = "select count(o) from Orders o where o.dateCreated.get")

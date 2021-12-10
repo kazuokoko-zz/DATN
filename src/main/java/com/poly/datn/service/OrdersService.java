@@ -5,6 +5,7 @@ import com.poly.datn.vo.CustomerVO;
 import com.poly.datn.vo.OrderDetailsVO;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
+import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
 
 import java.security.Principal;
 import java.util.List;
@@ -27,6 +28,7 @@ public interface OrdersService {
     boolean confimSell(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
     boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
 
+    ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal);
 
     OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);
 

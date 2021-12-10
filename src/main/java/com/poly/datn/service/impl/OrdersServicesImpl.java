@@ -8,11 +8,13 @@ import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
+import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.webjars.NotFoundException;
 
 import java.security.Principal;
@@ -208,7 +210,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công")  ||orderManagement.equals("Đơn hàng lỗi")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             if (noteOrderManagementVo.getNote() == "") {
@@ -224,6 +226,38 @@ public class OrdersServicesImpl implements OrdersService {
                 return true;
             }
         }
+    }
+
+    @Override
+    public ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal) {
+        ShowProductWarrantyVO showProductWarrantyVO = new ShowProductWarrantyVO();
+        Orders orders1 = ordersDAO.findMotById(orderId);
+        if(orders1 == null){
+            throw new NotFoundException("api.error.API-003");
+        }
+        showProductWarrantyVO.setStatus(getStatus(orderId));
+        if(showProductWarrantyVO.getStatus().equals("Giao hàng thành công")){
+        List<OrderDetails> orderDetails= orderDetailsDAO.findAllByOrderIdEquals(orderId);
+        List<ProductVO> productVOS= new ArrayList<>();
+        for (OrderDetails orderDetail: orderDetails
+             ) {
+           Product product = orderDetail.getProduct();
+           if(warrantyDAO.findOneByOrderIdAndProductId(orderId, product.getId()) != null){
+               continue;
+           } else {
+               ProductVO productVO = new ProductVO();
+               BeanUtils.copyProperties(product,productVO);
+               productVOS.add(productVO);
+           }
+        }
+
+        BeanUtils.copyProperties(orders1, showProductWarrantyVO);
+        showProductWarrantyVO.setProductVOS(productVOS);
+
+        } else {
+            throw new NotImplementedException("Không có hóa đơn này " + orderId);
+        }
+        return showProductWarrantyVO;
     }
 
     @Override

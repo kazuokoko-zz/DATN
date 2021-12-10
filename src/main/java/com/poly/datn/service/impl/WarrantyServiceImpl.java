@@ -9,6 +9,7 @@ import com.poly.datn.entity.Warranty;
 import com.poly.datn.service.WarrantyService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.WarrantyVO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,7 @@ public class WarrantyServiceImpl implements WarrantyService {
     @Override
     public List<WarrantyVO> getByUsername(Principal principal){
         if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
         }
         try {
             List<Orders> orders = ordersDAO.findByUsername(principal.getName());
