@@ -37,6 +37,21 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
     Integer countErrorOrders();
 
 
+    @Query(nativeQuery = true,value ="select * from orders c where c.date_created between :startTime and  :EndTime")
+    List<Orders> listOrders(@Param("startTime") Timestamp startTime,@Param("EndTime") Timestamp EndTime);
+
+    @Query(nativeQuery = true,value ="select * from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đã hủy\" )and c.date_created between :startTime and  :EndTime")
+    List<Orders> listCancerOrders(@Param("startTime") Timestamp startTime,@Param("EndTime") Timestamp EndTime);
+
+    @Query(nativeQuery = true,value ="select * from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Giao hàng thành công\" )and c.date_created between :startTime and  :EndTime")
+    List<Orders> listSuccessOrders(@Param("startTime") Timestamp startTime,@Param("EndTime") Timestamp EndTime);
+
+    @Query(nativeQuery = true,value ="select * from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đã xác nhận\" )")
+    List<Orders> listComfimOrders();
+    @Query(nativeQuery = true,value ="select * from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đơn hàng lỗi\" )")
+    List<Orders> listErrorOrders();
+
+
     List<Orders> findByUsername(String username);
     List<Orders> findOneById(Integer id);
     Orders findMotById(Integer id);
