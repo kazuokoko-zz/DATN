@@ -24,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -191,8 +189,10 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     }
 
     @Override
-    public PaymentVO getResult(Integer id) throws IOException {
+    public PaymentVO getResult(Integer id) {
         Payment payment = paymentDAO.getByOrdersIdEquals(id);
+        if (payment == null)
+            return null;
         PaymentVO paymentVO = new PaymentVO();
         BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;
@@ -257,14 +257,15 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                             payment.setBankTranNo((String) fields.get("vnp_TransactionNo"));
                             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                                 payment.setStatus(1);
-
                             } else {
                                 payment.setStatus(2);
                             }
                             paymentDAO.save(payment);
+                            orders.setTypePayment(true);
+                            ordersDAO.save(orders);
                             OrderManagement orderManagement = AutoCreate
                                     .createOrderManagement(payment.getOrdersId(),
-                                            "Đã thanh toán", "sys");
+                                            "Chờ xác nhận", "sys", "Đã thanh toán");
                             if (payment.getStatus() == 1) {
                                 orderManagementDAO.save(orderManagement);
                             }
@@ -289,6 +290,8 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     @Override
     public PaymentVO getPayDetail(String tranno, String trandate) {
         Payment payment = paymentDAO.getByTranNoAndTranDate(tranno, trandate);
+        if (payment == null)
+            return null;
         PaymentVO paymentVO = new PaymentVO();
         BeanUtils.copyProperties(payment, paymentVO);
         return paymentVO;

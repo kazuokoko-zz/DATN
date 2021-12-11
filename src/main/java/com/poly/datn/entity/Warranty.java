@@ -1,10 +1,12 @@
 package com.poly.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
 
+@Data
 @Entity
 @Table(name = "warranty")
 public class Warranty {
@@ -27,59 +29,19 @@ public class Warranty {
     @Basic
     @Column(name = "status", nullable = false)
     private Integer status;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getProductSeri() {
-        return productSeri;
-    }
-
-    public void setProductSeri(String productSeri) {
-        this.productSeri = productSeri;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public Date getExpiredDate() {
-        return expiredDate;
-    }
-
-    public void setExpiredDate(Date expiredDate) {
-        this.expiredDate = expiredDate;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
+    @Basic
+    @Column(name = "name")
+    private String name;
+    @Basic
+    @Column(name = "phone")
+    private String phone;
+    @Basic
+    @Column(name = "address")
+    private String address;
 
 
     @OneToOne
-    @JoinColumn(name = "order_id", insertable = false ,updatable  = false)
+    @JoinColumn(name = "order_id", insertable = false, updatable = false)
     @JsonIgnore
     Orders orders;
 

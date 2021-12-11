@@ -30,15 +30,24 @@ public class ProductAdminRest {
     @Autowired
     ProductCategoryService productCategoryService;
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<ResponseDTO<Object>> deleteCartDetail(@PathVariable("id") Integer id, Principal principal) {
+    @PutMapping("delete/{id}")
+    public ResponseEntity<ResponseDTO<Object>> deleteProduct(@PathVariable("id") Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.delete(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("dontSell/{id}")
+    public ResponseEntity<ResponseDTO<Object>> dontSellProduct(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.dontSell(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getList(cate, find)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @GetMapping("getListDelete")
+    public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDeleteAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @GetMapping("{id}")
@@ -57,8 +66,8 @@ public class ProductAdminRest {
     }
 
     @PostMapping("newproductcolor/{id}")
-    public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS,@RequestParam("statusProduct")Optional<String> statusProduct, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS,statusProduct, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("newproductcategory/{id}")
@@ -70,4 +79,18 @@ public class ProductAdminRest {
     public ResponseEntity<ResponseDTO<Object>> update(@RequestBody ProductVO productVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.update(productVO, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
+    @PutMapping("selectcate")
+    public ResponseEntity<ResponseDTO<Object>> selectCate(@RequestParam("pid") Integer pid, @RequestParam("cid") Integer cid, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.selectCate(pid, cid, principal))
+                .code(Constant.RESPONSEDTO_CODE)
+                .message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("unselectcate")
+    public ResponseEntity<ResponseDTO<Object>> unSelectCate(@RequestParam("pid") Integer pid, @RequestParam("cid") Integer cid, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.unSelectCate(pid, cid, principal))
+                .code(Constant.RESPONSEDTO_CODE)
+                .message(Constant.RESPONSEDTO_MESS).build());
+    }
+
 }

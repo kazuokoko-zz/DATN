@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -62,6 +61,12 @@ public class FileController {
                         .stream()
                         .map(file -> uploadFile(file))
                         .collect(Collectors.toList()))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @GetMapping("getalldownloadlink")
+    public ResponseEntity<ResponseDTO<Object>> getAllLink() {
+        return ResponseEntity.ok(ResponseDTO.builder().object(fileStorageService.getAllLinkFiles())
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 

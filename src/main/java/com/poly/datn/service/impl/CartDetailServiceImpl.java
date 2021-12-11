@@ -5,13 +5,13 @@ import com.poly.datn.dao.ProductDetailsDAO;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.SaleService;
+import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.CartDetailDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.entity.CartDetail;
 import com.poly.datn.service.CartDetailService;
-import com.poly.datn.vo.ProductDetailsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +46,8 @@ public class CartDetailServiceImpl implements CartDetailService {
     @Autowired
     SaleService saleService;
 
+    @Autowired
+    PriceUtils priceUtils;
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
@@ -70,6 +72,8 @@ public class CartDetailServiceImpl implements CartDetailService {
             }
             if (photos.size() > 0)
                 vo.setPhoto(photos.get(0));
+            vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
+            vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
@@ -97,17 +101,20 @@ public class CartDetailServiceImpl implements CartDetailService {
             return null;
         }
         CartDetail cartDetail = new CartDetail();
-        if (cartDetailVO.getId() == null) {
+        Integer productId = cartDetailVO.getProductId();
+        Integer userId = accountDAO.findAccountByUsername(principal.getName()).getId();
+        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId);
+        if (cartDetail1 == null) {
+
             BeanUtils.copyProperties(cartDetailVO, cartDetail);
             cartDetail.setUserId(accountDAO.findAccountByUsername(principal.getName()).getId());
             cartDetail = cartDetailDAO.save(cartDetail);
-
         } else if (cartDetailVO.getQuantity() <= 0) {
-            cartDetailDAO.deleteById(cartDetailVO.getId());
+            cartDetailDAO.deleteById(cartDetail1.getId());
             return null;
         } else {
-            cartDetail = cartDetailDAO.getById(cartDetailVO.getId());
-            cartDetail.setQuantity(cartDetailVO.getQuantity());
+            BeanUtils.copyProperties(cartDetail1, cartDetail);
+            cartDetail.setQuantity(cartDetailVO.getQuantity() + cartDetail.getQuantity());
             cartDetailDAO.save(cartDetail);
         }
         BeanUtils.copyProperties(cartDetail, cartDetailVO);

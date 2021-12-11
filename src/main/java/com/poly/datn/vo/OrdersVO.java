@@ -20,6 +20,8 @@ public class OrdersVO {
 
     private String status;
 
+    private Boolean typePayment;
+
     CustomerVO customer;
 
     List<OrderManagementVO> orderManagements;

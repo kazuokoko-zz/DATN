@@ -1,6 +1,5 @@
 package com.poly.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -41,10 +40,8 @@ public class Blog {
     private Boolean status;
 
 
-
     @ManyToOne
     @JoinColumn(name = "created_by", insertable = false, updatable = false)
-    @JsonIgnore
     Account account;
 
 

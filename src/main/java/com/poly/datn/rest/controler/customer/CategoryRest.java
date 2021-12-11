@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @CrossOrigin(Constant.CROSS_ORIGIN)
@@ -16,8 +18,8 @@ public class CategoryRest {
     CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Object>> getCategories() {
-        return ResponseEntity.ok(ResponseDTO.builder().object(categoryService.getCategories())
+    public ResponseEntity<ResponseDTO<Object>> getCategories(@RequestParam("active") Optional<Boolean> active) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(categoryService.getCategories(active))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 

@@ -1,6 +1,5 @@
 package com.poly.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ public class Orders {
     @Column(name = "date_created", nullable = false)
     private Timestamp dateCreated;
     @Basic
-    @Column(name = "username", nullable = true, length = 30)
+    @Column(name = "username", length = 30)
     private String username;
     @Basic
     @Column(name = "customer_id", nullable = false)
@@ -27,12 +26,13 @@ public class Orders {
     @Basic
     @Column(name = "sumprice", nullable = false, precision = 0)
     private Long sumprice;
+    @Basic
+    @Column(name = "type_payment", nullable = false, precision = 0)
+    private Boolean typePayment;
 
-
-    @OneToOne
-    @JoinColumn(name = "customer_id", insertable = false ,updatable  = false)
-    @JsonIgnore
-    Customer customer;
+//    @OneToOne
+//    @JoinColumn(name = "customer_id", insertable = false ,updatable  = false)
+//    Customer customer;
 
     @OneToMany(mappedBy = "orders")
     List<OrderManagement> orderManagements;
@@ -42,20 +42,4 @@ public class Orders {
     Warranty warranty;
 
 
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public List<OrderManagement> getOrderManagements() {
-        return orderManagements;
-    }
-
-    public List<OrderDetails> getOrderDetails() {
-        return orderDetails;
-    }
-
-    public Warranty getWarranty() {
-        return warranty;
-    }
 }

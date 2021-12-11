@@ -2,12 +2,14 @@ package com.poly.datn.service;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.poly.datn.entity.Account;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
+import com.poly.datn.vo.AccountRegisterVO;
 import com.poly.datn.vo.AccountVO;
+import freemarker.template.TemplateException;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.List;
@@ -22,8 +24,15 @@ public interface AccountService {
 
     List<AccountVO> findAll(Principal principal);
 
-    void updateResetPasswordToken(String email) throws MessagingException, UnsupportedEncodingException;
+    void updateResetPasswordToken(String email) throws MessagingException, IOException, TemplateException;
 
     Boolean checkToken(String token);
+
+    AccountRegisterVO create(AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException;
+
+    AccountVO findByUsernameAdmin(Integer id, Principal principal);
+
+    Boolean checkEmail(String email);
+    Boolean checkUsername(String username);
 //    void updatePassword(String email);
 }

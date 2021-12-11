@@ -16,4 +16,6 @@ public interface SaleDAO extends JpaRepository<Sale, Integer> {
     List<Sale> findSalesAboutStart(@Param("currtime") Timestamp time);
     @Query(nativeQuery = true,value = "select * from sale s where :currtime > s.end_time")
     List<Sale> findSalesEnd(@Param("currtime") Timestamp time);
+//    @Query(value = "")
+//    Integer countAllByStartTime_DayAndStartTime_MonthAndEndTime_DayAndEndTime_Month(Integer StartTime_Day, Integer StartTime_Month, Integer EndTime_Day, Integer EndTime_Month);
 }

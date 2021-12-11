@@ -36,13 +36,13 @@ public class OrdersRest {
     public ResponseEntity<ResponseDTO<Object>> getOrders(Principal principal, @PathVariable("id") Integer id) throws NullPointerException, SecurityException {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getByIdAndUserName(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-
     }
     @PostMapping("new")
     public ResponseEntity<ResponseDTO<Object>> newOrder(@RequestBody OrdersVO ordersVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.newOrder(ordersVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
 //    @PostMapping("new")
 //public  ResponseEntity<>
 }

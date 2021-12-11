@@ -1,11 +1,10 @@
 package com.poly.datn.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
 
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "product_sale")
@@ -23,7 +22,7 @@ public class ProductSale {
     private Integer saleId;
     @Basic
     @Column(name = "discount", nullable = false)
-    private Integer discount;
+    private Long discount;
     @Basic
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -31,12 +30,10 @@ public class ProductSale {
 
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    @JsonIgnore
     Product product;
 
     @ManyToOne
     @JoinColumn(name = "sale_id", insertable = false, updatable = false)
-    @JsonIgnore
     Sale sale;
 
     public Product getProduct() {

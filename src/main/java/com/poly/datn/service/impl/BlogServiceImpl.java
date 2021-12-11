@@ -87,6 +87,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogVO getABlog(Integer id, Principal principal) {
+        if (principal == null) return null;
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -97,6 +98,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public List<BlogVO> getListAdmin(Optional<Integer> pid, Optional<String> title, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -123,6 +127,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Boolean deleteById(Optional<Integer> id, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff")) ||
                 !id.isPresent()) {
@@ -141,6 +148,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogVO create(BlogVO blogVO, Principal principal) {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             return null;
@@ -154,13 +164,31 @@ public class BlogServiceImpl implements BlogService {
         } else {
             blog.setType(2);
         }
+        blog.setStatus(true);
+        List<BlogDetailsVO> blogDetails = blogVO.getBlogDetails();
+        if(blogDetails.size() <=0){
+            blog.setStatus(false);
+        }
         blog = blogDAO.save(blog);
+        List<BlogDetails> blogDetails1 = new ArrayList<>();
+        for (BlogDetailsVO blogDetailsVO: blogDetails
+             ) {
+            BlogDetails blogDetailsVO1 = new BlogDetails();
+            BeanUtils.copyProperties(blogDetailsVO, blogDetailsVO1);
+            blogDetailsVO1.setBlogId(blog.getId());
+            blogDetails1.add(blogDetailsVO1);
+        }
+        blogDetails1 = blogDetailsDAO.saveAll(blogDetails1);
+        blog.setBlogDetails(blogDetails1);
         BeanUtils.copyProperties(blog, blogVO);
         return blogVO;
     }
 
     @Override
     public BlogVO update(BlogVO blogVO, Optional<Integer> id, Principal principal) throws ParseException {
+        if (principal == null) {
+            return null;
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff")) ||
                 !id.isPresent()) {

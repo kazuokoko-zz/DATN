@@ -26,10 +26,10 @@ public class Account {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
     
-    @Column(name = "phone", nullable = false, length = 16)
+    @Column(name = "phone", length = 16)
     private String phone;
     
-    @Column(name = "address", nullable = false, length = 255)
+    @Column(name = "address",  length = 255)
     private String address;
     
     @Column(name = "user_status", nullable = false)

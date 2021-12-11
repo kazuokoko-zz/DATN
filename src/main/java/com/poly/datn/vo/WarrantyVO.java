@@ -1,7 +1,6 @@
 package com.poly.datn.vo;
 
 
-
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +23,12 @@ public class WarrantyVO {
     private Date expiredDate;
 
     private Integer status;
+
+    private String name;
+
+    private String phone;
+
+    private String address;
 
 
     OrdersVO orders;

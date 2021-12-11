@@ -9,21 +9,28 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class FileStorageService {
+    static final String[] EXTENSIONS = new String[]{
+            "gif", "png", "bmp", "jpeg", "jpg"// and other formats you need
+    };
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService( FileStorageProperties fileStorageProperties) {
+    public FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 
@@ -36,13 +43,13 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         // Normalize file name
-        String s = System.currentTimeMillis()+file.getOriginalFilename();
-        String fileName = Integer.toHexString(s.hashCode())+s.substring(s.lastIndexOf("."));
+        String s = System.currentTimeMillis() + file.getOriginalFilename();
+        String fileName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
         //String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
             // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
@@ -60,7 +67,7 @@ public class FileStorageService {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
+            if (resource.exists()) {
                 return resource;
             } else {
                 throw new MyFileNotFoundException("File not found " + fileName);
@@ -68,5 +75,24 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    public List<String> getAllLinkFiles() {
+//        System.out.println(Paths.get(this.fileStorageLocation.toString()));
+        List<String> links = new ArrayList<>();
+        File folder = new File(this.fileStorageLocation.toString());
+        FilenameFilter filenameFilter = (dir, name) -> {
+            for (final String ext : EXTENSIONS) {
+                if (name.toLowerCase().endsWith("." + ext.toLowerCase())) {
+                    return (true);
+                }
+            }
+            return (false);
+        };
+        for (File f : folder.listFiles(filenameFilter)) {
+//            System.out.println();
+            links.add("http://150.95.105.29:8800/api/upload/downloadFile/".concat(f.getName()));
+        }
+        return links;
     }
 }

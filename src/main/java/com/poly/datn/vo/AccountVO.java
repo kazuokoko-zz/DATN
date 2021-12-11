@@ -3,6 +3,7 @@ package com.poly.datn.vo;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 public class AccountVO {
     private Integer id;
@@ -13,6 +14,7 @@ public class AccountVO {
     private String phone;
     private String address;
     private Boolean userStatus;
+    private List<String> roles;
 
 
     List<BlogVO> blogs;

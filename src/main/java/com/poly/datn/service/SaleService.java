@@ -1,5 +1,6 @@
 package com.poly.datn.service;
 
+import com.poly.datn.vo.ProductSaleVO;
 import com.poly.datn.vo.SaleVO;
 
 import java.security.Principal;
@@ -14,5 +15,17 @@ public interface SaleService {
 
     List<SaleVO> getSellEnd(Principal principal);
 
-    Integer getCurrentSaleOf(Integer productId);
+    Long getCurrentSaleOf(Integer productId);
+
+    SaleVO newSale(SaleVO saleVO, Principal principal);
+
+    SaleVO updateSale(SaleVO saleVO, Principal principal);
+
+    boolean stopSale(Integer id, Principal principal);
+
+    ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal);
+
+    ProductSaleVO updateProductSale(ProductSaleVO productSaleVO, Principal principal);
+
+    boolean deleteProductSale(Integer id, Principal principal);
 }

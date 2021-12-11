@@ -4,6 +4,7 @@ import com.poly.datn.common.Constant;
 import com.poly.datn.service.OrdersService;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.vo.ResponseDTO;
+import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,31 @@ public class OrdersAdminRest {
     @PutMapping("update")
     public ResponseEntity<ResponseDTO<Object>> updateOrder(@RequestParam("id") Optional<Integer> id, @RequestParam("status") Optional<String> status, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.updateOrderAdmin(id, status, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("confimOrder")
+    public ResponseEntity<ResponseDTO<Object>> confimOrder(@RequestBody NoteOrderManagementVo noteOrderManagementVo, @RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimOrder(noteOrderManagementVo,id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("cancerOrder")
+    public ResponseEntity<ResponseDTO<Object>> cancerOrder(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.cancerOrder(noteOrderManagementVo, id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("confimSell")
+    public ResponseEntity<ResponseDTO<Object>> cancerOconfimSellrder(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimSell(noteOrderManagementVo, id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @GetMapping("getWarranty/{orderId}")
+    public ResponseEntity<ResponseDTO<Object>> getWarranty(@PathVariable Integer orderId, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.getWarranty( orderId,  principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("updateNote")
+    public ResponseEntity<ResponseDTO<Object>> updateNoteOrderManagement(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.updateNoteOrderManagement(noteOrderManagementVo, id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }

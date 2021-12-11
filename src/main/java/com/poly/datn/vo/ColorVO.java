@@ -11,6 +11,8 @@ public class ColorVO {
 
     private String colorName;
 
+    private String code;
+
 
 
     List<ProductColorVO> productColors;

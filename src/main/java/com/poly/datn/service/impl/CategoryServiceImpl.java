@@ -27,26 +27,38 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryDAO categoryDAO;
 
     @Override
-    public List<CategoryVO> getCategories() {
-        List<CategoryVO> categories = new ArrayList<>();
-        categoryDAO.findRootCategories().forEach(category -> {
+    public List<CategoryVO> getCategories(Optional<Boolean> active) {
+        List<CategoryVO> categorieVos = new ArrayList<>();
+        List<Category> categories;
+        if (active.isPresent()) {
+            categories = categoryDAO.findRootCategories(active.get());
+        } else {
+            categories = categoryDAO.findRootCategories();
+        }
+        for (Category category : categories) {
             CategoryVO categoryVO = new CategoryVO();
             List<CategoryVO> categoryVOS = new ArrayList<>();
-            for (Category category1 : categoryDAO.findChildCategories(category.getId())) {
+            List<Category> child;
+            if (active.isPresent()) {
+                child = categoryDAO.findChildCategories(category.getId(), active.get());
+            } else {
+                child = categoryDAO.findChildCategories(category.getId());
+            }
+            for (Category category1 : child) {
                 CategoryVO vo = new CategoryVO();
                 BeanUtils.copyProperties(category1, vo);
                 categoryVOS.add(vo);
             }
             BeanUtils.copyProperties(category, categoryVO);
             categoryVO.setCategories(categoryVOS);
-            categories.add(categoryVO);
-        });
-        return categories;
+            categorieVos.add(categoryVO);
+        }
+        return categorieVos;
     }
 
     @Override
-    public CategoryVO createCategory(CategoryVO categoryVO, Principal principal){
-        if(principal == null){
+    public CategoryVO createCategory(CategoryVO categoryVO, Principal principal) {
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
@@ -54,25 +66,25 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryVO, category);
         category = categoryDAO.save(category);
         categoryVO.setId(category.getId());
-        return  categoryVO;
+        return categoryVO;
 
     }
 
     @Override
     public CategoryVO deleteCategory(Integer id, Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
         CategoryVO categoryVO = new CategoryVO();
         Optional<Category> optionalCategory = categoryDAO.findById(id);
-        if(optionalCategory.isPresent()){
+        if (optionalCategory.isPresent()) {
             Category category = optionalCategory.get();
             categoryDAO.findChildCategories(id).forEach(categoryes -> {
                 categoryes.setStatus(false);
                 categoryDAO.save(categoryes);
             });
-           category.setStatus(false);
+            category.setStatus(false);
             BeanUtils.copyProperties(category, categoryVO);
             categoryDAO.save(category);
         }
@@ -81,16 +93,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryVO updateCategory(CategoryVO categoryVO, Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
             return null;
         }
-       Optional<Category> optionalCategory = categoryDAO.findById(categoryVO.getId());
-         if(optionalCategory.isPresent()){
-             Category entityCategory = new Category();
-             BeanUtils.copyProperties(categoryVO, entityCategory);
-             categoryDAO.save(entityCategory);
-         }
-        return  categoryVO;
+        Optional<Category> optionalCategory = categoryDAO.findById(categoryVO.getId());
+        if (optionalCategory.isPresent()) {
+            Category entityCategory = new Category();
+            BeanUtils.copyProperties(categoryVO, entityCategory);
+            categoryDAO.save(entityCategory);
+        }
+        return categoryVO;
     }
 }
