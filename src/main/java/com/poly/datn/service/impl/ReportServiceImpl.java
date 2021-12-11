@@ -51,22 +51,79 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Integer getNumberOfUnConfirmOrder(Principal principal) {
+    public List<OrdersVO> getlistOrders(Principal principal) {
         checjkPrincipal(principal);
-        return getListUnComfirmOrders(principal).size();
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listOrders(startTime, endTime);
+        for (Orders order: orders
+             ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
+        return ordersVOS;
+    }
+
+    @Override
+    public List<OrdersVO> getListCancerOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listCancerOrders(startTime, endTime);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
+        return ordersVOS;
     }
 
     @Override
     public Integer sumOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String month = String.valueOf(localDateTime.getMonth().getValue());
-        String year = String.valueOf(localDateTime.getYear());
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listSuccessOrders(startTime, endTime);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
+        return ordersVOS;
+    }
 
-        YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
-        LocalDate firstOfMonth = yearMonth.atDay(1);
-        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+    @Override
+    public List<OrdersVO> getListComfimOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listComfimOrders();
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
+        return ordersVOS;
+    }
 
+    @Override
+    public List<OrdersVO> getListErrorOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listErrorOrders();
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
+        return ordersVOS;
+    }
 
         LocalDate last = yearMonth.atEndOfMonth();
         Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
@@ -112,18 +169,6 @@ public class ReportServiceImpl implements ReportService {
         return ordersDAO.countSuccessOrdersBy(startTime, endTime);
     }
 
-    @Override
-    public Integer sumComfimOrder(Principal principal) {
-        checjkPrincipal(principal);
-        return ordersDAO.countComfimOrders();
-    }
-
-    @Override
-    public Integer sumErrorOrder(Principal principal) {
-        checjkPrincipal(principal);
-        return ordersDAO.countErrorOrders();
-    }
-
 
     @Override
     public List<ProductVO> getTrendingAdmin(Principal principal) {
@@ -147,6 +192,7 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         return null;
     }
+
 
     public void checjkPrincipal(Principal principal){
         if (principal == null){
