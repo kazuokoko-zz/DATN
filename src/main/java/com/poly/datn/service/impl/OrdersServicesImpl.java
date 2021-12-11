@@ -20,9 +20,7 @@ import org.webjars.NotFoundException;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -441,6 +439,7 @@ public class OrdersServicesImpl implements OrdersService {
             vo.setStatus(getStatus(order.getId()));
             ordersVOS.add(vo);
         }
+        Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated).reversed());
         return ordersVOS;
     }
 
