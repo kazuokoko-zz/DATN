@@ -113,7 +113,7 @@ public class OrdersServicesImpl implements OrdersService {
         infoSendOrder.setAddress(customer.getAddress());
         infoSendOrder.setEmail(customer.getEmail());
         infoSendOrder.setPhone(customer.getPhone());
-        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails().toArray(OrderDetailsVO[]::new));
+        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails());
         sendMail.sentMailOrder(infoSendOrder);
         return vo;
     }
