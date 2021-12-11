@@ -45,11 +45,11 @@ public class ReportServiceImpl implements ReportService {
 
         YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
         LocalDate firstOfMonth = yearMonth.atDay(1);
-        startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+         startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
 
 
         LocalDate last = yearMonth.atEndOfMonth();
-        endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
+         endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
     }
 
 
@@ -75,7 +75,7 @@ public class ReportServiceImpl implements ReportService {
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listOrders(startTime, endTime);
         for (Orders order: orders
-        ) {
+             ) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
             ordersVOS.add(ordersVO);
