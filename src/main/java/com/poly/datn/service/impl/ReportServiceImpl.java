@@ -10,6 +10,7 @@ import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.vo.ProductVO;
 import com.poly.datn.vo.TrendingVO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<OrdersVO> getListUnComfirmOrders(Principal principal) {
-        if (principal == null)
-            return null;
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checjkPrincipal(principal);
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Integer id : orderManagementDAO.getIdOfLastStatus("Chờ xác nhận")) {
             OrdersVO ordersVO = new OrdersVO();
@@ -56,11 +52,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Integer getNumberOfUnConfirmOrder(Principal principal) {
+        checjkPrincipal(principal);
         return getListUnComfirmOrders(principal).size();
     }
 
     @Override
     public Integer sumOrderInMonth(Principal principal) {
+        checjkPrincipal(principal);
         LocalDateTime localDateTime = LocalDateTime.now();
         String month = String.valueOf(localDateTime.getMonth().getValue());
         String year = String.valueOf(localDateTime.getYear());
@@ -80,6 +78,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Integer sumCancerOrderInMonth(Principal principal) {
+        checjkPrincipal(principal);
         LocalDateTime localDateTime = LocalDateTime.now();
         String month = String.valueOf(localDateTime.getMonth().getValue());
         String year = String.valueOf(localDateTime.getYear());
@@ -91,14 +90,13 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDate last = yearMonth.atEndOfMonth();
         Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
-
-//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 
         return ordersDAO.countCancerOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumSuccessOrderInMonth(Principal principal) {
+        checjkPrincipal(principal);
         LocalDateTime localDateTime = LocalDateTime.now();
         String month = String.valueOf(localDateTime.getMonth().getValue());
         String year = String.valueOf(localDateTime.getYear());
@@ -111,20 +109,25 @@ public class ReportServiceImpl implements ReportService {
         LocalDate last = yearMonth.atEndOfMonth();
         Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
 
-//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-
         return ordersDAO.countSuccessOrdersBy(startTime, endTime);
+    }
+
+    @Override
+    public Integer sumComfimOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countComfimOrders();
+    }
+
+    @Override
+    public Integer sumErrorOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countErrorOrders();
     }
 
 
     @Override
     public List<ProductVO> getTrendingAdmin(Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!checkRole.isHavePermition(principal.getName(), "Director")
-                && !checkRole.isHavePermition(principal.getName(), "Staff"))
-            return null;
+        checjkPrincipal(principal);
         List<ProductVO> productVOS = new ArrayList<>();
         for (TrendingVO trendingVO : AutoTaskService.trending) {
             productVOS.add(trendingVO.getProductVO());
@@ -135,13 +138,23 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<OrdersVO> getListCancerOrderInMonth(Principal principal) {
+        checjkPrincipal(principal);
         return null;
     }
 
     @Override
     public List<OrdersVO> getListComfimOrderInMonth(Principal principal) {
+        checjkPrincipal(principal);
         return null;
     }
 
+    public void checjkPrincipal(Principal principal){
+        if (principal == null){
+            throw new NotImplementedException("Chưa đăng nhập");}
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
+        }
+    }
 
 }

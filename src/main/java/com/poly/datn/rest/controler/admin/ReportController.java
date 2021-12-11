@@ -44,6 +44,16 @@ public class ReportController {
         return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumCancerOrderInMonth(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @GetMapping("getConfimCountOrder")
+    public ResponseEntity<ResponseDTO<Object>> getConfimCountOrder(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumComfimOrder(principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @GetMapping("getErrorCountOrder")
+    public ResponseEntity<ResponseDTO<Object>> getErrorCountOrder(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(reportService.sumErrorOrder(principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 
     @GetMapping("getComfimCountOrder")
     public ResponseEntity<ResponseDTO<Object>> getComfimCountOrder(Principal principal) {
