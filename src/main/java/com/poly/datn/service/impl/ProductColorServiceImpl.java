@@ -4,12 +4,9 @@ import com.poly.datn.dao.ProductColorDAO;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductColor;
-import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.ProductColorService;
-import com.poly.datn.service.ProductService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductColorVO;
-import com.poly.datn.vo.ProductDetailsVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +25,15 @@ public class ProductColorServiceImpl implements ProductColorService {
     ProductColorDAO productColorDAO;
 
     @Autowired
-    ProductDAO  productDAO;
+    ProductDAO productDAO;
 
     @Autowired
     CheckRole checkRole;
 
     private Integer productId;
+
     @Override
-    public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, String statusProduct,Principal principal) {
+    public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Optional<String> statusProduct, Principal principal) {
 
         if (principal == null) {
             return null;
@@ -44,6 +42,7 @@ public class ProductColorServiceImpl implements ProductColorService {
                 || checkRole.isHavePermition(principal.getName(), "Staff")) || !id.isPresent()) {
             return null;
         }
+
         productColorDAO.deleteAllByProductIdEquals(id.get());
 
         for (ProductColorVO productColorVO : productColorVOS) {
@@ -54,10 +53,13 @@ public class ProductColorServiceImpl implements ProductColorService {
             productId = productColor.getProductId();
         }
         Product product = productDAO.getOneProductById(productId);
-        if(statusProduct.equals("Không kinh doanh") || statusProduct.equals("Đang bán") ){
-            product.setStatus(statusProduct);
-        }
-        else {
+        if (statusProduct.isPresent()) {
+            if (statusProduct.get().equals("Không kinh doanh") || statusProduct.get().equals("Đang bán")) {
+                product.setStatus(statusProduct.get());
+            } else {
+                product.setStatus("đã hoàn thành nhập thông tin");
+            }
+        } else {
             product.setStatus("đã hoàn thành nhập thông tin");
         }
         productDAO.save(product);

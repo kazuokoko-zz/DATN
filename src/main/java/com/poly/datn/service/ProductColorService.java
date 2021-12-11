@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductColorService {
-    List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS,  String statusProduct,Principal principal);
+    List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS,  Optional<String>  statusProduct,Principal principal);
 }
