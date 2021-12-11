@@ -74,7 +74,12 @@ public class ReportServiceImpl implements ReportService {
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listOrders(startTime, endTime);
-        BeanUtils.copyProperties(orders, ordersVOS);
+        for (Orders order: orders
+             ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
         return ordersVOS;
     }
 
@@ -84,7 +89,12 @@ public class ReportServiceImpl implements ReportService {
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listCancerOrders(startTime, endTime);
-        BeanUtils.copyProperties(orders, ordersVOS);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
         return ordersVOS;
     }
 
@@ -94,7 +104,12 @@ public class ReportServiceImpl implements ReportService {
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listSuccessOrders(startTime, endTime);
-        BeanUtils.copyProperties(orders, ordersVOS);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
         return ordersVOS;
     }
 
@@ -104,7 +119,12 @@ public class ReportServiceImpl implements ReportService {
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listComfimOrders();
-        BeanUtils.copyProperties(orders, ordersVOS);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
         return ordersVOS;
     }
 
@@ -114,7 +134,12 @@ public class ReportServiceImpl implements ReportService {
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         List<Orders> orders = ordersDAO.listErrorOrders();
-        BeanUtils.copyProperties(orders, ordersVOS);
+        for (Orders order: orders
+        ) {
+            OrdersVO ordersVO = new OrdersVO();
+            BeanUtils.copyProperties(order, ordersVO);
+            ordersVOS.add(ordersVO);
+        }
         return ordersVOS;
     }
 
