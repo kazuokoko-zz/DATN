@@ -1,8 +1,11 @@
 package com.poly.datn.service.impl;
 
+import com.poly.datn.dao.CustomerDAO;
 import com.poly.datn.entity.Blog;
+import com.poly.datn.entity.Customer;
 import com.poly.datn.vo.mailSender.InfoSendBlog;
 import com.poly.datn.vo.mailSender.InfoSendMailRPass;
+import com.poly.datn.vo.mailSender.InfoSendOrder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -32,6 +35,8 @@ public class SendMail {
     @Autowired
     private Configuration config;
 
+    @Autowired
+    private CustomerDAO customerDAO;
     //quên pass
     public void sentResetPasswordMail(String email, String resetLink, String name) throws MessagingException, IOException, TemplateException {
         InfoSendMailRPass infoSendMail = new InfoSendMailRPass();
@@ -91,17 +96,17 @@ public class SendMail {
     }
 //    }
 
-    public void sentMailOrder(String email, String name) throws MessagingException, UnsupportedEncodingException {
+    public void sentMailOrder(InfoSendOrder infoSendOrder) throws MessagingException, IOException, TemplateException {
         String homeLink = "http://150.95.105.29/";
         String mailSubject = "Đặt hàng thành công Socstore";
-        String mailContent = "<p><b>Hello " + name + "</b> </p>"
-                + "<p>Bạn đã tạo tài khoản thành công trên hệ thống của Socstore</p>"
-                + "<p>Hãy thường xuyên kiểm tra email để nhận những tin công nghệ mới nhất nhé</p>"
-                + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
-                + "<p><b>Trân trọng </b> </b></p>"
-                + "----------------------------------------------------------------------------------</b> </b>"
-                + "<img src='cid:logoImage'/>";
-        sendMail(mailContent, mailSubject, email);
+//        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
+
+        Template t = config.getTemplate("mailRPass.ftl");
+        String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
+
+
+
+        sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
     }
 
     public void sentMailRegister(String email, String name) throws MessagingException, UnsupportedEncodingException {

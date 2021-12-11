@@ -9,6 +9,7 @@ import com.poly.datn.vo.*;
 import com.poly.datn.service.OrdersService;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
+import com.poly.datn.vo.mailSender.InfoSendOrder;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -421,8 +422,16 @@ public class OrdersServicesImpl implements OrdersService {
     private Orders createOders(OrdersVO ordersVO, String changeBy) {
         Long totalPrice = 0L;
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+
+        Long totalDiscount = 0L;
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
+            if(orderDetailsVO1.getQuantity() <= 0){
+                continue;
+            }else {
+                Long discount = orderDetailsVO1.getQuantity() * orderDetailsVO1.getDiscount();
+                totalDiscount += discount;
+                totalPrice += (orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice())) - discount;
+            }
         }
         System.out.println(totalPrice);
         System.out.println(ordersVO.getSumprice());
@@ -440,7 +449,9 @@ public class OrdersServicesImpl implements OrdersService {
         orders.setCustomerId(customer.getId());
         orders.setTypePayment(false);
         orders.setSumprice(totalPrice);
-        return ordersDAO.save(orders);
+        orders = ordersDAO.save(orders);
+
+        return orders;
     }
 
     private void saveDetails(Orders orders, OrdersVO ordersVO) {
@@ -484,6 +495,15 @@ public class OrdersServicesImpl implements OrdersService {
         orderManagementDAO.save(orderManagement);
         BeanUtils.copyProperties(orders, ordersVO);
         ordersVO.setStatus(status);
+
+//        InfoSendOrder infoSendOrder = new InfoSendOrder();
+//        infoSendOrder.setDiscount(totalDiscount);
+//        infoSendOrder.setTotalPrice(totalPrice);
+//        infoSendOrder.setName(customer.getFullname());
+//        infoSendOrder.setAddress(customer.getAddress());
+//        infoSendOrder.setEmail(customer.getEmail());
+//        infoSendOrder.setPhone(customer.getPhone());
+//        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails());
         return ordersVO;
     }
 
