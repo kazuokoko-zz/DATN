@@ -63,8 +63,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<#--                                <#assign  details = ${orderDetails}>-->
-                                <#list  ${orderDetails} as detail>
+                                <#assign  details = orderDetails>
+                                <#list  details as detail>
                                     <tr>
                                         <td>${detail.productName}</td>
                                         <td>${detail.quantity}</td>
