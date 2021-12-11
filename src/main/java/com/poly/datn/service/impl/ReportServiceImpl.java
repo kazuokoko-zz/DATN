@@ -35,6 +35,24 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     ObjectMapper mapper;
 
+    private Timestamp startTime;
+    private Timestamp endTime;
+
+    public void getTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String month = String.valueOf(localDateTime.getMonth().getValue());
+        String year = String.valueOf(localDateTime.getYear());
+
+        YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
+        LocalDate firstOfMonth = yearMonth.atDay(1);
+         startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+
+
+        LocalDate last = yearMonth.atEndOfMonth();
+         endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
+    }
+
+
     @Override
     public List<OrdersVO> getListUnComfirmOrders(Principal principal) {
         checjkPrincipal(principal);
@@ -51,6 +69,56 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public List<OrdersVO> getlistOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listOrders(startTime, endTime);
+        BeanUtils.copyProperties(orders, ordersVOS);
+        return ordersVOS;
+    }
+
+    @Override
+    public List<OrdersVO> getListCancerOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listCancerOrders(startTime, endTime);
+        BeanUtils.copyProperties(orders, ordersVOS);
+        return ordersVOS;
+    }
+
+    @Override
+    public List<OrdersVO> getListSuccessOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listSuccessOrders(startTime, endTime);
+        BeanUtils.copyProperties(orders, ordersVOS);
+        return ordersVOS;
+    }
+
+    @Override
+    public List<OrdersVO> getListComfimOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listComfimOrders();
+        BeanUtils.copyProperties(orders, ordersVOS);
+        return ordersVOS;
+    }
+
+    @Override
+    public List<OrdersVO> getListErrorOrders(Principal principal) {
+        checjkPrincipal(principal);
+        getTime();
+        List<OrdersVO> ordersVOS = new ArrayList<>();
+        List<Orders> orders = ordersDAO.listErrorOrders();
+        BeanUtils.copyProperties(orders, ordersVOS);
+        return ordersVOS;
+    }
+
+    @Override
     public Integer getNumberOfUnConfirmOrder(Principal principal) {
         checjkPrincipal(principal);
         return getListUnComfirmOrders(principal).size();
@@ -59,19 +127,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Integer sumOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String month = String.valueOf(localDateTime.getMonth().getValue());
-        String year = String.valueOf(localDateTime.getYear());
-
-        YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
-        LocalDate firstOfMonth = yearMonth.atDay(1);
-        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
-
-
-        LocalDate last = yearMonth.atEndOfMonth();
-        Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
-
-//        Timestamp ts = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+        getTime();
 
         return ordersDAO.countOrdersBy(startTime, endTime);
     }
@@ -79,37 +135,27 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Integer sumCancerOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String month = String.valueOf(localDateTime.getMonth().getValue());
-        String year = String.valueOf(localDateTime.getYear());
-
-        YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
-        LocalDate firstOfMonth = yearMonth.atDay(1);
-        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
-
-
-        LocalDate last = yearMonth.atEndOfMonth();
-        Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
-
+        getTime();
         return ordersDAO.countCancerOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumSuccessOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String month = String.valueOf(localDateTime.getMonth().getValue());
-        String year = String.valueOf(localDateTime.getYear());
-
-        YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
-        LocalDate firstOfMonth = yearMonth.atDay(1);
-        Timestamp startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
-
-
-        LocalDate last = yearMonth.atEndOfMonth();
-        Timestamp endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
-
+        getTime();
         return ordersDAO.countSuccessOrdersBy(startTime, endTime);
+    }
+
+    @Override
+    public Integer sumComfimOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countComfimOrders();
+    }
+
+    @Override
+    public Integer sumErrorOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countErrorOrders();
     }
 
     @Override
@@ -136,17 +182,6 @@ public class ReportServiceImpl implements ReportService {
         return productVOS;
     }
 
-    @Override
-    public List<OrdersVO> getListCancerOrderInMonth(Principal principal) {
-        checjkPrincipal(principal);
-        return null;
-    }
-
-    @Override
-    public List<OrdersVO> getListComfimOrderInMonth(Principal principal) {
-        checjkPrincipal(principal);
-        return null;
-    }
 
     public void checjkPrincipal(Principal principal){
         if (principal == null){
