@@ -158,6 +158,18 @@ public class ReportServiceImpl implements ReportService {
         return ordersDAO.countErrorOrders();
     }
 
+    @Override
+    public Integer sumComfimOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countComfimOrders();
+    }
+
+    @Override
+    public Integer sumErrorOrder(Principal principal) {
+        checjkPrincipal(principal);
+        return ordersDAO.countErrorOrders();
+    }
+
 
     @Override
     public List<ProductVO> getTrendingAdmin(Principal principal) {
@@ -169,7 +181,6 @@ public class ReportServiceImpl implements ReportService {
 
         return productVOS;
     }
-
 
 
     public void checjkPrincipal(Principal principal){

@@ -1,105 +1,81 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Quên mật khẩu </title>
-</head>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
-<style>
-    body {
-        background: grey;
-        margin-top: 120px;
-        margin-bottom: 120px;
-    }
-</style>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-0">
-                    <div class="row p-5">
-                        <div class="col-md-6">
-                            <img src="http://via.placeholder.com/400x90?text=logo">
-                        </div>
-
-                        <div class="col-md-6 text-right">
-                            <p class="font-weight-bold mb-1">Invoice #550</p>
-                            <p class="text-muted">Due to: 4 Dec, 2019</p>
-                        </div>
-                    </div>
-
-                    <hr class="my-5">
-
-                    <div class="row pb-5 p-5">
-                        <div class="col-md-6">
-                            <p class="font-weight-bold mb-4">Client Information</p>
-                            <p class="mb-1">John Doe, Mrs Emma Downson</p>
-                            <p>Acme Inc</p>
-                            <p class="mb-1">Berlin, Germany</p>
-                            <p class="mb-1">6781 45P</p>
-                        </div>
-
-                        <div class="col-md-6 text-right">
-                            <p class="font-weight-bold mb-4">Payment Details</p>
-                            <p class="mb-1"><span class="text-muted">VAT: </span> 1425782</p>
-                            <p class="mb-1"><span class="text-muted">VAT ID: </span> 10253642</p>
-                            <p class="mb-1"><span class="text-muted">Payment Type: </span> Root</p>
-                            <p class="mb-1"><span class="text-muted">Name: </span> John Doe</p>
-                        </div>
-                    </div>
-                    <div class="row p-5">
-                        <div class="col-md-12">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Tên sản phẩm</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Số lượng</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Giá thành</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Khuyến mại</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Total</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <#assign  details = orderDetails>
-                                <#list  details as detail>
-                                    <tr>
-                                        <td>${detail.productName}</td>
-                                        <td>${detail.quantity}</td>
-                                        <td>${detail.price}</td>
-                                        <td>${detail.discount}</td>
-                                        <td>${detail.quantity * (detail.price - detail.discount)}</td>
-                                    </tr>
-                                </#list>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="d-flex flex-row-reverse bg-dark text-white p-4">
-                        <div class="py-3 px-5 text-right">
-                            <div class="mb-2">Grand Total</div>
-                            <div class="h2 font-weight-light">$234,234</div>
-                        </div>
-
-                        <div class="py-3 px-5 text-right">
-                            <div class="mb-2">Discount</div>
-                            <div class="h2 font-weight-light">10%</div>
-                        </div>
-
-                        <div class="py-3 px-5 text-right">
-                            <div class="mb-2">Sub - Total amount</div>
-                            <div class="h2 font-weight-light">$32,432</div>
-                        </div>
-                    </div>
+<body style="background: #838383;color: black">
+<div style="padding: 5rem 0">
+    <div style="width: 1000px; margin: 5rem auto;background-color: #a8ecec; padding-left: 3rem; border-radius: 5px">
+        <div style="width: 100%">
+            <h3 style="">Bạn vừa đặt hàng thành công tại SOCSTORE. Vui lòng đợi trong giây lát nhân viên của chúng tôi
+                sẽ
+                gọi điện xác nhận trong vong 1 giờ. Xin chân thành cảm ơn</h3>
+        </div>
+        <hr style="width: 100%; margin: 2rem 0"/>
+        <div>
+            <h1 style="color: red;text-align: center">CHI TIẾT ĐƠN HÀNG</h1>
+        </div>
+        <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem ">
+            <div style="width: 200px;font-weight: bold">Họ và tên:</div>
+            <div style="width: 740px">${name}</div>
+        </div>
+        <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
+            <div style="width: 200px;font-weight: bold">Số điện thoại:</div>
+            <div style="width: 740px">${phone}</div>
+        </div>
+        <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
+            <div style="width: 200px;font-weight: bold">Email:</div>
+            <div style="width: 740px">${email}</div>
+        </div>
+        <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
+            <div style="width: 200px;font-weight: bold">Địa chi:</div>
+            <div style="width: 740px">${address}</div>
+        </div>
+        <div style="width: 940px">
+            <table style="border: solid 1px; border-collapse: collapse;padding: 5px">
+                <thead>
+                <tr>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 465px ">Tên sản phẩm</th>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 70px">Số lượng</th>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 90px">Bảo hành</th>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 120px">Giá thành</th>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 95px">Khuyến mại</th>
+                    <th style="border: solid 1px; border-collapse: collapse;width: 120px">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <#assign  details = orderDetails>
+                <#list  details as detail>
+                    <tr>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: justify">${detail.productName}</td>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.quantity}</td>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.warranty}</td>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.price}
+                            <span style="font-weight: bold"> VNĐ</span></td>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.discount}
+                            <span style="font-weight: bold"> VNĐ</span></td>
+                        <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.quantity * (detail.price - detail.discount)}
+                            <span style="font-weight: bold"> VNĐ</span</td>
+                    </tr>
+                </#list>
+                </tbody>
+            </table>
+            <div style="width: 940px;display: flex; margin-top: 1rem; margin-bottom: 1rem ">
+                <div style="width: 740px">Giá thành:</div>
+                <div style="width: 200px">${price} VNĐ</div>
+            </div>
+            <div style="width: 940px;display: flex; margin-top: 1rem; margin-bottom: 1rem ">
+                <div style="width: 740px">Khuyến mại:</div>
+                <div style="width: 200px">
+                    <#if discount gt 0>
+                        ${discount}
+                    <#else>
+                        0
+                    </#if> VNĐ
                 </div>
             </div>
+            <div style="width: 940px;display: flex; margin-top: 1rem; margin-bottom: 1rem ">
+                <div style="width: 740px">Số tiền phải trả:</div>
+                <div style="width: 200px">${totalPrice} VNĐ</div>
+            </div>
+            <hr style="width: 100%"/>
+            <img src='cid:logoImage'/>
         </div>
     </div>
-    <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank"
-                                                                href="http://totoprayogo.com">totoprayogo.com</a></div>
 </div>
 </body>
-</html>
