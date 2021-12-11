@@ -64,7 +64,7 @@ ${mail}
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#assign  details = {orderDetails}>
+                                <#assign  details = ${orderDetails}>
                                 <#list details as detail>
                                     <tr>
                                         <td>${detail.productName}</td>
