@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -81,6 +82,9 @@ public class OrdersServicesImpl implements OrdersService {
     public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
 
         String changeBy = principal != null ? principal.getName() : "guest";
+        if (ordersVO.getOrderDetails().size() < 0) {
+            throw new NotImplementedException("Không có sản phẩm trong hóa đơn");
+        }
         // save customer
         Orders orders = createOders(ordersVO, changeBy);
         saveDetails(orders, ordersVO);
@@ -91,16 +95,21 @@ public class OrdersServicesImpl implements OrdersService {
                 cartDetailDAO.deleteById(detail.getId());
             }
         }
+        if (ordersVO.getCustomer().getEmail() == null) {
+            return vo;
+        }
 
+        List<OrderDetailsVO> vos = vo.getOrderDetails();
         InfoSendOrder infoSendOrder = new InfoSendOrder();
-        Customer customer = customerDAO.findCustomerById(vo.getCustomerId());
 
         Long totalPrice = 0L;
         Long totalDiscount = 0L;
-        for (OrderDetailsVO detailsVO : ordersVO.getOrderDetails()) {
+        Long price = 0L;
+        for (OrderDetailsVO detailsVO : vos) {
             if (detailsVO.getQuantity() <= 0) {
                 continue;
             } else {
+                price += detailsVO.getQuantity() * detailsVO.getPrice();
                 Long discount = detailsVO.getQuantity() * detailsVO.getDiscount();
                 totalDiscount += discount;
                 totalPrice += detailsVO.getQuantity() * (detailsVO.getPrice() - detailsVO.getDiscount());
@@ -109,11 +118,20 @@ public class OrdersServicesImpl implements OrdersService {
 
         infoSendOrder.setDiscount(totalDiscount);
         infoSendOrder.setTotalPrice(totalPrice);
-        infoSendOrder.setName(customer.getFullname());
-        infoSendOrder.setAddress(customer.getAddress());
-        infoSendOrder.setEmail(customer.getEmail());
-        infoSendOrder.setPhone(customer.getPhone());
-        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails());
+        infoSendOrder.setPrice(price);
+        infoSendOrder.setName(ordersVO.getCustomer().getFullname());
+        infoSendOrder.setAddress(ordersVO.getCustomer().getAddress());
+        infoSendOrder.setEmail(ordersVO.getCustomer().getEmail());
+        infoSendOrder.setPhone(ordersVO.getCustomer().getPhone());
+        OrderDetailsVO[] voss = new OrderDetailsVO[vos.size()];
+        vos.stream().map(
+                detail -> {
+                    Product product = productDAO.getById(detail.getProductId());
+                    detail.setWarranty(product.getWarranty());
+                    return detail;
+                }
+        ).collect(Collectors.toList()).toArray(voss);
+        infoSendOrder.setOrderDetails(voss);
         sendMail.sentMailOrder(infoSendOrder);
         return vo;
     }
@@ -480,8 +498,9 @@ public class OrdersServicesImpl implements OrdersService {
         return orders;
     }
 
-    private void saveDetails(Orders orders, OrdersVO ordersVO) {
+    private List<OrderDetailsVO> saveDetails(Orders orders, OrdersVO ordersVO) {
         // save order detail
+        List<OrderDetailsVO> vos = new ArrayList<>();
         List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVOS) {
             if (orderDetailsVO1.getQuantity().equals(0)) {
@@ -491,13 +510,17 @@ public class OrdersServicesImpl implements OrdersService {
             BeanUtils.copyProperties(orderDetailsVO1, orderDetails);
             orderDetails.setOrderId(orders.getId());
             orderDetails.setDiscount(priceUtils.maxDiscountAtPresentOf(orderDetails.getProductId()));
-            orderDetailsDAO.save(orderDetails);
+            orderDetails = orderDetailsDAO.save(orderDetails);
             ProductSale productSale = priceUtils.getSaleHavingMaxDiscountOf(orderDetails.getProductId());
             if (productSale == null)
                 continue;
             productSale.setQuantity(productSale.getQuantity() - orderDetails.getQuantity());
             productSaleDAO.save(productSale);
+            OrderDetailsVO vo = new OrderDetailsVO();
+            BeanUtils.copyProperties(orderDetails, vo);
+            vos.add(vo);
         }
+        return vos;
     }
 
     private OrdersVO managerOrderStatus(Orders orders, String changeBy, String status) {
