@@ -37,6 +37,7 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
     Integer countErrorOrders();
 
 
+
     @Query(nativeQuery = true,value ="select * from orders c where c.date_created between :startTime and  :EndTime")
     List<Orders> listOrders(@Param("startTime") Timestamp startTime,@Param("EndTime") Timestamp EndTime);
 
@@ -50,6 +51,7 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
     List<Orders> listComfimOrders();
     @Query(nativeQuery = true,value ="select * from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đơn hàng lỗi\" )")
     List<Orders> listErrorOrders();
+
 
 
     List<Orders> findByUsername(String username);
