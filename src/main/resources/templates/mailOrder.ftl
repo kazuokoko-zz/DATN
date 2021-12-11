@@ -50,7 +50,6 @@
                             <p class="mb-1"><span class="text-muted">Name: </span> John Doe</p>
                         </div>
                     </div>
-${mail}
                     <div class="row p-5">
                         <div class="col-md-12">
                             <table class="table">
@@ -64,8 +63,8 @@ ${mail}
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#assign  details = ${orderDetails}>
-                                <#list details as detail>
+<#--                                <#assign  details = ${orderDetails}>-->
+                                <#list  ${orderDetails} as detail>
                                     <tr>
                                         <td>${detail.productName}</td>
                                         <td>${detail.quantity}</td>
