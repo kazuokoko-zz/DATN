@@ -33,6 +33,8 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
 
     @Query(nativeQuery = true,value ="select count(*) from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đã xác nhận\" )")
     Integer countComfimOrders();
+    @Query(nativeQuery = true,value ="select count(*) from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đơn hàng lỗi\" )")
+    Integer countErrorOrders();
 
 
     List<Orders> findByUsername(String username);

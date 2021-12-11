@@ -13,6 +13,7 @@ public interface ReportService {
     Integer sumCancerOrderInMonth(Principal principal);
     Integer sumSuccessOrderInMonth(Principal principal);
     Integer sumComfimOrder(Principal principal);
+    Integer sumErrorOrder(Principal principal);
 
     List<ProductVO> getTrendingAdmin(Principal principal);
 
