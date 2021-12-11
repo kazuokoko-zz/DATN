@@ -50,7 +50,7 @@
                         <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.discount}
                             <span style="font-weight: bold"> VNĐ</span></td>
                         <td style="border: solid 1px; border-collapse: collapse;text-align: center">${detail.quantity * (detail.price - detail.discount)}
-                            <span style="font-weight: bold"> VNĐ</span</td>
+                            <span style="font-weight: bold"> VNĐ</span></td>
                     </tr>
                 </#list>
                 </tbody>
