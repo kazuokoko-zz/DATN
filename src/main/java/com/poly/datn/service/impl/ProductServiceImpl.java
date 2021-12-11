@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     CategoryDAO categoryDAO;
 
-    public List<ProductVO> getListP(Optional<Integer> cate, Optional<String> find){
+    public List<ProductVO> getListP(Optional<Integer> cate, Optional<String> find) {
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
@@ -105,11 +105,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
-        List<ProductVO> productVOS =  this.getListP(cate, find);
+        List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
         ) {
-            if( productVO1.getStatus().equals("Đang bán")) {
+            if (productVO1.getStatus().equals("Đang bán")) {
                 productVO.add(productVO1);
             } else {
                 continue;
@@ -117,21 +117,21 @@ public class ProductServiceImpl implements ProductService {
         }
         return productVO;
     }
+
     @Override
     public List<ProductVO> getListAdmin(Optional<Integer> cate, Optional<String> find, Principal principal) {
         if (principal == null) {
             return null;
         }
         if (!checkRole.isHavePermition(principal.getName(), "Director")
-                && !checkRole.isHavePermition(principal.getName(), "Staff"))
-        {
+                && !checkRole.isHavePermition(principal.getName(), "Staff")) {
             return null;
         }
-        List<ProductVO> productVOS =  this.getListP(cate, find);
+        List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
         ) {
-            if(productVO1.getStatus().equals("Đã xóa") ) {
+            if (productVO1.getStatus().equals("Đã xóa")) {
                 continue;
             } else {
                 productVO.add(productVO1);
@@ -146,14 +146,15 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
         if (!checkRole.isHavePermition(principal.getName(), "Director")
-                && !checkRole.isHavePermition(principal.getName(), "Staff"))
-        {return null;}
-        List<ProductVO> productVOS =  this.getListP(cate, find);
+                && !checkRole.isHavePermition(principal.getName(), "Staff")) {
+            return null;
+        }
+        List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
         ) {
 //            productVO1.getStatus().equals("Không kinh doanh") || productVO1.getStatus().equals("Ngừng kinh doanh") ||
-            if( productVO1.getStatus().equals("Đã xóa") ) {
+            if (productVO1.getStatus().equals("Đã xóa")) {
                 productVO.add(productVO1);
             } else {
                 continue;
@@ -231,10 +232,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductVO> getMostNew() {
         List<ProductVO> productVOS = new ArrayList<>();
-//        for (Product  product: productDAO.
-//             ) {
-//
-//        }
+        for (Product product : productDAO.findNewTopProduct()) {
+            ProductVO productVO = productUtils.convertToVO(product);
+            productVOS.add(productVO);
+        }
         return productVOS;
     }
 
@@ -326,7 +327,7 @@ public class ProductServiceImpl implements ProductService {
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 Product product = productDAO.getById(id);
-                if(product == null){
+                if (product == null) {
                     throw new NotFoundException("api.error.API-003");
                 }
                 product.setStatus("Đã xóa");
@@ -338,6 +339,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
     @Override
     @Transactional
     public Object dontSell(Integer id, Principal principal) {
@@ -347,7 +349,7 @@ public class ProductServiceImpl implements ProductService {
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
                 Product product = productDAO.getById(id);
-                if(product == null){
+                if (product == null) {
                     throw new NotFoundException("api.error.API-003");
                 }
                 product.setStatus("Ngừng kinh doanh");
@@ -377,7 +379,7 @@ public class ProductServiceImpl implements ProductService {
             product = productDAO.save(product);
 
             List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
-            if(productCategoryVO == null){
+            if (productCategoryVO == null) {
                 throw new NotImplementedException("Chưa thêm category");
             }
             List<ProductCategory> productCategories = new ArrayList<>();
@@ -385,7 +387,7 @@ public class ProductServiceImpl implements ProductService {
             for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
 
                 Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
-                if(category == null){
+                if (category == null) {
                     throw new NotImplementedException("Chưa thêm category");
                 }
                 ProductCategory productCategory = new ProductCategory();
@@ -411,14 +413,14 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
         Product product = productDAO.getOneProductById(productVO.getId());
-        if(product == null){
+        if (product == null) {
             throw new NotFoundException("api.error.API-003");
         }
         BeanUtils.copyProperties(productVO, product);
-        if(productVO.getStatus().equals("Không kinh doanh")
+        if (productVO.getStatus().equals("Không kinh doanh")
                 || productVO.getStatus().equals("Đang bán")
                 || productVO.getStatus().equals("Hết hàng")
-                || productVO.getStatus().equals("Hàng sắp về")){
+                || productVO.getStatus().equals("Hàng sắp về")) {
             product.setStatus(productVO.getStatus());
         } else {
             product.setStatus(product.getStatus());
@@ -426,7 +428,7 @@ public class ProductServiceImpl implements ProductService {
         productDAO.save(product);
 
         List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
-        if(productCategoryVO == null){
+        if (productCategoryVO == null) {
             throw new NotImplementedException("Chưa thêm category");
         }
         List<ProductCategory> productCategories = new ArrayList<>();

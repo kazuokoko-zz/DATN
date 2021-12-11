@@ -1,11 +1,8 @@
 package com.poly.datn.vo.mailSender;
 
-import com.poly.datn.entity.OrderDetails;
-import com.poly.datn.entity.Orders;
 import com.poly.datn.vo.OrderDetailsVO;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

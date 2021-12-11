@@ -27,6 +27,8 @@ public interface ProductDAO extends JpaRepository<Product, Integer> {
             "ORDER BY 'SL'")
     List<Integer[]> getTop100ProductSell();
 
+    @Query(nativeQuery = true,value = "select * from  product  c where c.status='Đang bán' order by  c.id desc limit 8")
+    List<Product> findNewTopProduct();
 
     List<Product> findAllByPriceBetween(Long low, Long high);
 

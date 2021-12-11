@@ -1,7 +1,10 @@
 package com.poly.datn.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "warranty_invoice")
 public class WarrantyInvoice {
@@ -10,46 +13,17 @@ public class WarrantyInvoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "warranty_invoice", nullable = true)
+    @Column(name = "warranty_id")
     private Integer invoice;
     @Basic
-    @Column(name = "product_state", nullable = false, length = -1)
+    @Column(name = "price")
+    private Long price;
+    @Basic
+    @Column(name = "product_state")
     private String productState;
     @Basic
     @Column(name = "type", nullable = false)
     private Boolean type;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getWarrantyInvoice() {
-        return invoice;
-    }
-
-    public void setWarrantyInvoice(Integer warrantyInvoice) {
-        this.invoice = warrantyInvoice;
-    }
-
-    public String getProductState() {
-        return productState;
-    }
-
-    public void setProductState(String productState) {
-        this.productState = productState;
-    }
-
-    public Boolean getType() {
-        return type;
-    }
-
-    public void setType(Boolean type) {
-        this.type = type;
-    }
 
 
 }

@@ -1,3 +1,8 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Quên mật khẩu </title>
+</head>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -9,6 +14,7 @@
         margin-bottom: 120px;
     }
 </style>
+<body>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -44,45 +50,29 @@
                             <p class="mb-1"><span class="text-muted">Name: </span> John Doe</p>
                         </div>
                     </div>
-
                     <div class="row p-5">
                         <div class="col-md-12">
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th class="border-0 text-uppercase small font-weight-bold">ID</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Item</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Description</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Quantity</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Unit Cost</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Tên sản phẩm</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Số lượng</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Giá thành</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Khuyến mại</th>
                                     <th class="border-0 text-uppercase small font-weight-bold">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>LTS Versions</td>
-                                    <td>21</td>
-                                    <td>$321</td>
-                                    <td>$3452</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>Support</td>
-                                    <td>234</td>
-                                    <td>$6356</td>
-                                    <td>$23423</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>Sofware Collection</td>
-                                    <td>4534</td>
-                                    <td>$354</td>
-                                    <td>$23434</td>
-                                </tr>
+                                <#assign  details = orderDetails>
+                                <#list  details as detail>
+                                    <tr>
+                                        <td>${detail.productName}</td>
+                                        <td>${detail.quantity}</td>
+                                        <td>${detail.price}</td>
+                                        <td>${detail.discount}</td>
+                                        <td>${detail.quantity * (detail.price - detail.discount)}</td>
+                                    </tr>
+                                </#list>
                                 </tbody>
                             </table>
                         </div>
@@ -108,5 +98,8 @@
             </div>
         </div>
     </div>
-    <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank" href="http://totoprayogo.com">totoprayogo.com</a></div>
+    <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank"
+                                                                href="http://totoprayogo.com">totoprayogo.com</a></div>
 </div>
+</body>
+</html>
