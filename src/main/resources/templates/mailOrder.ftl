@@ -1,3 +1,8 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Quên mật khẩu </title>
+</head>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -9,6 +14,7 @@
         margin-bottom: 120px;
     }
 </style>
+<body>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -44,7 +50,7 @@
                             <p class="mb-1"><span class="text-muted">Name: </span> John Doe</p>
                         </div>
                     </div>
-
+${mail}
                     <div class="row p-5">
                         <div class="col-md-12">
                             <table class="table">
@@ -58,7 +64,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list orderDetails as detail>
+                                <#assign  details = {orderDetails}>
+                                <#list details as detail>
                                     <tr>
                                         <td>${detail.productName}</td>
                                         <td>${detail.quantity}</td>
@@ -95,3 +102,5 @@
     <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank"
                                                                 href="http://totoprayogo.com">totoprayogo.com</a></div>
 </div>
+</body>
+</html>
