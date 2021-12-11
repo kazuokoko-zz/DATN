@@ -12,6 +12,8 @@ import com.poly.datn.vo.ProductVO;
 import com.poly.datn.vo.TrendingVO;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,7 @@ public class AutoTaskService {
     ProductUtils productUtils;
 
     @Scheduled(cron = "0 30 0/1 ? * * ")
+    @EventListener(ApplicationReadyEvent.class)
     protected void scanUserDetail() {
         for (Account account : accountDAO.findAll()) {
             if (!userDetail.containsKey(account.getEmail()))
@@ -54,6 +57,7 @@ public class AutoTaskService {
     }
 
     @Scheduled(cron = "0 45 0/1 ? * * ")
+    @EventListener(ApplicationReadyEvent.class)
     protected void scanBlog() {
         Timestamp end = Timestamp.valueOf(LocalDateTime.now());
         Timestamp start = Timestamp.valueOf(LocalDateTime.now().minusMinutes(45));
@@ -78,6 +82,7 @@ public class AutoTaskService {
 
 
     @Scheduled(cron = "0 0 0/1 1/1 * ? ")
+    @EventListener(ApplicationReadyEvent.class)
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
             Blog blog = blogDAO.getById(entry.getKey());
@@ -91,6 +96,7 @@ public class AutoTaskService {
 
 //    @Scheduled(fixedRate = 500000)
     @Scheduled(cron = "0 0 0/1 1/1 * ? ")
+    @EventListener(ApplicationReadyEvent.class)
     protected void getTrending() {
         trending.clear();
         for (Integer[] ls : productDAO.getTop100ProductSell()) {
