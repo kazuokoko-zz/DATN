@@ -116,6 +116,11 @@ public class ReportServiceImpl implements ReportService {
         return ordersDAO.countSuccessOrdersBy(startTime, endTime);
     }
 
+    @Override
+    public Integer sumComfimOrder(Principal principal) {
+        return ordersDAO.countComfimOrders();
+    }
+
 
     @Override
     public List<ProductVO> getTrendingAdmin(Principal principal) {

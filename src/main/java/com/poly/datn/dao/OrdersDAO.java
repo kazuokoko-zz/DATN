@@ -31,6 +31,9 @@ public interface OrdersDAO extends JpaRepository<Orders, Integer> {
     @Query(nativeQuery = true,value ="select count(*) from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Giao hàng thành công\" )and c.date_created between :startTime and  :EndTime")
     Integer countSuccessOrdersBy(@Param("startTime") Timestamp startTime,@Param("EndTime") Timestamp EndTime);
 
+    @Query(nativeQuery = true,value ="select count(*) from orders c where c.id in(select order_id from ordermanagement o where o.status = \"Đã xác nhận\" )")
+    Integer countComfimOrders();
+
 
     List<Orders> findByUsername(String username);
     List<Orders> findOneById(Integer id);
