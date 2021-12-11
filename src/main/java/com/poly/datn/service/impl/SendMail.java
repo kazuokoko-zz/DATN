@@ -2,13 +2,11 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.CustomerDAO;
 import com.poly.datn.entity.Blog;
-import com.poly.datn.entity.Customer;
 import com.poly.datn.vo.mailSender.InfoSendBlog;
 import com.poly.datn.vo.mailSender.InfoSendMailRPass;
 import com.poly.datn.vo.mailSender.InfoSendOrder;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import freemarker.core.ParseException;
+import freemarker.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -96,17 +94,34 @@ public class SendMail {
     }
 //    }
 
-    public void sentMailOrder(InfoSendOrder infoSendOrder) throws MessagingException, IOException, TemplateException {
-        String homeLink = "http://150.95.105.29/";
-        String mailSubject = "Đặt hàng thành công Socstore";
+    public void sentMailOrder(InfoSendOrder infoSendOrder) {
+        try {
+
+            String homeLink = "http://150.95.105.29/";
+            String mailSubject = "Đặt hàng thành công Socstore";
 //        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
 
-        Template t = config.getTemplate("mailRPass.ftl");
-        String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
+            Template t = config.getTemplate("mailOrder.ftl");
+            String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
 
 
 
-        sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
+            sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (TemplateNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (MalformedTemplateNameException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sentMailRegister(String email, String name) throws MessagingException, UnsupportedEncodingException {

@@ -50,39 +50,23 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th class="border-0 text-uppercase small font-weight-bold">ID</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Item</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Description</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Quantity</th>
-                                    <th class="border-0 text-uppercase small font-weight-bold">Unit Cost</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Tên sản phẩm</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Số lượng</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Giá thành</th>
+                                    <th class="border-0 text-uppercase small font-weight-bold">Khuyến mại</th>
                                     <th class="border-0 text-uppercase small font-weight-bold">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>LTS Versions</td>
-                                    <td>21</td>
-                                    <td>$321</td>
-                                    <td>$3452</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>Support</td>
-                                    <td>234</td>
-                                    <td>$6356</td>
-                                    <td>$23423</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Software</td>
-                                    <td>Sofware Collection</td>
-                                    <td>4534</td>
-                                    <td>$354</td>
-                                    <td>$23434</td>
-                                </tr>
+                                <#list orderDetails as detail>
+                                    <tr>
+                                        <td>${detail.productName}</td>
+                                        <td>${detail.quantity}</td>
+                                        <td>${detail.price}</td>
+                                        <td>${detail.discount}</td>
+                                        <td>${detail.quantity * (detail.price - detail.discount)}</td>
+                                    </tr>
+                                </#list>
                                 </tbody>
                             </table>
                         </div>
@@ -108,5 +92,6 @@
             </div>
         </div>
     </div>
-    <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank" href="http://totoprayogo.com">totoprayogo.com</a></div>
+    <div class="text-light mt-5 mb-5 text-center small">by : <a class="text-light" target="_blank"
+                                                                href="http://totoprayogo.com">totoprayogo.com</a></div>
 </div>

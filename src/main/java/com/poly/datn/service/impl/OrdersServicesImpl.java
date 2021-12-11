@@ -2,11 +2,11 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
+import com.poly.datn.service.OrdersService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
-import com.poly.datn.service.OrdersService;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
 import com.poly.datn.vo.mailSender.InfoSendOrder;
@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.webjars.NotFoundException;
 
 import java.security.Principal;
@@ -64,6 +63,9 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     AccountDAO accountDAO;
 
+    @Autowired
+    SendMail sendMail;
+
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
         if (principal == null) {
@@ -85,10 +87,34 @@ public class OrdersServicesImpl implements OrdersService {
         OrdersVO vo = managerOrderStatus(orders, changeBy, "Chờ xác nhận");
         if (principal != null) {
             List<CartDetail> details = cartDetailDAO.getCartDetailsByUsername(principal.getName());
-            for (CartDetail detail : details){
+            for (CartDetail detail : details) {
                 cartDetailDAO.deleteById(detail.getId());
             }
         }
+
+        InfoSendOrder infoSendOrder = new InfoSendOrder();
+        Customer customer = customerDAO.findCustomerById(vo.getCustomerId());
+
+        Long totalPrice = 0L;
+        Long totalDiscount = 0L;
+        for (OrderDetailsVO detailsVO : ordersVO.getOrderDetails()) {
+            if (detailsVO.getQuantity() <= 0) {
+                continue;
+            } else {
+                Long discount = detailsVO.getQuantity() * detailsVO.getDiscount();
+                totalDiscount += discount;
+                totalPrice += detailsVO.getQuantity() * (detailsVO.getPrice() - detailsVO.getDiscount());
+            }
+        }
+
+        infoSendOrder.setDiscount(totalDiscount);
+        infoSendOrder.setTotalPrice(totalPrice);
+        infoSendOrder.setName(customer.getFullname());
+        infoSendOrder.setAddress(customer.getAddress());
+        infoSendOrder.setEmail(customer.getEmail());
+        infoSendOrder.setPhone(customer.getPhone());
+        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails().toArray(OrderDetailsVO[]::new));
+        sendMail.sentMailOrder(infoSendOrder);
         return vo;
     }
 
@@ -117,7 +143,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -149,7 +175,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -180,7 +206,7 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") ||orderManagement.equals("Đơn hàng lỗi")) {
+        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
         } else {
             OrderManagement orderManagement1 = new OrderManagement();
@@ -233,27 +259,27 @@ public class OrdersServicesImpl implements OrdersService {
     public ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal) {
         ShowProductWarrantyVO showProductWarrantyVO = new ShowProductWarrantyVO();
         Orders orders1 = ordersDAO.findMotById(orderId);
-        if(orders1 == null){
+        if (orders1 == null) {
             throw new NotFoundException("api.error.API-003");
         }
         showProductWarrantyVO.setStatus(getStatus(orderId));
-        if(showProductWarrantyVO.getStatus().equals("Giao hàng thành công")){
-        List<OrderDetails> orderDetails= orderDetailsDAO.findAllByOrderIdEquals(orderId);
-        List<ProductVO> productVOS= new ArrayList<>();
-        for (OrderDetails orderDetail: orderDetails
-             ) {
-           Product product = orderDetail.getProduct();
-           if(warrantyDAO.findOneByOrderIdAndProductId(orderId, product.getId()) != null){
-               continue;
-           } else {
-               ProductVO productVO = new ProductVO();
-               BeanUtils.copyProperties(product,productVO);
-               productVOS.add(productVO);
-           }
-        }
+        if (showProductWarrantyVO.getStatus().equals("Giao hàng thành công")) {
+            List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(orderId);
+            List<ProductVO> productVOS = new ArrayList<>();
+            for (OrderDetails orderDetail : orderDetails
+            ) {
+                Product product = orderDetail.getProduct();
+                if (warrantyDAO.findOneByOrderIdAndProductId(orderId, product.getId()) != null) {
+                    continue;
+                } else {
+                    ProductVO productVO = new ProductVO();
+                    BeanUtils.copyProperties(product, productVO);
+                    productVOS.add(productVO);
+                }
+            }
 
-        BeanUtils.copyProperties(orders1, showProductWarrantyVO);
-        showProductWarrantyVO.setProductVOS(productVOS);
+            BeanUtils.copyProperties(orders1, showProductWarrantyVO);
+            showProductWarrantyVO.setProductVOS(productVOS);
 
         } else {
             throw new NotImplementedException("Không có hóa đơn này " + orderId);
@@ -420,17 +446,17 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     private Orders createOders(OrdersVO ordersVO, String changeBy) {
-        Long totalPrice = 0L;
-        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
 
+        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+        Long totalPrice = 0L;
         Long totalDiscount = 0L;
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
-            if(orderDetailsVO1.getQuantity() <= 0){
+            if (orderDetailsVO1.getQuantity() <= 0) {
                 continue;
-            }else {
+            } else {
                 Long discount = orderDetailsVO1.getQuantity() * orderDetailsVO1.getDiscount();
                 totalDiscount += discount;
-                totalPrice += (orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice())) - discount;
+                totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
             }
         }
         System.out.println(totalPrice);
@@ -495,15 +521,6 @@ public class OrdersServicesImpl implements OrdersService {
         orderManagementDAO.save(orderManagement);
         BeanUtils.copyProperties(orders, ordersVO);
         ordersVO.setStatus(status);
-
-//        InfoSendOrder infoSendOrder = new InfoSendOrder();
-//        infoSendOrder.setDiscount(totalDiscount);
-//        infoSendOrder.setTotalPrice(totalPrice);
-//        infoSendOrder.setName(customer.getFullname());
-//        infoSendOrder.setAddress(customer.getAddress());
-//        infoSendOrder.setEmail(customer.getEmail());
-//        infoSendOrder.setPhone(customer.getPhone());
-//        infoSendOrder.setOrderDetails(ordersVO.getOrderDetails());
         return ordersVO;
     }
 
@@ -523,7 +540,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     private String getStatus(Integer id) {
         OrderManagement orderManagement = orderManagementDAO.getLastManager(id);
-        if(orderManagement == null){
+        if (orderManagement == null) {
             OrderManagement orderManagement1 = new OrderManagement();
             orderManagement1.setOrderId(id);
             orderManagement1.setStatus("Đơn hàng lỗi");
