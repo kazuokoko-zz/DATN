@@ -74,7 +74,9 @@ public class OrdersServicesImpl implements OrdersService {
         }
         Orders orders = ordersDAO.findByIdAndUsername(id, principal.getName()).orElseThrow(() -> new SecurityException("Not your order"));
 
-        return getDetailOrders(orders, "Chờ xác nhận");
+        OrdersVO vo = getDetailOrders(orders, "Chờ xác nhận");
+
+        return getStatusLine(vo);
     }
 
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
@@ -115,7 +117,9 @@ public class OrdersServicesImpl implements OrdersService {
                 totalPrice += detailsVO.getQuantity() * (detailsVO.getPrice() - detailsVO.getDiscount());
             }
         }
-
+/**
+ * send order mail
+ */
         infoSendOrder.setDiscount(totalDiscount);
         infoSendOrder.setTotalPrice(totalPrice);
         infoSendOrder.setPrice(price);
@@ -140,7 +144,8 @@ public class OrdersServicesImpl implements OrdersService {
     public OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal) {
         checjkPrincipal(principal);
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
-        return getDetailOrders(orders, null);
+        OrdersVO vo = getDetailOrders(orders, null);
+        return getStatusLine(vo);
     }
 
     public Integer updateQuantityForProductBeffoCancerOrder(Integer id){
@@ -603,6 +608,19 @@ public class OrdersServicesImpl implements OrdersService {
         return orderManagement.getStatus();
     }
 
+    private OrdersVO getStatusLine(OrdersVO ordersVO) {
+        OrdersVO vo = ordersVO;
+        List<OrderManagement> oms = orderManagementDAO.findByOrderId(vo.getId());
+        Collections.sort(oms, Comparator.comparing(OrderManagement::getTimeChange).reversed());
+        List<OrderManagementVO> omvos = new ArrayList<>();
+        for (OrderManagement orderManagement : oms) {
+            OrderManagementVO managementVO = new OrderManagementVO();
+            BeanUtils.copyProperties(orderManagement, managementVO);
+            omvos.add(managementVO);
+        }
+        vo.setOrderManagements(omvos);
+        return vo;
+    }
     public void checjkPrincipal(Principal principal){
         if (principal == null){
             throw new NotImplementedException("Chưa đăng nhập");}
