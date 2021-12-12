@@ -38,18 +38,18 @@ public class ReportServiceImpl implements ReportService {
     private Timestamp startTime;
     private Timestamp endTime;
 
-    public void getTime(){
+    public void getTime() {
         LocalDateTime localDateTime = LocalDateTime.now();
         String month = String.valueOf(localDateTime.getMonth().getValue());
         String year = String.valueOf(localDateTime.getYear());
 
         YearMonth yearMonth = YearMonth.of(Integer.valueOf(year), Integer.valueOf(month));
         LocalDate firstOfMonth = yearMonth.atDay(1);
-         startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
+        startTime = Timestamp.valueOf(firstOfMonth.atStartOfDay());
 
 
         LocalDate last = yearMonth.atEndOfMonth();
-         endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
+        endTime = Timestamp.valueOf(last.atTime(23, 59, 59));
     }
 
 
@@ -73,9 +73,8 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        List<Orders> orders = ordersDAO.listOrders(startTime, endTime);
-        for (Orders order: orders
-             ) {
+        List<Orders> orders = ordersDAO.getAllOrdersInMonth(startTime, endTime);
+        for (Orders order : orders) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
             ordersVOS.add(ordersVO);
@@ -88,9 +87,9 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        List<Orders> orders = ordersDAO.listCancerOrders(startTime, endTime);
-        for (Orders order: orders
-        ) {
+        List<Integer> ids = orderManagementDAO.getIdOfLastStatusInMonth("Đã hủy", startTime, endTime);
+        List<Orders> orders = ordersDAO.getOrdersOfIds(ids);
+        for (Orders order : orders) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
             ordersVOS.add(ordersVO);
@@ -103,8 +102,9 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        List<Orders> orders = ordersDAO.listSuccessOrders(startTime, endTime);
-        for (Orders order: orders
+        List<Integer> ids = orderManagementDAO.getIdOfLastStatusInMonth("Giao hàng thành công", startTime, endTime);
+        List<Orders> orders = ordersDAO.getOrdersOfIds(ids);
+        for (Orders order : orders
         ) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
@@ -118,8 +118,9 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        List<Orders> orders = ordersDAO.listComfimOrders();
-        for (Orders order: orders
+        List<Integer> ids = orderManagementDAO.getIdOfLastStatus("Đã xác nhận");
+        List<Orders> orders = ordersDAO.getOrdersOfIds(ids);
+        for (Orders order : orders
         ) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
@@ -134,8 +135,9 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         List<OrdersVO> ordersVOS = new ArrayList<>();
-        List<Orders> orders = ordersDAO.listErrorOrders();
-        for (Orders order: orders
+        List<Integer> ids = orderManagementDAO.getIdOfLastStatus("Đơn hàng lỗi");
+        List<Orders> orders = ordersDAO.getOrdersOfIds(ids);
+        for (Orders order : orders
         ) {
             OrdersVO ordersVO = new OrdersVO();
             BeanUtils.copyProperties(order, ordersVO);
@@ -154,34 +156,38 @@ public class ReportServiceImpl implements ReportService {
     public Integer sumOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
         getTime();
-
-        return ordersDAO.countOrdersBy(startTime, endTime);
+        return ordersDAO.getAllOrdersInMonth(startTime, endTime).size();
+//        return ordersDAO.countOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumCancerOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
         getTime();
-        return ordersDAO.countCancerOrdersBy(startTime, endTime);
+        return orderManagementDAO.getIdOfLastStatusInMonth("Đã hủy", startTime, endTime).size();
+//        return ordersDAO.countCancerOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumSuccessOrderInMonth(Principal principal) {
         checjkPrincipal(principal);
         getTime();
-        return ordersDAO.countSuccessOrdersBy(startTime, endTime);
+        return orderManagementDAO.getIdOfLastStatusInMonth("Giao hàng thành công", startTime, endTime).size();
+// return ordersDAO.countSuccessOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumComfimOrder(Principal principal) {
         checjkPrincipal(principal);
-        return ordersDAO.countComfimOrders();
+        return orderManagementDAO.getIdOfLastStatus("Đã xác nhận").size();
+//        return ordersDAO.countComfimOrders();
     }
 
     @Override
     public Integer sumErrorOrder(Principal principal) {
         checjkPrincipal(principal);
-        return ordersDAO.countErrorOrders();
+        return orderManagementDAO.getIdOfLastStatus("Đơn hàng lỗi").size();
+//        return ordersDAO.countErrorOrders();
     }
 
 
@@ -197,10 +203,10 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-
-    public void checjkPrincipal(Principal principal){
-        if (principal == null){
-            throw new NotImplementedException("Chưa đăng nhập");}
+    public void checjkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             throw new NotImplementedException("User này không có quyền");

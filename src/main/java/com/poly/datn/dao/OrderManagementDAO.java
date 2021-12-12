@@ -23,7 +23,7 @@ public interface OrderManagementDAO extends JpaRepository<OrderManagement, Long>
 
     @Query(nativeQuery = true, value = "SELECT order_id  FROM ordermanagement m , orders o where (m.order_id , m.time_change) IN(\n" +
             "SELECT  order_id, MAX(time_change) AS  time_change FROM ordermanagement m \n" +
-            "GROUP BY order_id ) AND `status` = :status AND o.id = m.order_id and o.date_created between :start and :end")
+            "GROUP BY order_id ) AND o.id = m.order_id AND `status` = :status and o.date_created between :start and :end")
     List<Integer> getIdOfLastStatusInMonth(@Param("status") String status, @Param("start") Timestamp start, @Param("end") Timestamp end);
 
 
