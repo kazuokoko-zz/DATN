@@ -37,4 +37,6 @@ public interface ProductService {
     ProductCategoryVO selectCate(Integer pid, Integer cid, Principal principal);
 
     Boolean unSelectCate(Integer pid, Integer cid, Principal principal);
+
+    Object getBlogLess(Principal principal);
 }

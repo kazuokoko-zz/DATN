@@ -35,4 +35,7 @@ public interface ProductDAO extends JpaRepository<Product, Integer> {
     List<Product> findAllByPriceLessThanEqual(Long high);
 
     List<Product> findAllByPriceGreaterThanEqual(Long low);
+
+    @Query(nativeQuery = true,value = "select  * from product p where p.id not in (select distinct product_id from blog b where b.type = 1)")
+    List<Product> getNotContainBlog();
 }

@@ -35,6 +35,7 @@ public class ProductAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.delete(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @PutMapping("dontSell/{id}")
     public ResponseEntity<ResponseDTO<Object>> dontSellProduct(@PathVariable("id") Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.dontSell(id, principal))
@@ -45,6 +46,7 @@ public class ProductAdminRest {
     public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @GetMapping("getListDelete")
     public ResponseEntity<ResponseDTO<Object>> getListDelete(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListDeleteAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
@@ -66,8 +68,8 @@ public class ProductAdminRest {
     }
 
     @PostMapping("newproductcolor/{id}")
-    public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS,@RequestParam("statusProduct")Optional<String> statusProduct, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS,statusProduct, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    public ResponseEntity<ResponseDTO<Object>> newProductColor(@PathVariable("id") Optional<Integer> id, @RequestBody List<ProductColorVO> productColorVOS, @RequestParam("statusProduct") Optional<String> statusProduct, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productColorService.newProductColor(id, productColorVOS, statusProduct, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("newproductcategory/{id}")
@@ -86,6 +88,7 @@ public class ProductAdminRest {
                 .code(Constant.RESPONSEDTO_CODE)
                 .message(Constant.RESPONSEDTO_MESS).build());
     }
+
     @PutMapping("unselectcate")
     public ResponseEntity<ResponseDTO<Object>> unSelectCate(@RequestParam("pid") Integer pid, @RequestParam("cid") Integer cid, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.unSelectCate(pid, cid, principal))
@@ -93,4 +96,10 @@ public class ProductAdminRest {
                 .message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @GetMapping("blogless")
+    public ResponseEntity<ResponseDTO<Object>> getListProductDontHaveBlog(Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getBlogLess(principal))
+                .code(Constant.RESPONSEDTO_CODE)
+                .message(Constant.RESPONSEDTO_MESS).build());
+    }
 }

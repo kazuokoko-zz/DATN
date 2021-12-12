@@ -215,6 +215,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Object getBlogLess(Principal principal) {
+        if (principal == null) {
+            return null;
+        }
+        if (!checkRole.isHavePermition(principal.getName(), "Director")
+                && !checkRole.isHavePermition(principal.getName(), "Staff"))
+            return null;
+        List<ProductVO> vos = new ArrayList<>();
+        for (Product product : productDAO.getNotContainBlog()) {
+            ProductVO vo = productUtils.convertToVO(product);
+            vos.add(vo);
+        }
+        return vos;
+    }
+
+    @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
         if (AutoTaskService.trending.size() < 8) {
