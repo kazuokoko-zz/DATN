@@ -1,10 +1,12 @@
 package com.poly.datn.dao;
 
 import com.poly.datn.entity.OrderManagement;
+import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -25,6 +27,5 @@ public interface OrderManagementDAO extends JpaRepository<OrderManagement, Long>
             "SELECT  order_id, MAX(time_change) AS  time_change FROM ordermanagement m \n" +
             "GROUP BY order_id ) AND `status` = :status AND o.id = m.order_id and o.date_created between :start and :end")
     List<Integer> getIdOfLastStatusInMonth(@Param("status") String status, @Param("start") Timestamp start, @Param("end") Timestamp end);
-
 
 }
