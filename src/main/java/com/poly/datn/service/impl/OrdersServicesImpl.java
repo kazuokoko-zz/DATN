@@ -64,6 +64,8 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     SendMail sendMail;
+    @Autowired
+    ProductColorDAO productColorDAO;
 
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
@@ -82,7 +84,7 @@ public class OrdersServicesImpl implements OrdersService {
     public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
 
         String changeBy = principal != null ? principal.getName() : "guest";
-        if (ordersVO.getOrderDetails().size() < 0) {
+        if (ordersVO.getOrderDetails().isEmpty()) {
             throw new NotImplementedException("Không có sản phẩm trong hóa đơn");
         }
         // save customer
@@ -140,25 +142,27 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
         OrdersVO vo = getDetailOrders(orders, null);
         return getStatusLine(vo);
     }
 
+    public Integer updateQuantityForProductBeffoCancerOrder(Integer id){
+        Integer countQuantity = 0;
+        List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(id);
+        for (OrderDetails orderDetails1: orderDetails
+             ) {
+            ProductColor productColor = productColorDAO.findByProductIdAndColorId(orderDetails1.getProductId(), orderDetails1.getColorId());
+            productColor.setQuantity(orderDetails1.getQuantity() + productColor.getQuantity());
+            productColorDAO.save(productColor);
+        }
+        return countQuantity;
+    }
+
     @Override
     public boolean cancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        if (principal == null) {
-            return false;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return false;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
@@ -178,6 +182,7 @@ public class OrdersServicesImpl implements OrdersService {
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
             }
             orderManagementDAO.save(orderManagement1);
+            updateQuantityForProductBeffoCancerOrder(id);
             return true;
         }
 
@@ -185,12 +190,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public boolean confimOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        if (principal == null) {
-            return false;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return false;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
@@ -216,12 +216,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public boolean confimSell(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        if (principal == null) {
-            return false;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return false;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
@@ -244,15 +239,63 @@ public class OrdersServicesImpl implements OrdersService {
             return true;
         }
     }
+    @Override
+    public boolean cancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        if (principal == null){
+            throw new NotImplementedException("Chưa đăng nhập");}
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Chờ xác nhận") ) {
+            OrderManagement orderManagement1 = new OrderManagement();
+            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+            orderManagement1.setChangedBy(principal.getName());
+            orderManagement1.setOrderId(orders.getId());
+            orderManagement1.setStatus("Đã hủy");
+            if (noteOrderManagementVo.getNote() == "") {
+                orderManagement1.setNote("Thực hiện hủy đơn hàng do người dùng yêu cầu");
+            } else {
+                orderManagement1.setNote("Thực hiện hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote());
+            }
+            orderManagementDAO.save(orderManagement1);
+            updateQuantityForProductBeffoCancerOrder(id);
+            return true;
+        } else {
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+    }
+    @Override
+    public boolean requestCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        if (principal == null){
+            throw new NotImplementedException("Chưa đăng nhập");}
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Đã xác nhận") ) {
+            OrderManagement orderManagement1 = new OrderManagement();
+            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+            orderManagement1.setChangedBy(principal.getName());
+            orderManagement1.setOrderId(orders.getId());
+            orderManagement1.setStatus("Yêu cầu hủy");
+            if (noteOrderManagementVo.getNote() == "") {
+                orderManagement1.setNote("Yêu cầu hủy đơn hàng do người dùng yêu cầu");
+            } else {
+                orderManagement1.setNote("Yêu cầu hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote());
+            }
+            orderManagementDAO.save(orderManagement1);
+            return true;
+        } else {
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+    }
 
     @Override
     public boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        if (principal == null) {
-            return false;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return false;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
@@ -278,6 +321,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal) {
+        checjkPrincipal(principal);
         ShowProductWarrantyVO showProductWarrantyVO = new ShowProductWarrantyVO();
         Orders orders1 = ordersDAO.findMotById(orderId);
         if (orders1 == null) {
@@ -310,12 +354,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checjkPrincipal(principal);
         String changeBy = principal != null ? principal.getName() : "guest";
         Orders orders = createOders(ordersVO, changeBy);
         saveDetails(orders, ordersVO);
@@ -324,27 +363,14 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff")) ||
-                !id.isPresent() || !status.isPresent()) {
-            return null;
-        }
+        checjkPrincipal(principal);
         Orders orders = ordersDAO.getById(id.get());
         return managerOrderStatus(orders, principal.getName(), status.get());
     }
 
     @Override
     public List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checjkPrincipal(principal);
         List<Orders> orders = ordersDAO.findAll();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Orders order : orders) {
@@ -377,6 +403,9 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public List<OrdersVO> getByUsername(Principal principal) {
+        if (principal == null) {
+           throw new NotImplementedException("Chưa đăng nhập");
+        }
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Orders orders : ordersDAO.getByUsername(principal.getName())) {
             OrdersVO vo = new OrdersVO();
@@ -389,6 +418,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public List<OrdersVO> getAll(Principal principal) {
+        checjkPrincipal(principal);
         List<Orders> orders = ordersDAO.findAll();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Orders order : orders) {
@@ -398,7 +428,7 @@ public class OrdersServicesImpl implements OrdersService {
             //listcustomer
             Customer customer = customerDAO.findCustomerById(order.getCustomerId());
             if (customer == null) {
-
+                throw new NotFoundException("api.error.API-003");
             } else {
                 CustomerVO customerVO = new CustomerVO();
                 BeanUtils.copyProperties(customer, customerVO);
@@ -481,8 +511,6 @@ public class OrdersServicesImpl implements OrdersService {
                 totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
             }
         }
-        System.out.println(totalPrice);
-        System.out.println(ordersVO.getSumprice());
         if (!totalPrice.equals(ordersVO.getSumprice())) {
             throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
         }
@@ -531,7 +559,7 @@ public class OrdersServicesImpl implements OrdersService {
         //save ordermanagement
 
         String note = "";
-        if (status == "Đã xác nhận") {
+        if (status.equals("Đã xác nhận")) {
             if (orders.getTypePayment().equals(Boolean.TRUE)) note = "Đã thanh toán";
         } else {
             OrderManagement last = orderManagementDAO.getLastManager(orders.getId());
@@ -593,5 +621,14 @@ public class OrdersServicesImpl implements OrdersService {
         vo.setOrderManagements(omvos);
         return vo;
     }
+    public void checjkPrincipal(Principal principal){
+        if (principal == null){
+            throw new NotImplementedException("Chưa đăng nhập");}
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
+        }
+    }
+
 
 }

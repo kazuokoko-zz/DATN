@@ -35,4 +35,7 @@ public interface OrdersService {
     OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal);
 
     List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone);
+    boolean cancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
+    boolean requestCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
+
 }
