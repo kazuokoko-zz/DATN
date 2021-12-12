@@ -428,7 +428,7 @@ public class OrdersServicesImpl implements OrdersService {
             //listcustomer
             Customer customer = customerDAO.findCustomerById(order.getCustomerId());
             if (customer == null) {
-
+                throw new NotFoundException("api.error.API-003");
             } else {
                 CustomerVO customerVO = new CustomerVO();
                 BeanUtils.copyProperties(customer, customerVO);
