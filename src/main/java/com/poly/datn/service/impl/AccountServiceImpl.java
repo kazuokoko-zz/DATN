@@ -187,9 +187,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRegisterVO create(@Valid AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException {
-        if(accountRegisterVO.getUsername() == ""|| accountRegisterVO.getFullname() == ""|| accountRegisterVO.getEmail()== "" || accountRegisterVO.getPassword() == ""){
-            throw new NotImplementedException("Tham số không đúng");
-        }
+//        if(accountRegisterVO.getUsername() == ""|| accountRegisterVO.getFullname() == ""|| accountRegisterVO.getEmail()== "" || accountRegisterVO.getPassword() == ""){
+//            throw new NotImplementedException("Tham số không đúng");
+//        }
         Account account = accountDAO.findAccountByUsername(accountRegisterVO.getUsername());
         if (account != null) {
             throw new DuplicateKeyException("common.error.dupplicate");

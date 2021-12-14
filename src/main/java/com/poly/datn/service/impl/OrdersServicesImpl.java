@@ -79,12 +79,16 @@ public class OrdersServicesImpl implements OrdersService {
         return getStatusLine(vo);
     }
 
+
+
+
+
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
     @Override
     public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
 
         String changeBy = principal != null ? principal.getName() : "guest";
-        if (ordersVO.getOrderDetails().isEmpty()) {
+        if (ordersVO.getOrderDetails() == null) {
             throw new NotImplementedException("Không có sản phẩm trong hóa đơn");
         }
         // save customer
@@ -142,7 +146,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         Orders orders = ordersDAO.findById(id).orElseThrow(() -> new SecurityException("Not found"));
         OrdersVO vo = getDetailOrders(orders, null);
         return getStatusLine(vo);
@@ -160,85 +164,145 @@ public class OrdersServicesImpl implements OrdersService {
         return countQuantity;
     }
 
+    public void updateStatus(String status,String note, Integer id, Orders orders, NoteOrderManagementVo noteOrderManagementVo, String username){
+     try{
+        OrderManagement orderManagement1 = new OrderManagement();
+        orderManagement1.setOrderId(orders.getId());
+        orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+        orderManagement1.setChangedBy(username);
+        orderManagement1.setStatus(status);
+        if (noteOrderManagementVo.getNote() == "") {
+            orderManagement1.setNote(note);
+        } else {
+            orderManagement1.setNote(noteOrderManagementVo.getNote());
+        }
+        orderManagementDAO.save(orderManagement1);
+    } catch (Exception e){
+        throw new NotImplementedException("Có lỗi khi thay đổi trạng thái đơn hàng");
+    }
+    }
+
+
     @Override
     public boolean cancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
-            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
-        } else {
-            OrderManagement orderManagement1 = new OrderManagement();
-            orderManagement1.setOrderId(orders.getId());
-            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-            orderManagement1.setChangedBy(principal.getName());
-            orderManagement1.setStatus("Đã hủy");
-            if (noteOrderManagementVo.getNote() == "") {
-                orderManagement1.setNote("Thực hiện hủy đơn hàng");
-            } else {
-                orderManagement1.setNote(noteOrderManagementVo.getNote());
-            }
-            orderManagementDAO.save(orderManagement1);
-            updateQuantityForProductBeffoCancerOrder(id);
+        if (orderManagement.getStatus().equals("Chờ xác nhận") || orderManagement.getStatus().equals("Đã xác nhận") ||  orderManagement.getStatus().equals("Yêu cầu hủy") ) {
+            String status = "Đã hủy";
+            String note = "Thực hiện hủy đơn hàng";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
+//            updateQuantityForProductBeffoCancerOrder(id);
             return true;
         }
-
+     else {throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
+    }
     }
 
     @Override
     public boolean confimOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
-            throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
-        } else {
-            OrderManagement orderManagement1 = new OrderManagement();
-            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-            orderManagement1.setChangedBy(principal.getName());
-            orderManagement1.setOrderId(orders.getId());
-            orderManagement1.setStatus("Đã xác nhận");
-            if (noteOrderManagementVo.getNote() == "") {
-                orderManagement1.setNote("Thực hiện xác nhận đơn hàng");
-            } else {
-                orderManagement1.setNote(noteOrderManagementVo.getNote());
-            }
-            orderManagementDAO.save(orderManagement1);
+        if (orderManagement.getStatus().equals("Chờ xác nhận")) {
+            String status = "Đã xác nhận";
+            String note = "Thực hiện xác nhận đơn hàng";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
             return true;
-        }
+        } else { throw new NotImplementedException("Không thể xác nhân đơn hàng đã hủy hoặc giao thành công");
+    }
     }
 
     @Override
-    public boolean confimSell(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        checjkPrincipal(principal);
+    public boolean confimTransport(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal){
+        checkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
-        if (orderManagement.getStatus().equals("Đã hủy") || orderManagement.equals("Giao hàng thành công") || orderManagement.equals("Đơn hàng lỗi")) {
-            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
-        } else {
-            OrderManagement orderManagement1 = new OrderManagement();
-            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-            orderManagement1.setChangedBy(principal.getName());
-            orderManagement1.setOrderId(orders.getId());
-            orderManagement1.setStatus("Giao hàng thành công");
-            if (noteOrderManagementVo.getNote() == "") {
-                orderManagement1.setNote("Thực hiện xác nhận đã giao hàng thành công");
-            } else {
-                orderManagement1.setNote(noteOrderManagementVo.getNote());
-            }
-            orderManagementDAO.save(orderManagement1);
+        if (orderManagement.getStatus().equals("Đã xác nhận")) {
+            String status = "Đang giao hàng";
+            String note = "Thực hiện xác nhận đơn hàng đang được giao";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
             return true;
-        }
+        }  else {throw new NotImplementedException("Không thể xác nhân giao hàng đơn hàng chưa được xác nhận"); }
     }
+
+    @Override
+    public boolean requestReturns(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal){
+        checkPrincipal(principal);
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Đang giao hàng")) {
+            String status = "Đang hoàn hàng";
+            String note = "Thực hiện yêu cầu hoàn trả đơn hàng";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
+            return true;
+        }  else {throw new NotImplementedException("Không thể trả hàng, hãy chọn hủy đơn"); }
+    }
+
+    @Override
+    public boolean comfimReturns(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        checkPrincipal(principal);
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Đang hoàn hàng") || orderManagement.getStatus().equals("Yêu cầu trả hàng") ) {
+            String status = "Đã nhận lại hàng";
+            String note = "Thực hiện xác nhận hoàn trả đơn hàng";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
+//            updateQuantityForProductBeffoCancerOrder(id);
+            return true;
+        }  else {throw new NotImplementedException("Không thể trả hàng, hãy chọn hủy đơn"); }
+    }
+
+
+    @Override
+    public boolean confimSell(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        checkPrincipal(principal);
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Đang giao hàng") ) {
+            String status = "Giao hàng thành công";
+            String note = "Thực hiện giao hàng thành công";
+            updateStatus(status,note,id,orders, noteOrderManagementVo,principal.getName());
+            return true;
+        }  else {throw new NotImplementedException("Không thể trả hàng, hãy chọn hủy đơn"); }
+    }
+
+
+
+    public void requestStatusUser(String status,String note, Integer id, Orders orders, NoteOrderManagementVo noteOrderManagementVo, String username){
+       try {
+           OrderManagement orderManagement1 = new OrderManagement();
+           orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
+           orderManagement1.setChangedBy(username);
+           orderManagement1.setOrderId(orders.getId());
+           orderManagement1.setStatus(status);
+           orderManagement1.setNote(note);
+           orderManagementDAO.save(orderManagement1);
+       } catch (Exception e){
+           throw new NotImplementedException("Có lỗi khi thay đổi trạng thái đơn hàng");
+       }
+
+    }
+
+
     @Override
     public boolean cancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
         if (principal == null){
@@ -247,23 +311,26 @@ public class OrdersServicesImpl implements OrdersService {
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if(orders.getUsername().equals(account.getUsername())){
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
         if (orderManagement.getStatus().equals("Chờ xác nhận") ) {
-            OrderManagement orderManagement1 = new OrderManagement();
-            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-            orderManagement1.setChangedBy(principal.getName());
-            orderManagement1.setOrderId(orders.getId());
-            orderManagement1.setStatus("Đã hủy");
+            String status = "Đã hủy";
+            String note;
             if (noteOrderManagementVo.getNote() == "") {
-                orderManagement1.setNote("Thực hiện hủy đơn hàng do người dùng yêu cầu");
-            } else {
-                orderManagement1.setNote("Thực hiện hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote());
+              note ="Thực hiện hủy đơn hàng do người dùng yêu cầu";
             }
-            orderManagementDAO.save(orderManagement1);
-            updateQuantityForProductBeffoCancerOrder(id);
+            else {
+              note = "Thực hiện hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote();
+            }
+            requestStatusUser(status,note,id,orders, noteOrderManagementVo,principal.getName());
+//            updateQuantityForProductBeffoCancerOrder(id);
             return true;
         } else {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+        } else {
+            throw new NotImplementedException("Không có quyền cập nhập đơn hàng này");
         }
     }
     @Override
@@ -274,28 +341,61 @@ public class OrdersServicesImpl implements OrdersService {
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
         }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if(orders.getUsername().equals(account.getUsername())){
         OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
         if (orderManagement.getStatus().equals("Đã xác nhận") ) {
-            OrderManagement orderManagement1 = new OrderManagement();
-            orderManagement1.setTimeChange(Timestamp.valueOf(LocalDateTime.now()));
-            orderManagement1.setChangedBy(principal.getName());
-            orderManagement1.setOrderId(orders.getId());
-            orderManagement1.setStatus("Yêu cầu hủy");
+            String status = "Yêu cầu hủy";
+            String note;
             if (noteOrderManagementVo.getNote() == "") {
-                orderManagement1.setNote("Yêu cầu hủy đơn hàng do người dùng yêu cầu");
-            } else {
-                orderManagement1.setNote("Yêu cầu hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote());
+                note ="Yêu cầu hủy đơn hàng do người dùng yêu cầu";
             }
-            orderManagementDAO.save(orderManagement1);
+            else {
+                note = "Yêu cầu hủy đơn hàng do người dùng yêu cầu, lý do: " +noteOrderManagementVo.getNote();
+            }
+            requestStatusUser(status,note,id,orders, noteOrderManagementVo,principal.getName());
             return true;
         } else {
             throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+        } else {
+            throw new NotImplementedException("Không có quyền cập nhập đơn hàng này");
+        }
+    }
+
+    @Override
+    public boolean confimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        if (principal == null){
+            throw new NotImplementedException("Chưa đăng nhập");}
+        Orders orders = ordersDAO.findMotById(id);
+        if (orders == null) {
+            throw new NotFoundException("api.error.API-003");
+        }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if(orders.getUsername().equals(account.getUsername())){
+            OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+            if (orderManagement.getStatus().equals("Giao hàng thành công") ) {
+                String status = "Yêu cầu trả hàng";
+                String note;
+                if (noteOrderManagementVo.getNote() == "") {
+                    note ="Yêu cầu trả hàng do người dùng yêu cầu";
+                }
+                else {
+                    note = "Yêu cầu trả hàng do người dùng yêu cầu, lý do:  " +noteOrderManagementVo.getNote();
+                }
+                requestStatusUser(status,note,id,orders, noteOrderManagementVo,principal.getName());
+                return true;
+            } else {
+                throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+            }
+        } else {
+            throw new NotImplementedException("Không có quyền cập nhập đơn hàng này");
         }
     }
 
     @Override
     public boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
         if (orders == null) {
             throw new NotFoundException("api.error.API-003");
@@ -321,7 +421,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         ShowProductWarrantyVO showProductWarrantyVO = new ShowProductWarrantyVO();
         Orders orders1 = ordersDAO.findMotById(orderId);
         if (orders1 == null) {
@@ -354,7 +454,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         String changeBy = principal != null ? principal.getName() : "guest";
         Orders orders = createOders(ordersVO, changeBy);
         saveDetails(orders, ordersVO);
@@ -363,14 +463,14 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         Orders orders = ordersDAO.getById(id.get());
         return managerOrderStatus(orders, principal.getName(), status.get());
     }
 
     @Override
     public List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         List<Orders> orders = ordersDAO.findAll();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Orders order : orders) {
@@ -418,7 +518,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Override
     public List<OrdersVO> getAll(Principal principal) {
-        checjkPrincipal(principal);
+        checkPrincipal(principal);
         List<Orders> orders = ordersDAO.findAll();
         List<OrdersVO> ordersVOS = new ArrayList<>();
         for (Orders order : orders) {
@@ -621,14 +721,13 @@ public class OrdersServicesImpl implements OrdersService {
         vo.setOrderManagements(omvos);
         return vo;
     }
-    public void checjkPrincipal(Principal principal){
-        if (principal == null){
-            throw new NotImplementedException("Chưa đăng nhập");}
+    public void checkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             throw new NotImplementedException("User này không có quyền");
         }
     }
-
-
 }

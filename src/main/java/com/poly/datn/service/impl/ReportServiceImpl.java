@@ -157,7 +157,6 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         return ordersDAO.getAllOrdersInMonth(startTime, endTime).size();
-//        return ordersDAO.countOrdersBy(startTime, endTime);
     }
 
     @Override
@@ -165,7 +164,6 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         return orderManagementDAO.getIdOfLastStatusInMonth("Đã hủy", startTime, endTime).size();
-//        return ordersDAO.countCancerOrdersBy(startTime, endTime);
     }
 
     @Override
@@ -173,21 +171,18 @@ public class ReportServiceImpl implements ReportService {
         checjkPrincipal(principal);
         getTime();
         return orderManagementDAO.getIdOfLastStatusInMonth("Giao hàng thành công", startTime, endTime).size();
-// return ordersDAO.countSuccessOrdersBy(startTime, endTime);
     }
 
     @Override
     public Integer sumComfimOrder(Principal principal) {
         checjkPrincipal(principal);
         return orderManagementDAO.getIdOfLastStatus("Đã xác nhận").size();
-//        return ordersDAO.countComfimOrders();
     }
 
     @Override
     public Integer sumErrorOrder(Principal principal) {
         checjkPrincipal(principal);
         return orderManagementDAO.getIdOfLastStatus("Đơn hàng lỗi").size();
-//        return ordersDAO.countErrorOrders();
     }
 
 
