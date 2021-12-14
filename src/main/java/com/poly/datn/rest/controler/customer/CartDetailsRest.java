@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 
@@ -27,7 +28,7 @@ public class CartDetailsRest {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseDTO<Object>> updateCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> updateCartDetail(@Valid @RequestBody CartDetailVO cartDetailVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.save(cartDetailVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
@@ -39,7 +40,7 @@ public class CartDetailsRest {
     }
 
     @PostMapping("new")
-    public ResponseEntity<ResponseDTO<Object>> addToCartDetail(@RequestBody CartDetailVO cartDetailVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> addToCartDetail(@Valid @RequestBody CartDetailVO cartDetailVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.save(cartDetailVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }

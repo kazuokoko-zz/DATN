@@ -10,7 +10,6 @@ import com.poly.datn.vo.AccountRegisterVO;
 import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -51,16 +50,6 @@ public class AccountRest {
         return new SuccessResponse();
     }
 
-    //End code of MA
-//    @PostMapping("resetpass")
-//    public ResponseEntity<ResponseDTO<Object>> updateResetPasswordToken(@RequestParam String email){
-//        try {
-//            return ResponseEntity.ok(ResponseDTO.builder().object(accountService.updateResetPasswordToken(email))
-//                    .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-//        } catch (Exception e){
-//            throw  new RuntimeException(e);
-//        }
-//    }
     @PutMapping("resetpass")
     public SuccessResponse updateResetPasswordToken(@RequestParam String email) {
         try {
@@ -70,12 +59,6 @@ public class AccountRest {
             throw new RuntimeException(e);
         }
     }
-//    @PostMapping("checkTokenReset")
-//    public  SuccessResponse checkTokenResetPass(@RequestParam String token){
-//        accountService.checkToken(token);
-//        return new SuccessResponse();
-//    }
-//}
 
     @PutMapping("checkTokenReset")
     public ResponseEntity<ResponseDTO<Object>> checkTokenResetPass(@RequestParam String token) {
