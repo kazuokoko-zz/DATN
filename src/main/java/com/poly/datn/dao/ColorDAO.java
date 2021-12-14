@@ -11,6 +11,6 @@ import org.springframework.data.repository.query.Param;
 public interface ColorDAO extends JpaRepository<Color, Integer> {
     Color findByColorName(String name);
     Color findColorById(Integer id);
-    @Query( value = "select colorName from Color c where c.id =:id")
-    Color findNameById(@Param("id") Integer id);
+    @Query( value = "select c.colorName from Color c where c.id =:id")
+    String findNameById(@Param("id") Integer id);
 }

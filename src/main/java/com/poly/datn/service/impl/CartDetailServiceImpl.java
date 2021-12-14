@@ -76,8 +76,8 @@ public class CartDetailServiceImpl implements CartDetailService {
                 vo.setPhoto(photos.get(0));
             vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
             vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
-            Color  color = colorDAO.findNameById(vo.getColorId());
-            vo.setColorName(color.getColorName());
+            String  color = colorDAO.findNameById(vo.getColorId());
+            vo.setColorName(color);
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
