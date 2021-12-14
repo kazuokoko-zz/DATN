@@ -41,6 +41,7 @@ public class AutoTaskService {
     @Autowired
     AccountDAO accountDAO;
 
+
     @Autowired
     SendMail sendMail;
 
@@ -48,15 +49,20 @@ public class AutoTaskService {
     ProductUtils productUtils;
 
     @Scheduled(cron = "0 30 0/1 ? * * ")
+//    @Scheduled(fixedRate = 3000)
     @EventListener(ApplicationReadyEvent.class)
     protected void scanUserDetail() {
-        for (Account account : accountDAO.findAll()) {
-            if (!userDetail.containsKey(account.getEmail()))
+        List<Account> accounts = accountDAO.findAll();
+        for (Account account : accounts) {
+            if (!userDetail.containsKey(account.getEmail())){
                 userDetail.put(account.getEmail(), account.getFullname());
+            }
+
         }
     }
 
     @Scheduled(cron = "0 45 0/1 ? * * ")
+//    @Scheduled(fixedRate = 6000)
     @EventListener(ApplicationReadyEvent.class)
     protected void scanBlog() {
         Timestamp end = Timestamp.valueOf(LocalDateTime.now());
@@ -66,7 +72,8 @@ public class AutoTaskService {
                 sendBlog.remove(entry.getKey());
             }
         }
-        for (Blog blog : blogDAO.findAllByTimeCreatedBetween(start, end)) {
+        List<Blog> blogs = blogDAO.findAllByTimeBetween(start, end);
+        for (Blog blog : blogs) {
             if (!blog.getStatus()) {
                 continue;
             }
@@ -82,10 +89,11 @@ public class AutoTaskService {
 
 
     @Scheduled(cron = "0 0 0/1 1/1 * ? ")
+//    @Scheduled(fixedRate = 20000)
     @EventListener(ApplicationReadyEvent.class)
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
-            Blog blog = blogDAO.getById(entry.getKey());
+            Blog blog = blogDAO.findOneById(entry.getKey());
             try {
                 sendMail.sentBlogMail(userDetail, blog);
             } catch (MessagingException | IOException | TemplateException ex) {

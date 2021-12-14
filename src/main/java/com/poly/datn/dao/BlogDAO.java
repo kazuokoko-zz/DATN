@@ -16,6 +16,8 @@ public interface BlogDAO extends JpaRepository<Blog, Integer> {
 
     List<Blog> findAllByProductIdEquals(Integer integer);
 
-    List<Blog> findAllByTimeCreatedBetween(Timestamp start, Timestamp end);
+    @Query(value = "select b from Blog b where (b.timeCreated between :start and :end) and b.status = true ")
+    List<Blog> findAllByTimeBetween(@Param("start") Timestamp start,@Param("end") Timestamp end);
 //    List<Blog> findAllInHour();
+    Blog findOneById(Integer id);
 }

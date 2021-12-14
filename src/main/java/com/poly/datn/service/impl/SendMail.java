@@ -62,6 +62,7 @@ public class SendMail {
         infoSendBlog.setCreatedBy(blog.getCreatedBy());
         infoSendBlog.setPhoto(blog.getPhoto());
         infoSendBlog.setShortText(blog.getShortText());
+        infoSendBlog.setTitle(blog.getTitle());
         infoSendBlog.setTimeCreated(sdf.format(Date.from(blog.getTimeCreated().toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant())));
         Template template = config.getTemplate("mailNewBlog.ftl");
 
