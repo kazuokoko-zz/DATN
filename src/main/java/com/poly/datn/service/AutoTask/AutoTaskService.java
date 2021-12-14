@@ -41,6 +41,7 @@ public class AutoTaskService {
     @Autowired
     AccountDAO accountDAO;
 
+
     @Autowired
     SendMail sendMail;
 
