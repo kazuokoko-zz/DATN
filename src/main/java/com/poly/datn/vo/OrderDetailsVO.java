@@ -23,6 +23,8 @@ public class OrderDetailsVO {
 
     private Integer colorId;
 
+    private Integer colorName;
+
     private Integer warranty;
 
 
