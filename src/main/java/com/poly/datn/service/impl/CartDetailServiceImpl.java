@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartDetailServiceImpl implements CartDetailService {
@@ -29,7 +30,6 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Autowired
     ProductDAO productDAO;
-
 
     @Autowired
     CartDetailDAO cartDetailDAO;
@@ -49,6 +49,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Autowired
     PriceUtils priceUtils;
+
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
@@ -76,8 +77,10 @@ public class CartDetailServiceImpl implements CartDetailService {
                 vo.setPhoto(photos.get(0));
             vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
             vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
-            String  color = colorDAO.findNameById(vo.getColorId());
-            vo.setColorName(color);
+            Optional<Color> color = colorDAO.findById(vo.getColorId());
+            if (color.isPresent()) {
+                vo.setColorName(color.get().getColorName());
+            }
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
@@ -105,22 +108,22 @@ public class CartDetailServiceImpl implements CartDetailService {
         }
         CartDetail cartDetail = new CartDetail();
         Integer productId = cartDetailVO.getProductId();
-        if (productId == null){
+        if (productId == null) {
             throw new NotImplementedException("Chưa chọn sản phẩm");
         }
         Integer colorId = cartDetailVO.getColorId();
-        if (colorId == null){
+        if (colorId == null) {
             throw new NotImplementedException("Chưa chọn màu");
         }
-        ProductColor productColor = productColorDAO.findByProductIdAndColorId(productId,colorId);
-        if(productColor == null){
+        ProductColor productColor = productColorDAO.findByProductIdAndColorId(productId, colorId);
+        if (productColor == null) {
             throw new NotImplementedException("Sản phẩm không có màu này");
         }
-        if(productColor.getQuantity() <= 0){
+        if (productColor.getQuantity() <= 0) {
             throw new NotImplementedException("Màu này đã hết hàng");
         }
         Integer userId = accountDAO.findAccountByUsername(principal.getName()).getId();
-        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId, colorId) ;
+        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId, colorId);
         if (cartDetail1 == null) {
             BeanUtils.copyProperties(cartDetailVO, cartDetail);
             cartDetail.setUserId(accountDAO.findAccountByUsername(principal.getName()).getId());

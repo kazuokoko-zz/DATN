@@ -66,16 +66,18 @@ public class OrdersAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimTransport(noteOrderManagementVo, id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
-    @PostMapping("requestReturns")
-    public ResponseEntity<ResponseDTO<Object>> requestReturns(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.requestReturns(noteOrderManagementVo, id, principal))
-                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-    }
-    @PostMapping("comfimReturns")
-    public ResponseEntity<ResponseDTO<Object>> comfimReturns(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.comfimReturns(noteOrderManagementVo, id, principal))
-                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-    }
+
+//    @PostMapping("requestReturns")
+//    public ResponseEntity<ResponseDTO<Object>> requestReturns(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+//        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.requestReturns(noteOrderManagementVo, id, principal))
+//                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+//    }
+//    @PostMapping("comfimReturns")
+//    public ResponseEntity<ResponseDTO<Object>> comfimReturns(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
+//        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.comfimReturns(noteOrderManagementVo, id, principal))
+//                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+//    }
+
     @PostMapping("confimSell")
     public ResponseEntity<ResponseDTO<Object>> confimSell(@RequestBody NoteOrderManagementVo noteOrderManagementVo,@RequestParam Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimSell(noteOrderManagementVo, id, principal))
