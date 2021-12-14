@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartDetailServiceImpl implements CartDetailService {
@@ -76,8 +77,10 @@ public class CartDetailServiceImpl implements CartDetailService {
                 vo.setPhoto(photos.get(0));
             vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
             vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
-            Color color = colorDAO.findById(vo.getColorId()).orElse(new Color());
-            vo.setColorName(color.getColorName());
+            Optional<Color> color = colorDAO.findById(vo.getColorId());
+            if (color.isPresent()) {
+                vo.setColorName(color.get().getColorName());
+            }
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
