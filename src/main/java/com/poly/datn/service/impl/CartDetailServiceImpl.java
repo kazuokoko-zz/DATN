@@ -2,13 +2,10 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.common.Constant;
 import com.poly.datn.dao.*;
-import com.poly.datn.entity.Product;
-import com.poly.datn.entity.ProductColor;
-import com.poly.datn.entity.ProductDetails;
+import com.poly.datn.entity.*;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.vo.CartDetailVO;
-import com.poly.datn.entity.CartDetail;
 import com.poly.datn.service.CartDetailService;
 import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
@@ -42,6 +39,8 @@ public class CartDetailServiceImpl implements CartDetailService {
     ProductColorDAO productColorDAO;
 
     @Autowired
+    ColorDAO colorDAO;
+    @Autowired
     AccountDAO accountDAO;
 
     @Autowired
@@ -60,6 +59,7 @@ public class CartDetailServiceImpl implements CartDetailService {
             CartDetailVO vo = new CartDetailVO();
             BeanUtils.copyProperties(orders, vo);
             Product product = productDAO.getById(vo.getProductId());
+
             vo.setProductName(product.getName());
             vo.setDiscount(saleService.getCurrentSaleOf(vo.getProductId()));
             vo.setPrice(productDAO.getById(vo.getProductId()).getPrice());
@@ -75,10 +75,11 @@ public class CartDetailServiceImpl implements CartDetailService {
                 vo.setPhoto(photos.get(0));
             vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
             vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
+            Color  color = colorDAO.findNameById(vo.getColorId());
+            vo.setColorName(color.getColorName());
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
-
     }
 
 

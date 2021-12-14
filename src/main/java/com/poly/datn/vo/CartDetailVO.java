@@ -39,6 +39,8 @@ public class CartDetailVO extends RegexEmail{
     @NotNull
     private Integer colorId;
 
+    private String colorName;
+
     AccountVO account;
 
     ProductVO product;
