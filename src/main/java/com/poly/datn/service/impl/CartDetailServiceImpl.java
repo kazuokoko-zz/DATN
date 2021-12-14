@@ -30,7 +30,6 @@ public class CartDetailServiceImpl implements CartDetailService {
     @Autowired
     ProductDAO productDAO;
 
-
     @Autowired
     CartDetailDAO cartDetailDAO;
 
@@ -49,6 +48,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Autowired
     PriceUtils priceUtils;
+
     @Override
     public List<CartDetailVO> findCartByUsername(Principal principal) {
         if (principal == null) {
@@ -76,7 +76,7 @@ public class CartDetailServiceImpl implements CartDetailService {
                 vo.setPhoto(photos.get(0));
             vo.setDiscount(priceUtils.maxDiscountAtPresentOf(vo.getProductId()));
             vo.setPriceBefforSale(vo.getPrice() - vo.getDiscount());
-            Color  color = colorDAO.findNameById(vo.getColorId());
+            Color color = colorDAO.findById(vo.getColorId()).orElse(new Color());
             vo.setColorName(color.getColorName());
             cartDetailVOS.add(vo);
         });
@@ -105,22 +105,22 @@ public class CartDetailServiceImpl implements CartDetailService {
         }
         CartDetail cartDetail = new CartDetail();
         Integer productId = cartDetailVO.getProductId();
-        if (productId == null){
+        if (productId == null) {
             throw new NotImplementedException("Chưa chọn sản phẩm");
         }
         Integer colorId = cartDetailVO.getColorId();
-        if (colorId == null){
+        if (colorId == null) {
             throw new NotImplementedException("Chưa chọn màu");
         }
-        ProductColor productColor = productColorDAO.findByProductIdAndColorId(productId,colorId);
-        if(productColor == null){
+        ProductColor productColor = productColorDAO.findByProductIdAndColorId(productId, colorId);
+        if (productColor == null) {
             throw new NotImplementedException("Sản phẩm không có màu này");
         }
-        if(productColor.getQuantity() <= 0){
+        if (productColor.getQuantity() <= 0) {
             throw new NotImplementedException("Màu này đã hết hàng");
         }
         Integer userId = accountDAO.findAccountByUsername(principal.getName()).getId();
-        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId, colorId) ;
+        CartDetail cartDetail1 = cartDetailDAO.findOneByProductIdAndUserId(productId, userId, colorId);
         if (cartDetail1 == null) {
             BeanUtils.copyProperties(cartDetailVO, cartDetail);
             cartDetail.setUserId(accountDAO.findAccountByUsername(principal.getName()).getId());
