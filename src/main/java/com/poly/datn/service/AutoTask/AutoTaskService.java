@@ -87,8 +87,8 @@ public class AutoTaskService {
     }
 
 
-//    @Scheduled(cron = "0 0 0/1 1/1 * ? ")
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(cron = "0 0 0/1 1/1 * ? ")
+//    @Scheduled(fixedRate = 20000)
     @EventListener(ApplicationReadyEvent.class)
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
