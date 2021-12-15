@@ -74,7 +74,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         Orders orders = ordersDAO.findByIdAndUsername(id, principal.getName()).orElseThrow(() -> new SecurityException("Not your order"));
 
-        OrdersVO vo = getDetailOrders(orders, "Chờ xác nhận");
+        OrdersVO vo = getDetailOrders(orders, null);
 
         return getStatusLine(vo);
     }
