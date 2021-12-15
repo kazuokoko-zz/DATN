@@ -583,7 +583,7 @@ public class OrdersServicesImpl implements OrdersService {
             vo.setNumOfProduct(orderDetailsDAO.getCountProductOf(vo.getId()));
             ordersVOS.add(vo);
         }
-        Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated));
+        Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated).reversed());
         return ordersVOS;
     }
 
