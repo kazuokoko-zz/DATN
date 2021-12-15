@@ -580,7 +580,7 @@ public class OrdersServicesImpl implements OrdersService {
             vo.setStatus(getStatus(order.getId()));
             ordersVOS.add(vo);
         }
-        Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated).reversed());
+        Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated));
         return ordersVOS;
     }
 
