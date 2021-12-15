@@ -517,6 +517,7 @@ public class OrdersServicesImpl implements OrdersService {
             OrdersVO vo = new OrdersVO();
             BeanUtils.copyProperties(orders, vo);
             vo.setStatus(getStatus(orders.getId()));
+            vo.setNumOfProduct(orderDetailsDAO.getCountProductOf(vo.getId()));
             ordersVOS.add(vo);
         }
         Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated).reversed());
@@ -579,6 +580,7 @@ public class OrdersServicesImpl implements OrdersService {
                 vo.setWarranty(warrantyVO);
             }
             vo.setStatus(getStatus(order.getId()));
+            vo.setNumOfProduct(orderDetailsDAO.getCountProductOf(vo.getId()));
             ordersVOS.add(vo);
         }
         Collections.sort(ordersVOS, Comparator.comparing(OrdersVO::getDateCreated));

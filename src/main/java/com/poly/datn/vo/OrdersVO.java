@@ -22,6 +22,8 @@ public class OrdersVO {
 
     private Boolean typePayment;
 
+    private Integer numOfProduct;
+
     CustomerVO customer;
 
     List<OrderManagementVO> orderManagements;
