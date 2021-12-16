@@ -18,7 +18,7 @@ public class WarntityInvoiceRest {
     @Autowired
     WarrantyInvoiceService warrantyInvoiceService;
 
-    @PostMapping
+    @PostMapping("new")
     public ResponseEntity<ResponseDTO<Object>> create(@RequestBody WarrantyInvoiceVO invoiceVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(warrantyInvoiceService.create(invoiceVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());

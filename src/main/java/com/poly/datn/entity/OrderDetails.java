@@ -20,6 +20,9 @@ public class OrderDetails {
     @Column(name = "product_id", nullable = false)
     private Integer productId;
     @Basic
+    @Column(name = "status_warranty", nullable = true)
+    private Boolean statusWarranty;
+    @Basic
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
     @Basic

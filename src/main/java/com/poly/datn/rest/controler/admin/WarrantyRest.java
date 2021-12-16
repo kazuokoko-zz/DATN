@@ -27,12 +27,6 @@ public class WarrantyRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-//    @PostMapping("new")
-//    public ResponseEntity<ResponseDTO<Object>> newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal) throws NotFoundException {
-//        return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.newWarranty(warrantyVO, principal))
-//                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-//    }
-
     @PostMapping("new")
     public SuccessResponse newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal) {
         warrantyService.newWarranty(warrantyVO, principal);
