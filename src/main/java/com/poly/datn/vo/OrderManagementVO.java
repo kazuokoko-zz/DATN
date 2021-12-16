@@ -3,9 +3,6 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
-
-import java.sql.Timestamp;
-
 @Data
 public class OrderManagementVO {
 
@@ -13,7 +10,7 @@ public class OrderManagementVO {
 
     private Integer orderId;
 
-    private Timestamp timeChange;
+    private String timeChange;
 
     private String changedBy;
 

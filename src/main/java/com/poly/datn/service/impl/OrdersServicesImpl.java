@@ -19,6 +19,7 @@ import org.webjars.NotFoundException;
 
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -724,6 +725,7 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     private OrdersVO getStatusLine(OrdersVO ordersVO) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         OrdersVO vo = ordersVO;
         List<OrderManagement> oms = orderManagementDAO.findByOrderId(vo.getId());
         Collections.sort(oms, Comparator.comparing(OrderManagement::getTimeChange).reversed());
@@ -731,6 +733,7 @@ public class OrdersServicesImpl implements OrdersService {
         for (OrderManagement orderManagement : oms) {
             OrderManagementVO managementVO = new OrderManagementVO();
             BeanUtils.copyProperties(orderManagement, managementVO);
+            managementVO.setTimeChange(sdf.format(new Date(orderManagement.getTimeChange().getTime())));
             omvos.add(managementVO);
         }
         vo.setOrderManagements(omvos);
