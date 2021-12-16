@@ -9,12 +9,14 @@ import java.util.Optional;
 
 public interface BlogService {
     Object getById(Integer id);
+    Object getOneByIdAdmin(Integer id, Principal principal);
 
     Object getList(Optional<Integer> pid, Optional<String> title);
 
     BlogVO getABlog(Integer id, Principal principal);
 
     List<BlogVO> getListAdmin(Optional<Integer> pid, Optional<String> title, Principal principal);
+    List<BlogVO> getListDeleteAdmin(Optional<Integer> pid, Optional<String> title, Principal principal);
 
     Boolean deleteById(Optional<Integer> id, Principal principal);
 

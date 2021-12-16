@@ -22,7 +22,7 @@ public class BlogAdminRest {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseDTO<Object>> getOne(@PathVariable("id") Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(blogService.getABlog(id, principal))
+        return ResponseEntity.ok(ResponseDTO.builder().object(blogService.getOneByIdAdmin(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
@@ -35,6 +35,11 @@ public class BlogAdminRest {
     @DeleteMapping("delete/{id}")
     public ResponseEntity<ResponseDTO<Object>> delete(@PathVariable("id") Optional<Integer> id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(blogService.deleteById(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @GetMapping("getLisDeleteAdmin")
+    public ResponseEntity<ResponseDTO<Object>> getLisDeleteAdmin(@RequestParam("pid") Optional<Integer> pid, @RequestParam("title") Optional<String> title, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(blogService.getListDeleteAdmin(pid, title,principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
