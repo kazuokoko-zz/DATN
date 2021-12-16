@@ -107,8 +107,8 @@ public class AutoTaskService {
     }
 
     //    @Scheduled(fixedRate = 500000)
-    @Scheduled(cron = "0 0 0/1 1/1 * ? ")
-    @EventListener(ApplicationReadyEvent.class)
+//    @Scheduled(cron = "0 0 0/1 1/1 * ? ")
+//    @EventListener(ApplicationReadyEvent.class)
     protected void getTrending() {
         trending.clear();
         for (Integer[] ls : productDAO.getTop100ProductSell()) {
