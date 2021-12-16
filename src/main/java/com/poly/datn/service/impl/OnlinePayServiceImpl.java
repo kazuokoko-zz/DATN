@@ -254,7 +254,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                             payment.setBankCode((String) fields.get("vnp_BankCode"));
                             payment.setTransactionNo((String) fields.get("vnp_TransactionNo"));
                             payment.setCardType((String) fields.get("vnp_CardType"));
-                            payment.setBankTranNo((String) fields.get("vnp_TransactionNo"));
+                            payment.setBankTranNo((String) fields.get("vnp_BankTranNo"));
                             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                                 payment.setStatus(1);
                             } else {

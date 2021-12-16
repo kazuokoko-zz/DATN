@@ -11,6 +11,9 @@
         <div style="display: flex !important; flex-direction: row;width: 1000px !important;">
             <div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem ">
+                    <div style="width: 50px;font-weight: bold">THÔNG TIN CÁ NHÂN</div>
+                </div>
+                <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem ">
                     <div style="width: 200px;font-weight: bold">Họ và tên:</div>
                     <div style="width: 340px">${name}</div>
                 </div>
@@ -32,16 +35,16 @@
                     <div style="width: 400px;font-weight: bold; text-align: center">THÔNG TIN THANH TOÁN</div>
                 </div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
-                    <div style="width: 200px;font-weight: bold">Số giao dịch:</div>
+                    <div style="width: 200px;font-weight: bold">Số hóa đơn:</div>
+                    <div style="width: 200px">${payment.txnRef}</div>
+                </div>
+                <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
+                    <div style="width: 200px;font-weight: bold">Mã giao dịch:</div>
                     <div style="width: 200px">${payment.transactionNo}</div>
                 </div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
                     <div style="width: 200px;font-weight: bold">Ngân hàng:</div>
                     <div style="width: 200px">${payment.bankCode}</div>
-                </div>
-                <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
-                    <div style="width: 200px;font-weight: bold">Mã giao dịch:</div>
-                    <div style="width: 200px">${payment.bankTranNo}</div>
                 </div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem  ">
                     <div style="width: 200px;font-weight: bold">Loại hình thanh toán:</div>
