@@ -91,6 +91,7 @@ public class OrdersServicesImpl implements OrdersService {
         }
         // save customer
         Orders orders = createOders(ordersVO, changeBy);
+
         saveDetails(orders, ordersVO);
         OrdersVO vo = managerOrderStatus(orders, changeBy, "Chờ xác nhận");
         if (principal != null) {
@@ -658,6 +659,7 @@ public class OrdersServicesImpl implements OrdersService {
             }
             productColor.setQuantity(productColor.getQuantity() - orderDetails.getQuantity());
             productColorDAO.save(productColor);
+            orderDetails.setStatusWarranty(false);
             orderDetails = orderDetailsDAO.save(orderDetails);
             ProductSale productSale = priceUtils.getSaleHavingMaxDiscountOf(orderDetails.getProductId());
             if (productSale == null)

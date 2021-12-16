@@ -14,4 +14,7 @@ public interface OrderDetailsDAO extends JpaRepository<OrderDetails, Long> {
     @Query("select sum(d.quantity) from OrderDetails d where  d.orderId = :id")
     Integer getCountProductOf(@Param("id") Integer id);
 
+    @Query("select d from OrderDetails d where  d.orderId = :orderId and d.productId=:productId and d.colorId =:colorId")
+    OrderDetails findOneByOrderIdAndProductIdAndColorId(@Param("orderId") Integer orderId,@Param("productId") Integer productId,@Param("colorId") Integer colorId);
+
 }
