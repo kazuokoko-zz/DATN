@@ -158,6 +158,7 @@ public class WarrantyServiceImpl implements WarrantyService {
             orderManagement.setOrderId(warrantyVO.getOrderId());
             orderManagementDAO.save(orderManagement);
             orderDetails.setStatusWarranty(true);
+            orderDetailsDAO.save(orderDetails);
             return  warrantyVO;
         } catch (Exception e){
             throw new RuntimeException(e);

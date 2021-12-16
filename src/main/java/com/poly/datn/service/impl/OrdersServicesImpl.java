@@ -660,6 +660,7 @@ public class OrdersServicesImpl implements OrdersService {
             productColor.setQuantity(productColor.getQuantity() - orderDetails.getQuantity());
             productColorDAO.save(productColor);
             orderDetails.setStatusWarranty(false);
+            orderDetails.setStatusWarranty(false);
             orderDetails = orderDetailsDAO.save(orderDetails);
             ProductSale productSale = priceUtils.getSaleHavingMaxDiscountOf(orderDetails.getProductId());
             if (productSale == null)
