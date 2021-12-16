@@ -1,5 +1,6 @@
 package com.poly.datn.vo.mailSender;
 
+import com.poly.datn.entity.Payment;
 import com.poly.datn.vo.OrderDetailsVO;
 import lombok.Data;
 
@@ -14,4 +15,5 @@ public class InfoSendOrder {
     public String email;
     public String address;
     OrderDetailsVO[] orderDetails;
+    Payment payment;
 }

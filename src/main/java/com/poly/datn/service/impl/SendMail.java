@@ -160,4 +160,31 @@ public class SendMail {
 
         }
     }
+
+    public void sentMailOrderPayOk(InfoSendOrder infoSendOrder) {
+        try {
+
+            String homeLink = "http://150.95.105.29/";
+            String mailSubject = "Đặt hàng thành công Socstore";
+
+            Template t = config.getTemplate("mailOrderPayOk.ftl");
+            String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
+
+            sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (TemplateNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (MalformedTemplateNameException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

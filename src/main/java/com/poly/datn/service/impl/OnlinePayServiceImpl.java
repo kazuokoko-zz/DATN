@@ -2,19 +2,12 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.common.Constant;
 import com.poly.datn.config.VnpayConfig;
-import com.poly.datn.dao.CustomerDAO;
-import com.poly.datn.dao.OrderManagementDAO;
-import com.poly.datn.dao.OrdersDAO;
-import com.poly.datn.dao.PaymentDAO;
-import com.poly.datn.entity.Customer;
-import com.poly.datn.entity.OrderManagement;
-import com.poly.datn.entity.Orders;
-import com.poly.datn.entity.Payment;
+import com.poly.datn.dao.*;
+import com.poly.datn.entity.*;
 import com.poly.datn.service.OnlinePayService;
 import com.poly.datn.utils.AutoCreate;
-import com.poly.datn.vo.PayInfoVO;
-import com.poly.datn.vo.PayResponseVO;
-import com.poly.datn.vo.PaymentVO;
+import com.poly.datn.vo.*;
+import com.poly.datn.vo.mailSender.InfoSendOrder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OnlinePayServiceImpl implements OnlinePayService {
@@ -40,7 +34,13 @@ public class OnlinePayServiceImpl implements OnlinePayService {
     @Autowired
     PaymentDAO paymentDAO;
     @Autowired
+    ProductDAO productDAO;
+    @Autowired
     OrderManagementDAO orderManagementDAO;
+    @Autowired
+    OrderDetailsDAO orderDetailsDAO;
+    @Autowired
+    SendMail sendMail;
 
     @Override
     @Transactional
@@ -268,6 +268,66 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                                             "Chờ xác nhận", "sys", "Đã thanh toán");
                             if (payment.getStatus() == 1) {
                                 orderManagementDAO.save(orderManagement);
+
+                                /**
+                                 *  thực hiên gửi mail
+                                 */
+                                Customer customer = customerDAO.getById(orders.getCustomerId());
+
+                                OrdersVO vo = new OrdersVO();
+                                CustomerVO cvo = new CustomerVO();
+                                BeanUtils.copyProperties(customer, cvo);
+                                BeanUtils.copyProperties(orders, vo);
+                                vo.setCustomer(cvo);
+                                List<OrderDetailsVO> orderDetailsVOS = new ArrayList<>();
+                                for (OrderDetails orderDetails : orderDetailsDAO.findAllByOrderIdEquals(orders.getId())) {
+                                    OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
+                                    BeanUtils.copyProperties(orderDetails, orderDetailsVO);
+                                    orderDetailsVO.setProductName(productDAO.getById(orderDetails.getProductId()).getName());
+                                    orderDetailsVOS.add(orderDetailsVO);
+                                }
+                                vo.setOrderDetails(orderDetailsVOS);
+                                List<OrderDetailsVO> vos = vo.getOrderDetails();
+                                InfoSendOrder infoSendOrder = new InfoSendOrder();
+
+                                Long totalPrice = 0L;
+                                Long totalDiscount = 0L;
+                                Long price = 0L;
+                                for (OrderDetailsVO detailsVO : vos) {
+                                    if (detailsVO.getQuantity() <= 0) {
+                                        continue;
+                                    } else {
+                                        price += detailsVO.getQuantity() * detailsVO.getPrice();
+                                        Long discount = detailsVO.getQuantity() * detailsVO.getDiscount();
+                                        totalDiscount += discount;
+                                        totalPrice += detailsVO.getQuantity() * (detailsVO.getPrice() - detailsVO.getDiscount());
+                                    }
+                                }
+                                /**
+                                 * send order mail
+                                 */
+                                infoSendOrder.setDiscount(totalDiscount);
+                                infoSendOrder.setTotalPrice(totalPrice);
+                                infoSendOrder.setPrice(price);
+                                infoSendOrder.setName(vo.getCustomer().getFullname());
+                                infoSendOrder.setAddress(vo.getCustomer().getAddress());
+                                infoSendOrder.setEmail(vo.getCustomer().getEmail());
+                                infoSendOrder.setPhone(vo.getCustomer().getPhone());
+                                OrderDetailsVO[] voss = new OrderDetailsVO[vos.size()];
+                                vos.stream().map(
+                                        detail -> {
+                                            Product product = productDAO.getById(detail.getProductId());
+                                            detail.setWarranty(product.getWarranty());
+                                            return detail;
+                                        }
+                                ).collect(Collectors.toList()).toArray(voss);
+                                infoSendOrder.setOrderDetails(voss);
+                                infoSendOrder.setPayment(payment);
+                                sendMail.sentMailOrderPayOk(infoSendOrder);
+
+                                /**
+                                 *
+                                 */
                             }
                             return new PayResponseVO("00", "Confirm Success");
                         } else {
