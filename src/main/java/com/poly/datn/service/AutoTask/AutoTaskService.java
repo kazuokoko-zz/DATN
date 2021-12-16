@@ -74,6 +74,9 @@ public class AutoTaskService {
         }
         List<Blog> blogs = blogDAO.findAllByTimeBetween(start, end);
         for (Blog blog : blogs) {
+            if (blog.getType().equals(1)) {
+                continue;
+            }
             if (!blog.getStatus()) {
                 continue;
             }
