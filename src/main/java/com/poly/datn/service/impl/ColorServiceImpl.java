@@ -41,32 +41,32 @@ public class ColorServiceImpl implements ColorService {
     public List<ColorVO> getColor() {
 
         List<ColorVO> colorVO = new ArrayList<>();
-        colorDAO.findAll().forEach(color -> {
+        for (Color color : colorDAO.findAll()) {
             ColorVO vo = new ColorVO();
             BeanUtils.copyProperties(color, vo);
             colorVO.add(vo);
-        });
+        }
         return colorVO;
     }
 
-    @Override
-    public List<ColorVO> getColor(Principal principal) {
-        if (principal == null) {
-            log.error(Constant.NOT_LOGGED_IN);
-            throw new NotImplementedException("Chưa đăng nhập");
-        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
-            List<ColorVO> colorVO = new ArrayList<>();
-            colorDAO.findAll().forEach(color -> {
-                ColorVO vo = new ColorVO();
-                BeanUtils.copyProperties(color, vo);
-                colorVO.add(vo);
-            });
-            return colorVO;
-
-        } else {
-            throw new NotImplementedException("Bạn không có quyền thực hiện chức năng này");
-        }
-    }
+//    @Override
+//    public List<ColorVO> getColor(Principal principal) {
+//        if (principal == null) {
+//            log.error(Constant.NOT_LOGGED_IN);
+//            throw new NotImplementedException("Chưa đăng nhập");
+//        } else if (checkRole.isHavePermition(principal.getName(), "Director")) {
+//            List<ColorVO> colorVO = new ArrayList<>();
+//            colorDAO.findAll().forEach(color -> {
+//                ColorVO vo = new ColorVO();
+//                BeanUtils.copyProperties(color, vo);
+//                colorVO.add(vo);
+//            });
+//            return colorVO;
+//
+//        } else {
+//            throw new NotImplementedException("Bạn không có quyền thực hiện chức năng này");
+//        }
+//    }
 
     @Override
     public ColorVO addColor(ColorVO colorVO, Principal principal) {

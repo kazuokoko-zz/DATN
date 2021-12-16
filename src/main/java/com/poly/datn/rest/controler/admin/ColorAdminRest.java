@@ -18,8 +18,8 @@ public class ColorAdminRest {
     ColorService colorService;
 
     @GetMapping("get")
-    public ResponseEntity<ResponseDTO<Object>> getListColor(Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.getColor(principal))
+    public ResponseEntity<ResponseDTO<Object>> getListColor() {
+        return ResponseEntity.ok(ResponseDTO.builder().object(colorService.getColor())
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 

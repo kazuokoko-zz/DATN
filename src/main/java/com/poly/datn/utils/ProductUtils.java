@@ -35,9 +35,11 @@ public class ProductUtils {
         List<ProductColorVO> productColorVOS = new ArrayList<>();
         for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(productVO.getId())) {
             ProductColorVO productColorVO = new ProductColorVO();
+            if (productColor.getQuantity() <= 0) {
+                continue;
+            }
             BeanUtils.copyProperties(productColor, productColorVO);
-            Color color = new Color();
-            color = colorDAO.findColorById(productColorVO.getColorId());
+            Color color = colorDAO.findColorById(productColorVO.getColorId());
             ColorVO colorVO = new ColorVO();
             BeanUtils.copyProperties(color, colorVO);
             productColorVO.setColor(colorVO);
