@@ -27,6 +27,8 @@ public class OrderDetailsVO {
 
     private Integer warranty;
 
+    private Boolean statusWarranty;
+
 
     OrdersVO orders;
 

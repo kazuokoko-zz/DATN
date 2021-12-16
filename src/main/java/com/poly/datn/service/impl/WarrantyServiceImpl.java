@@ -1,12 +1,10 @@
 package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
-import com.poly.datn.entity.OrderDetails;
-import com.poly.datn.entity.OrderManagement;
-import com.poly.datn.entity.Orders;
-import com.poly.datn.entity.Warranty;
+import com.poly.datn.entity.*;
 import com.poly.datn.service.WarrantyService;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.vo.WarrantyInvoiceVO;
 import com.poly.datn.vo.WarrantyVO;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
@@ -41,15 +39,23 @@ public class WarrantyServiceImpl implements WarrantyService {
     OrderManagementDAO orderManagementDAO;
     @Autowired
     CheckRole checkRole;
-    @Override
-    public List<WarrantyVO> getAll(Principal principal) {
+    @Autowired
+    WarrantyInvoiceDAO warrantyInvoiceDAO;
+
+
+    public void checkPrincipal(Principal principal) {
         if (principal == null) {
             throw new NotImplementedException("Chưa đăng nhập");
         }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            throw new NotImplementedException("User này không có quyền truy cập");
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
         }
+    }
+
+    @Override
+    public List<WarrantyVO> getAll(Principal principal) {
+        checkPrincipal(principal);
         List<Warranty>warranties = warrantyDAO.findAll();
         List<WarrantyVO>warrantyVOS = new ArrayList<>();
         for(Warranty warranty : warranties){
@@ -58,6 +64,31 @@ public class WarrantyServiceImpl implements WarrantyService {
             warrantyVOS.add(warrantyVO);
         }
         return warrantyVOS;
+    }
+    @Override
+    public WarrantyVO getAllById(Integer id, Principal principal){
+        checkPrincipal(principal);
+        try {
+                Warranty warranties = warrantyDAO.getById(id);
+                if(warranties == null){
+                    throw new NotImplementedException("Không tồn tại hóa đơn bảo hành này");
+                }
+                WarrantyVO warrantyVO = new WarrantyVO();
+                BeanUtils.copyProperties(warranties, warrantyVO);
+                List<WarrantyInvoice> warrantyInvoice = warrantyInvoiceDAO.findByWarrantyId(id);
+                List<WarrantyInvoiceVO> warrantyInvoiceVO = new ArrayList<>();
+            for (WarrantyInvoice warrantyInvoice1: warrantyInvoice
+                 ) {
+                WarrantyInvoiceVO warrantyInvoiceVO1 = new WarrantyInvoiceVO();
+                BeanUtils.copyProperties(warrantyInvoice1, warrantyInvoiceVO1);
+                warrantyInvoiceVO.add(warrantyInvoiceVO1);
+            }
+            warrantyVO.setWarrantyInvoiceVOS(warrantyInvoiceVO);
+            return warrantyVO;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -89,13 +120,7 @@ public class WarrantyServiceImpl implements WarrantyService {
 
     @Override
     public WarrantyVO newWarranty(@Valid WarrantyVO warrantyVO, Principal principal)  {
-        if (principal == null) {
-            throw new NotImplementedException("Chưa đăng nhập");
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            throw new NotImplementedException("User này không có quyền truy cập");
-        }
+        checkPrincipal(principal);
         try {
             Warranty warranty = new Warranty();
             Orders orders1 = ordersDAO.findMotById(warrantyVO.getOrderId());

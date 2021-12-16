@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Date;
+import java.util.List;
 
 @Data
 public class WarrantyVO extends RegexEmail {
@@ -38,6 +39,8 @@ public class WarrantyVO extends RegexEmail {
     private Integer countWarranty;
 
     private Integer status;
+
+    List<WarrantyInvoiceVO> warrantyInvoiceVOS;
 
     OrdersVO orders;
 
