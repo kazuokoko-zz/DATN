@@ -59,7 +59,7 @@ public class SendMail {
 
     public void sentBlogMail(Map<String, String> account, Blog blog) throws MessagingException, IOException, TemplateException {
         InfoSendBlog infoSendBlog = new InfoSendBlog();
-        infoSendBlog.setCreatedBy(blog.getCreatedBy());
+        infoSendBlog.setCreatedBy(blog.getAccount().getFullname());
         infoSendBlog.setPhoto(blog.getPhoto());
         infoSendBlog.setShortText(blog.getShortText());
         infoSendBlog.setTitle(blog.getTitle());

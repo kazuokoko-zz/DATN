@@ -54,7 +54,7 @@ public class AutoTaskService {
     protected void scanUserDetail() {
         List<Account> accounts = accountDAO.findAll();
         for (Account account : accounts) {
-            if (!userDetail.containsKey(account.getEmail())){
+            if (!userDetail.containsKey(account.getEmail())) {
                 userDetail.put(account.getEmail(), account.getFullname());
             }
 
@@ -94,6 +94,7 @@ public class AutoTaskService {
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
             Blog blog = blogDAO.findOneById(entry.getKey());
+            blog.setAccount(accountDAO.getById(blog.getCreatedBy()));
             try {
                 sendMail.sentBlogMail(userDetail, blog);
             } catch (MessagingException | IOException | TemplateException ex) {
@@ -102,7 +103,7 @@ public class AutoTaskService {
         }
     }
 
-//    @Scheduled(fixedRate = 500000)
+    //    @Scheduled(fixedRate = 500000)
     @Scheduled(cron = "0 0 0/1 1/1 * ? ")
     @EventListener(ApplicationReadyEvent.class)
     protected void getTrending() {

@@ -14,6 +14,6 @@ public class InfoSendBlog {
     private String shortText;
     private String photo;
     private String timeCreated;
-    private Integer createdBy;
+    private String createdBy;
     List<BlogDetailsVO> blogDetails;
 }
