@@ -10,6 +10,7 @@ import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductSaleVO;
 import com.poly.datn.vo.SaleVO;
+import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -64,6 +65,29 @@ public class SaleServiceImpl implements SaleService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public SaleVO getById(Principal principal, Integer id) {
+        if (principal == null) {
+            log.error(Constant.NOT_LOGGED_IN);
+            throw new NotImplementedException("Không có quyền");
+        }
+        if (!checkRole.isHavePermition(principal.getName(), "Director")
+                && !checkRole.isHavePermition(principal.getName(), "Staff")) {
+            throw new NotImplementedException("Không có quyền");
+        }
+        Sale sale = saleDAO.getById(id);
+        SaleVO saleVO = new SaleVO();
+        BeanUtils.copyProperties(sale, saleVO);
+        List<ProductSaleVO> productSaleVOS = new ArrayList<>();
+        for (ProductSale productSale : productSaleDAO.getAllBySaleIdEquals(id)) {
+            ProductSaleVO productSaleVO = new ProductSaleVO();
+            BeanUtils.copyProperties(productSale, productSaleVO);
+            productSaleVOS.add(productSaleVO);
+        }
+        saleVO.setProductSaleVO(productSaleVOS);
+        return saleVO;
     }
 
     @Override
@@ -167,7 +191,7 @@ public class SaleServiceImpl implements SaleService {
                     sale.setStatus("Săp diễn ra");
                 } else if (LocalDateTime.now().isAfter(sale.getEndTime().toLocalDateTime())) {
                     sale.setStatus("Đã kết thúc");
-                }else{
+                } else {
                     sale.setStatus("Đang diễn ra");
                 }
                 sale = saleDAO.save(sale);

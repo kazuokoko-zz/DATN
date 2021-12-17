@@ -9,6 +9,8 @@ import java.util.List;
 public interface SaleService {
     List<SaleVO> getAll(Principal principal);
 
+    SaleVO getById(Principal principal, Integer id);
+
     List<SaleVO> getSaleNow(Principal principal);
 
     List<SaleVO> getSaleAboutStart(Principal principal);
