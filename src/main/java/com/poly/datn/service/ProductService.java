@@ -3,6 +3,7 @@ package com.poly.datn.service;
 import com.poly.datn.vo.ProductCategoryVO;
 import com.poly.datn.vo.ProductVO;
 import com.poly.datn.entity.Product;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.security.Principal;
@@ -30,6 +31,18 @@ public interface ProductService {
     ProductVO getById(Integer id) throws NullPointerException;
 
     List<ProductVO> getTrending();
+
+    @Transactional
+    Object storageEmpty(Integer id, Principal principal);
+
+    @Transactional
+    Object comingsoon(Integer id, Principal principal);
+
+    @Transactional
+    Object productReady(Integer id, Principal principal);
+
+    @Transactional
+    Object noSell(Integer id, Principal principal);
 
     ProductVO newProduct(ProductVO productVO, Principal principal);
 

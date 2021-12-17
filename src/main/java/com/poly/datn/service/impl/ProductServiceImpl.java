@@ -140,7 +140,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
         for (ProductVO productVO1 : productVOS
-        ) {      if (productVO1.getStatus().equals("Đã xóa")) {
+        ) {
+            if (productVO1.getStatus().equals("Đã xóa")) {
                 productVO.add(productVO1);
             } else {
                 continue;
@@ -308,67 +309,85 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Object delete(Integer id, Principal principal) {
-            checkPrincipal(principal);
-            try {
-                Product product = productDAO.getById(id);
-                if (product == null) {
-                    throw new NotFoundException("api.error.API-003");
-                }
-                product.setStatus("Đã xóa");
-                productDAO.save(product);
-                return true;
-            } catch (Exception e) {
-                return false;
+        checkPrincipal(principal);
+        try {
+            Product product = productDAO.getById(id);
+            if (product == null) {
+                throw new NotFoundException("api.error.API-003");
             }
+            product.setStatus("Đã xóa");
+            productDAO.save(product);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     @Transactional
     public Object dontSell(Integer id, Principal principal) {
-            checkPrincipal(principal);
-            try {
-                Product product = productDAO.getById(id);
-                if (product == null) {
-                    throw new NotFoundException("api.error.API-003");
-                }
-                product.setStatus("Ngừng kinh doanh");
-                productDAO.save(product);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
+        checkPrincipal(principal);
+        return changeStatus("Ngừng kinh doanh", id);
+    }
+
+    @Override
+    @Transactional
+    public Object storageEmpty(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        return changeStatus("Hết hàng", id);
+    }
+
+    @Override
+    @Transactional
+    public Object comingsoon(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        return changeStatus("Hàng sắp về", id);
+    }
+
+    @Override
+    @Transactional
+    public Object productReady(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        return changeStatus("Đang bán", id);
+    }
+
+    @Override
+    @Transactional
+    public Object noSell(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        return changeStatus("Không kinh doanh", id);
     }
 
 
     @Override
     public ProductVO newProduct(ProductVO productVO, Principal principal) {
-            checkPrincipal(principal);
-            Product product = new Product();
-            BeanUtils.copyProperties(productVO, product);
-            product.setStatus("Chưa thêm đủ thông tin");
-            product = productDAO.save(product);
+        checkPrincipal(principal);
+        Product product = new Product();
+        BeanUtils.copyProperties(productVO, product);
+        product.setStatus("Chưa thêm đủ thông tin");
+        product = productDAO.save(product);
 
-            List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
-            if (productCategoryVO == null) {
+        List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
+        if (productCategoryVO == null) {
+            throw new NotImplementedException("Chưa thêm category");
+        }
+        List<ProductCategory> productCategories = new ArrayList<>();
+
+        for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
+
+            Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
+            if (category == null) {
                 throw new NotImplementedException("Chưa thêm category");
             }
-            List<ProductCategory> productCategories = new ArrayList<>();
-
-            for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
-
-                Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
-                if (category == null) {
-                    throw new NotImplementedException("Chưa thêm category");
-                }
-                ProductCategory productCategory = new ProductCategory();
-                productCategoryVO1.setProductId(product.getId());
-                productCategoryVO1.setCategoryId(category.getId());
-                BeanUtils.copyProperties(productCategoryVO1, productCategory);
-                productCategories.add(productCategory);
-            }
-            productCategoryDAO.saveAll(productCategories);
-            productVO.setId(product.getId());
-            return productVO;
+            ProductCategory productCategory = new ProductCategory();
+            productCategoryVO1.setProductId(product.getId());
+            productCategoryVO1.setCategoryId(category.getId());
+            BeanUtils.copyProperties(productCategoryVO1, productCategory);
+            productCategories.add(productCategory);
+        }
+        productCategoryDAO.saveAll(productCategories);
+        productVO.setId(product.getId());
+        return productVO;
     }
 
     @Override
@@ -403,12 +422,28 @@ public class ProductServiceImpl implements ProductService {
         productCategoryDAO.saveAll(productCategories);
         return getById(product.getId());
     }
-    public void checkPrincipal(Principal principal){
-        if (principal == null){
-            throw new NotImplementedException("Chưa đăng nhập");}
+
+    public void checkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             throw new NotImplementedException("User này không có quyền");
+        }
+    }
+
+    private boolean changeStatus(String status, Integer id) {
+        try {
+            Product product = productDAO.getById(id);
+            if (product == null) {
+                throw new NotFoundException("api.error.API-003");
+            }
+            product.setStatus(status);
+            productDAO.save(product);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 

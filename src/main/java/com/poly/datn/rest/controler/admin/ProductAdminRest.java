@@ -42,6 +42,30 @@ public class ProductAdminRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @PutMapping("storageEmpty/{id}")
+    public ResponseEntity<ResponseDTO<Object>> storageEmpty(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.storageEmpty(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("comingsoon/{id}")
+    public ResponseEntity<ResponseDTO<Object>> comingsoon(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.comingsoon(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("productReady/{id}")
+    public ResponseEntity<ResponseDTO<Object>> productReady(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.productReady(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
+    @PutMapping("noSell/{id}")
+    public ResponseEntity<ResponseDTO<Object>> noSellProduct(@PathVariable("id") Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.noSell(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
     @GetMapping
     public ResponseEntity<ResponseDTO<Object>> getList(@RequestParam("cate") Optional<Integer> cate, @RequestParam("find") Optional<String> find, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getListAdmin(cate, find, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
