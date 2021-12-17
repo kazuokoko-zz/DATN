@@ -1,13 +1,10 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.dao.OrderManagementDAO;
-import com.poly.datn.dao.OrdersDAO;
-import com.poly.datn.dao.WarrantyDAO;
-import com.poly.datn.entity.OrderManagement;
-import com.poly.datn.entity.Orders;
-import com.poly.datn.entity.Warranty;
+import com.poly.datn.dao.*;
+import com.poly.datn.entity.*;
 import com.poly.datn.service.WarrantyService;
 import com.poly.datn.utils.CheckRole;
+import com.poly.datn.vo.WarrantyInvoiceVO;
 import com.poly.datn.vo.WarrantyVO;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
@@ -29,24 +26,36 @@ import java.util.List;
 @Service
 public class WarrantyServiceImpl implements WarrantyService {
 
-   @Autowired
+    @Autowired
     WarrantyDAO warrantyDAO;
 
-   @Autowired
+    @Autowired
     OrdersDAO ordersDAO;
-
+    @Autowired
+    OrderDetailsDAO orderDetailsDAO;
+@Autowired
+    CustomerDAO customerDAO;
    @Autowired
     OrderManagementDAO orderManagementDAO;
     @Autowired
     CheckRole checkRole;
+    @Autowired
+    WarrantyInvoiceDAO warrantyInvoiceDAO;
+
+
+    public void checkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
+        }
+    }
+
     @Override
     public List<WarrantyVO> getAll(Principal principal) {
-        if (principal == null) {
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checkPrincipal(principal);
         List<Warranty>warranties = warrantyDAO.findAll();
         List<WarrantyVO>warrantyVOS = new ArrayList<>();
         for(Warranty warranty : warranties){
@@ -55,6 +64,31 @@ public class WarrantyServiceImpl implements WarrantyService {
             warrantyVOS.add(warrantyVO);
         }
         return warrantyVOS;
+    }
+    @Override
+    public WarrantyVO getAllById(Integer id, Principal principal){
+        checkPrincipal(principal);
+        try {
+                Warranty warranties = warrantyDAO.getById(id);
+                if(warranties == null){
+                    throw new NotImplementedException("Không tồn tại hóa đơn bảo hành này");
+                }
+                WarrantyVO warrantyVO = new WarrantyVO();
+                BeanUtils.copyProperties(warranties, warrantyVO);
+                List<WarrantyInvoice> warrantyInvoice = warrantyInvoiceDAO.findByWarrantyId(id);
+                List<WarrantyInvoiceVO> warrantyInvoiceVO = new ArrayList<>();
+            for (WarrantyInvoice warrantyInvoice1: warrantyInvoice
+                 ) {
+                WarrantyInvoiceVO warrantyInvoiceVO1 = new WarrantyInvoiceVO();
+                BeanUtils.copyProperties(warrantyInvoice1, warrantyInvoiceVO1);
+                warrantyInvoiceVO.add(warrantyInvoiceVO1);
+            }
+            warrantyVO.setWarrantyInvoiceVOS(warrantyInvoiceVO);
+            return warrantyVO;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -86,37 +120,45 @@ public class WarrantyServiceImpl implements WarrantyService {
 
     @Override
     public WarrantyVO newWarranty(@Valid WarrantyVO warrantyVO, Principal principal)  {
-        if (principal == null) {
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
-        }
+        checkPrincipal(principal);
         try {
             Warranty warranty = new Warranty();
-            List<Orders> orders = ordersDAO.findOneById(warrantyVO.getOrderId());
-            if(orders.size() == 0){
-                throw new NotFoundException("common.error.not-found");
+            Orders orders1 = ordersDAO.findMotById(warrantyVO.getOrderId());
+            if(orders1 == null){
+                throw new NotImplementedException("Không có hóa đơn này");
             }
-
+            Orders orders = ordersDAO.findOneByIdForWarranty(orders1.getId(), warrantyVO.getProductId());
+            if(orders != null){
+                throw new NotImplementedException("Đã có hóa đơn cho sản phẩm này");
+            }
+            OrderDetails orderDetails = orderDetailsDAO.findOneByOrderIdAndProductIdAndColorId(orders1.getId(), warrantyVO.getProductId(), warrantyVO.getColorId());
             BeanUtils.copyProperties(warrantyVO, warranty);
-            warranty.setExpiredDate(Date.valueOf(LocalDate.now()));
-            warranty.setStatus(0);
+            warranty.setProductId(orderDetails.getProductId());
+            warranty.setOrderId(orderDetails.getOrderId());
+            warranty.setName(customerDAO.findCustomerById(orders1.getCustomerId()).getFullname());
+            warranty.setPhone(customerDAO.findCustomerById(orders1.getCustomerId()).getPhone());
+            warranty.setAddress(customerDAO.findCustomerById(orders1.getCustomerId()).getAddress());
+            warranty.setCreateDate(Date.valueOf(LocalDate.now()));
+            warranty.setStatus(1);
+            warranty.setCountWarranty(0);
+            warranty.setCreateBy(principal.getName());
+
             warranty = warrantyDAO.save(warranty);
             warrantyVO.setId(warranty.getId());
             warrantyVO.setExpiredDate(warranty.getExpiredDate());
             warrantyVO.setStatus(warranty.getStatus());
+            OrderManagement orderManagements = orderManagementDAO.getLastManager(warrantyVO.getOrderId());;
             OrderManagement orderManagement = new OrderManagement();
-//        = orderManagementDAO.findOneByOrderId(warrantyVO.getOrderId());
             orderManagement.setChangedBy(principal.getName());
-            orderManagement.setStatus("chờ giao hàng");
-
+            orderManagement.setStatus(orderManagements.getStatus());
+            orderManagement.setNote("Đã tạo hóa đơn bảo hành cho sản phẩm có seri: " + warrantyVO.getProductSeri());
             Long datetime = System.currentTimeMillis();
             Timestamp timestamp = new Timestamp(datetime);
             orderManagement.setTimeChange(timestamp);
             orderManagement.setOrderId(warrantyVO.getOrderId());
             orderManagementDAO.save(orderManagement);
-
+            orderDetails.setStatusWarranty(true);
+            orderDetailsDAO.save(orderDetails);
             return  warrantyVO;
         } catch (Exception e){
             throw new RuntimeException(e);

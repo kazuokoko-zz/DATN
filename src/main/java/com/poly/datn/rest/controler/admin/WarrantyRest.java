@@ -26,12 +26,11 @@ public class WarrantyRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.getAll(principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
-
-//    @PostMapping("new")
-//    public ResponseEntity<ResponseDTO<Object>> newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal) throws NotFoundException {
-//        return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.newWarranty(warrantyVO, principal))
-//                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-//    }
+    @GetMapping("get/{id}")
+    public ResponseEntity<ResponseDTO<Object>> getAllById(@PathVariable Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.getAllById(id,principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 
     @PostMapping("new")
     public SuccessResponse newWarranty(@Valid @RequestBody WarrantyVO warrantyVO, Principal principal) {

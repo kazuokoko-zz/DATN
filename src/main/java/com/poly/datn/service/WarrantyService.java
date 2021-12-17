@@ -10,5 +10,6 @@ import java.util.List;
 public interface WarrantyService {
     List<WarrantyVO> getAll(Principal principal);
     List<WarrantyVO> getByUsername(Principal principal);
+   WarrantyVO getAllById(Integer id, Principal principal);
     WarrantyVO newWarranty(WarrantyVO warrantyVO, Principal principal);
 }

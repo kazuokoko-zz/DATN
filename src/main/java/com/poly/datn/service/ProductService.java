@@ -14,6 +14,8 @@ public interface ProductService {
     Object delete(Integer id, Principal principal);
 
     Object dontSell(Integer id, Principal principal);
+//    Object dontSell(Integer id, Principal principal);
+//    Object outOfStock(Integer id, Principal principal);
 
     List<ProductVO> getList(Optional<Integer> cate, Optional<String> find);
 
