@@ -84,7 +84,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
     @Override
-    public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
+    public OrdersVO newOrder(NewOrdersVO ordersVO, Principal principal) {
 
         String changeBy = principal != null ? principal.getName() : "guest";
         if (ordersVO.getOrderDetails() == null) {
@@ -462,11 +462,14 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     @Override
-    public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
+    public OrdersVO newOrderAdmin(NewOrdersVO ordersVO, Principal principal) {
         checkPrincipal(principal);
         String changeBy = principal != null ? principal.getName() : "guest";
         Orders orders = createOders(ordersVO, changeBy);
-        saveDetails(orders, ordersVO);
+        OrdersVO vo = new OrdersVO();
+        vo = ordersVO;
+//        BeanUtils.copyProperties(ordersVO,vo);
+        saveDetails(orders, vo);
         return managerOrderStatus(orders, changeBy, "Đã xác nhận");
     }
 
@@ -609,7 +612,7 @@ public class OrdersServicesImpl implements OrdersService {
         return ordersVO;
     }
 
-    private Orders createOders(OrdersVO ordersVO, String changeBy) {
+    private Orders createOders(@Valid NewOrdersVO ordersVO, String changeBy) {
 
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         Long totalPrice = 0L;

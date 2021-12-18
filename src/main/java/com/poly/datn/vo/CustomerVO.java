@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 
 
 @Data
-public class CustomerVO extends RegexEmail {
+public class CustomerVO {
 
     private Long id;
     @Pattern(regexp = ValidName, message = "tên sai định dạng")
@@ -24,7 +24,7 @@ public class CustomerVO extends RegexEmail {
     @Pattern(regexp = ValidPhone,message = "Số điện thoại sai định dạng")
     private String phone;
 
-    @Size(min = 3, message = "tên tối thiểu 3 ký tự")
+    @Size(min = 10, message = "địa chỉ tối thiểu 10 ký tự")
     private String address;
     private String note;
 

@@ -1,5 +1,6 @@
 package com.poly.datn.service;
 
+import com.poly.datn.vo.NewOrdersVO;
 import com.poly.datn.vo.OrdersVO;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
@@ -15,7 +16,7 @@ public interface OrdersService {
 
     OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException;
 //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
-    OrdersVO newOrder(OrdersVO ordersVO, Principal principal);
+    OrdersVO newOrder(NewOrdersVO ordersVO, Principal principal);
 
     OrdersVO getByIdAndUserNameAdmin(Integer id, Principal principal);
 
@@ -32,7 +33,7 @@ public interface OrdersService {
 
     ShowProductWarrantyVO getWarranty(Integer orderId, Principal principal);
 
-    OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal);
+    OrdersVO newOrderAdmin(NewOrdersVO ordersVO, Principal principal);
 
     OrdersVO updateOrderAdmin(Optional<Integer> id, Optional<String> status, Principal principal);
 
