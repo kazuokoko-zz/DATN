@@ -25,6 +25,8 @@ public interface SaleService {
 
     boolean stopSale(Integer id, Principal principal);
 
+    boolean continueSale(Integer id, Principal principal);
+
     ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal);
 
     ProductSaleVO updateProductSale(ProductSaleVO productSaleVO, Principal principal);

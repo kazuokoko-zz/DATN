@@ -47,9 +47,10 @@ public class SaleServiceImpl implements SaleService {
     @Autowired
     ProductDAO productDAO;
 
-    public void checkPrincipal(Principal principal){
-        if (principal == null){
-            throw new NotImplementedException("Chưa đăng nhập");}
+    public void checkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
             throw new NotImplementedException("User này không có quyền");
@@ -174,23 +175,23 @@ public class SaleServiceImpl implements SaleService {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public SaleVO updateSale(SaleVO saleVO, Principal principal) {
         checkPrincipal(principal);
         try {
             Sale sale = saleDAO.getById(saleVO.getId());
-            if(sale.getStatus().equals("Đã kết thúc") || sale.getStatus().equals("Đã dừng") )
-            {
-                throw new NotFoundException("api.error.API-003");
+            if (sale.getStatus().equals("Đã kết thúc")) {
+                throw new NotImplementedException("Không thể thay đổi chương trình sale đã kết thúc");
             }
             saleVO.setId(sale.getId());
             Long timestart = sale.getStartTime().getTime();
             Long localDateTime1 = Timestamp.valueOf(LocalDateTime.now()).getTime();
-            if(timestart - localDateTime1 <=0) {
-                if(!saleVO.getStartTime().equals(sale.getStartTime()) ){
+            if (timestart - localDateTime1 <= 0) {
+                if (!saleVO.getStartTime().equals(sale.getStartTime())) {
                     throw new NotImplementedException("Không  được sửa thời gian chương trình đã diễn ra");
                 }
-                if((sale.getEndTime().toLocalDateTime()).isBefore(LocalDateTime.now())){
+                if ((sale.getEndTime().toLocalDateTime()).isBefore(LocalDateTime.now())) {
                     throw new NotImplementedException("Không  được sửa thời gian chương trình đã kết thúc");
                 }
                 saleVO.setName(sale.getName());
@@ -226,19 +227,38 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    public boolean continueSale(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        try {
+            Sale sale = saleDAO.getById(id);
+            if(LocalDateTime.now().isAfter(sale.getEndTime().toLocalDateTime())){
+                throw new NotImplementedException("Chương trình sale đã kết thúc");
+            }
+            if(!sale.getStatus().equals("Đã dừng")){
+                throw new NotImplementedException("Không thể tiếp tục chương trình đang không tạm dừng");
+            }
+            sale.setStatus("Đang diễn ra");
+            saleDAO.save(sale);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal) {
         checkPrincipal(principal);
         try {
-            if(productDAO.getOneProductById(productSaleVO.getProductId()) == null){
+            if (productDAO.getOneProductById(productSaleVO.getProductId()) == null) {
                 throw new NotImplementedException("Không tồn tại sản phẩm này");
             }
             Sale sale = saleDAO.getOneById(productSaleVO.getSaleId());
-            if(sale == null || sale.getStatus().equals("Đã kết thúc")){
+            if (sale == null || sale.getStatus().equals("Đã kết thúc")) {
                 throw new NotImplementedException("Không thể thêm sản phẩm vào chương trình này");
             }
-            if(productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId()) != null){
+            if (productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId()) != null) {
                 throw new NotImplementedException("Sản phẩm này đang được sale trong chương trình này rồi");
-            };
+            }
             ProductSale productSale = new ProductSale();
             BeanUtils.copyProperties(productSaleVO, productSale);
             productSale = productSaleDAO.save(productSale);
@@ -254,13 +274,11 @@ public class SaleServiceImpl implements SaleService {
         checkPrincipal(principal);
         try {
             ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId());
-            if(productSale == null )
-            {
+            if (productSale == null) {
                 throw new NotFoundException("api.error.API-003");
             }
             Sale sale = saleDAO.getById(productSaleVO.getSaleId());
-            if(sale.getStatus().equals("Đã kết thúc") || sale.getStatus().equals("Đã dừng") )
-            {
+            if (sale.getStatus().equals("Đã kết thúc") || sale.getStatus().equals("Đã dừng")) {
                 throw new NotFoundException("api.error.API-003");
             }
             productSaleVO.setId(productSale.getId());
@@ -269,7 +287,7 @@ public class SaleServiceImpl implements SaleService {
 
             Long timestart = sale.getStartTime().getTime();
             Long localDateTime1 = Timestamp.valueOf(LocalDateTime.now()).getTime();
-            if(timestart - localDateTime1 <=0) {
+            if (timestart - localDateTime1 <= 0) {
                 productSaleVO.setDiscount(productSale.getDiscount());
             }
             BeanUtils.copyProperties(productSaleVO, productSale);
@@ -290,13 +308,11 @@ public class SaleServiceImpl implements SaleService {
         checkPrincipal(principal);
         try {
             ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId());
-            if(productSale == null )
-            {
+            if (productSale == null) {
                 throw new NotFoundException("api.error.API-003");
             }
             Sale sale = saleDAO.getById(productSale.getSaleId());
-            if(sale.getStatus().equals("Đã kết thúc") || sale.getStatus().equals("Đã dừng") )
-            {
+            if (sale.getStatus().equals("Đã kết thúc") || sale.getStatus().equals("Đã dừng")) {
                 throw new NotFoundException("api.error.API-003");
             }
             productSale.setQuantity(0);

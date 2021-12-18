@@ -90,4 +90,10 @@ public class SaleAdminRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @PutMapping("continueSale")
+    public ResponseEntity<ResponseDTO<Object>> continueSale(@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.continueSale(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
 }
