@@ -22,8 +22,6 @@ public class SaleVO {
     private Timestamp endTime;
     private String status;
 
-
-    ProductVO product;
     List<ProductSaleVO> productSaleVO;
 
 }

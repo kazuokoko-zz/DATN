@@ -4,11 +4,13 @@ package com.poly.datn.service.impl;
 import com.poly.datn.dao.ProductDAO;
 import com.poly.datn.dao.ProductSaleDAO;
 import com.poly.datn.dao.SaleDAO;
+import com.poly.datn.entity.Product;
 import com.poly.datn.entity.ProductSale;
 import com.poly.datn.entity.Sale;
 import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductSaleVO;
+import com.poly.datn.vo.ProductVO;
 import com.poly.datn.vo.SaleVO;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.NotImplementedException;
@@ -85,6 +87,10 @@ public class SaleServiceImpl implements SaleService {
         for (ProductSale productSale : productSaleDAO.getAllBySaleIdEquals(id)) {
             ProductSaleVO productSaleVO = new ProductSaleVO();
             BeanUtils.copyProperties(productSale, productSaleVO);
+            ProductVO productVO = new ProductVO();
+            Product product = productDAO.getById(productSale.getProductId());
+            BeanUtils.copyProperties(product, productVO);
+            productSaleVO.setProductVO(productVO);
             productSaleVOS.add(productSaleVO);
         }
         saleVO.setProductSaleVO(productSaleVOS);
@@ -231,10 +237,10 @@ public class SaleServiceImpl implements SaleService {
         checkPrincipal(principal);
         try {
             Sale sale = saleDAO.getById(id);
-            if(LocalDateTime.now().isAfter(sale.getEndTime().toLocalDateTime())){
+            if (LocalDateTime.now().isAfter(sale.getEndTime().toLocalDateTime())) {
                 throw new NotImplementedException("Chương trình sale đã kết thúc");
             }
-            if(!sale.getStatus().equals("Đã dừng")){
+            if (!sale.getStatus().equals("Đã dừng")) {
                 throw new NotImplementedException("Không thể tiếp tục chương trình đang không tạm dừng");
             }
             sale.setStatus("Đang diễn ra");
