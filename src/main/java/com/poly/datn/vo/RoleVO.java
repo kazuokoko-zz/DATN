@@ -12,9 +12,6 @@ public class RoleVO {
 
     private String roleName;
 
-
-
-
     List<AccountRoleVO> accountRoles;
 
 

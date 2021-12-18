@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -51,33 +52,33 @@ public class SaleAdminRest {
     }
 
     @PostMapping("newSale")
-    public ResponseEntity<ResponseDTO<Object>> newSale(@RequestBody SaleVO saleVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> newSale(@Valid @RequestBody SaleVO saleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.newSale(saleVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("updateSale")
-    public ResponseEntity<ResponseDTO<Object>> updateSale(@RequestBody SaleVO saleVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> updateSale(@Valid @RequestBody SaleVO saleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.updateSale(saleVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("newProductSale")
-    public ResponseEntity<ResponseDTO<Object>> newProductSale(@RequestBody ProductSaleVO productSaleVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> newProductSale(@Valid @RequestBody ProductSaleVO productSaleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.newProductSale(productSaleVO,
                         principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("updateProductSale")
-    public ResponseEntity<ResponseDTO<Object>> updateProductSale(@RequestBody ProductSaleVO productSaleVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> updateProductSale(@Valid @RequestBody ProductSaleVO productSaleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.updateProductSale(productSaleVO,
                         principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PostMapping("stopProductSale")
-    public ResponseEntity<ResponseDTO<Object>> stopProductSale(@RequestBody ProductSaleVO productSaleVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> stopProductSale(@Valid @RequestBody ProductSaleVO productSaleVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(saleService.deleteProductSale(productSaleVO,
                         principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
