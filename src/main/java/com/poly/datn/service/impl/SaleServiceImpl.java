@@ -233,7 +233,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new NotImplementedException("Không tồn tại sản phẩm này");
             }
             Sale sale = saleDAO.getOneById(productSaleVO.getSaleId());
-            if(sale == null || sale.getStatus() != "Đang diễn ra" || sale.getStatus() != "Sắp diễn ra" ){
+            if(sale == null || sale.getStatus().equals("Đã kết thúc")){
                 throw new NotImplementedException("Không thể thêm sản phẩm vào chương trình này");
             }
             if(productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId()) != null){
