@@ -27,8 +27,6 @@ public class CustomerVO {
     @NotNull
     @NotBlank
     private String address;
-    @NotNull
-    @NotBlank
     private String note;
 
     OrdersVO orders;
