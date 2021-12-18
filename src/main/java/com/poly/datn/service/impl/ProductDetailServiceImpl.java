@@ -61,4 +61,30 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         return productDetailsVOS;
 
     }
+    public void updateProductDetail(Integer id, List<ProductDetailsVO> productDetailsVOS) {
+        productDetailsDAO.deleteAllByProductIdEquals(id);
+        List<String> photos = new ArrayList<>();
+        for (ProductDetailsVO productDetailsVO : productDetailsVOS) {
+            if (productDetailsVO.getPropertyName().equalsIgnoreCase("photo")) {
+                photos.add(productDetailsVO.getPropertyValue());
+                continue;
+            }
+            ProductDetails productDetails = new ProductDetails();
+            BeanUtils.copyProperties(productDetailsVO, productDetails);
+            productDetails.setProductId(id);
+            productDetailsDAO.save(productDetails);
+        }
+        ProductDetails productDetails = new ProductDetails();
+        productDetails.setProductId(id);
+        productDetails.setPropertyName("photo");
+        productDetails.setPropertyValue(String.join(",", photos));
+        productDetailsDAO.save(productDetails);
+        productDetailsVOS = new ArrayList<>();
+
+        for (ProductDetails pd : productDetailsDAO.findAllByProductIdEquals(id)) {
+            ProductDetailsVO productDetailsVO = new ProductDetailsVO();
+            BeanUtils.copyProperties(pd, productDetailsVO);
+            productDetailsVOS.add(productDetailsVO);
+        }
+    }
 }

@@ -2,10 +2,8 @@ package com.poly.datn.service.impl;
 
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
+import com.poly.datn.service.*;
 import com.poly.datn.service.AutoTask.AutoTaskService;
-import com.poly.datn.service.CommentService;
-import com.poly.datn.service.ProductService;
-import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.ProductUtils;
@@ -70,6 +68,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     PriceUtils priceUtils;
     // Begin code of MA
+    @Autowired
+    ProductDetailService productDetailService;
+    @Autowired
+    ProductColorService productColorService;
+    @Autowired
+    ProductCategoryService productCategoryService;
 
     @Autowired
     CategoryDAO categoryDAO;
@@ -387,15 +391,30 @@ public class ProductServiceImpl implements ProductService {
         }
         productCategoryDAO.saveAll(productCategories);
         productVO.setId(product.getId());
+        List<ProductDetailsVO> productDetailsVO = productVO.getProductDetails();
+        if(productDetailsVO == null){
+            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
+        }
+
+
         return productVO;
     }
 
     @Override
     public ProductVO update(ProductVO productVO, Principal principal) {
         checkPrincipal(principal);
+        if(productVO.getProductCategories().size() <=1){
+            throw new NotImplementedException("thêm tối thiêu 1 danh mục");
+        }
+        if(productVO.getProductDetails().size() <=1){
+            throw new NotImplementedException("thêm tối thiêu 1 thông tin");
+        }
+        if(productVO.getProductColors().size() <=1){
+            throw new NotImplementedException("thêm tối thiêu 1 màu");
+        }
         Product product = productDAO.getOneProductById(productVO.getId());
         if (product == null) {
-            throw new NotFoundException("api.error.API-003");
+            throw new NotImplementedException("Không tồn tại sản phẩm này, vui lòng thêm mới");
         }
         BeanUtils.copyProperties(productVO, product);
         if (productVO.getStatus().equals("Không kinh doanh")
@@ -406,20 +425,11 @@ public class ProductServiceImpl implements ProductService {
         } else {
             product.setStatus(product.getStatus());
         }
-        productDAO.save(product);
+        product = productDAO.save(product);
 
-        List<ProductCategoryVO> productCategoryVO = productVO.getProductCategories();
-        if (productCategoryVO == null) {
-            throw new NotImplementedException("Chưa thêm category");
-        }
-        List<ProductCategory> productCategories = new ArrayList<>();
-        productCategoryDAO.deleteAllByProductIdEquals(product.getId());
-        for (ProductCategoryVO productCategoryVO1 : productCategoryVO) {
-            ProductCategory productCategory = new ProductCategory();
-            BeanUtils.copyProperties(productCategoryVO1, productCategory);
-            productCategories.add(productCategory);
-        }
-        productCategoryDAO.saveAll(productCategories);
+        productCategoryService.updateProductCategory(product.getId(),productVO.getProductCategories());
+        productDetailService.updateProductDetail(product.getId(), productVO.getProductDetails());
+        productColorService.updateProductColor(product.getId(),productVO.getProductColors());
         return getById(product.getId());
     }
 

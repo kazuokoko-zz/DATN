@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface ProductCategoryService {
 
      List<ProductCategoryVO> getByCategoryId(Integer integer) ;
-
+     void updateProductCategory(Integer id, List<ProductCategoryVO> productCategoryVOS);
      List<ProductCategoryVO> newProductCategory(Optional<Integer> id, List<ProductCategoryVO> productCategoryVOS, Principal principal);
 }

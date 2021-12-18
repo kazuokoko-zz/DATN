@@ -58,6 +58,22 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         return productCategoryVOS;
     }
+    public void updateProductCategory(Integer id, List<ProductCategoryVO> productCategoryVOS) {
+
+        productCategoryDAO.deleteAllByProductIdEquals(id);
+        for (ProductCategoryVO productCategoryVO : productCategoryVOS) {
+            ProductCategory productCategory = new ProductCategory();
+            BeanUtils.copyProperties(productCategoryVO, productCategory);
+            productCategory.setProductId(id);
+            productCategoryDAO.save(productCategory);
+        }
+        productCategoryVOS = new ArrayList<>();
+        for (ProductCategory productCategory : productCategoryDAO.findAllByProductIdEquals(id)) {
+            ProductCategoryVO productCategoryVO = new ProductCategoryVO();
+            BeanUtils.copyProperties(productCategory, productCategoryVO);
+            productCategoryVOS.add(productCategoryVO);
+        }
+    }
 
 
 }

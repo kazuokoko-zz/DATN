@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface SaleDAO extends JpaRepository<Sale, Integer> {
 
-    @Query(nativeQuery = true, value = "select * from sale s where :currtime between s.start_time and s.end_time")
+    Sale getOneById(Integer id);
+
+    @Query(nativeQuery = true,value = "select * from sale s where :currtime between s.start_time and s.end_time")
     List<Sale> findSalesAt(@Param("currtime") Timestamp time);
 
     @Query(nativeQuery = true, value = "select * from sale s where :currtime < s.start_time")
