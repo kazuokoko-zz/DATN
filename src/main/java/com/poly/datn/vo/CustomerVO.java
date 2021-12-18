@@ -26,8 +26,6 @@ public class CustomerVO extends RegexEmail {
     @NotNull
     @NotBlank
     private String address;
-    @NotNull
-    @NotBlank
     private String note;
 
     OrdersVO orders;
