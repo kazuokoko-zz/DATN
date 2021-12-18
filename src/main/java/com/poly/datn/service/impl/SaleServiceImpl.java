@@ -10,6 +10,7 @@ import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductSaleVO;
 import com.poly.datn.vo.SaleVO;
+import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -236,10 +237,13 @@ public class SaleServiceImpl implements SaleService {
     public ProductSaleVO newProductSale(ProductSaleVO productSaleVO, Principal principal) {
         if (principal == null) {
             log.error(Constant.NOT_LOGGED_IN);
-            throw new NotFoundException("api.error.API-003");
+            throw new NotImplementedException("Chưa đăng nhập");
         } else if (checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff")) {
             try {
+                if(productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId()) != null){
+                    throw new NotImplementedException("Sản phẩm này đang được sale trong chương trình này rồi");
+                };
                 ProductSale productSale = new ProductSale();
                 BeanUtils.copyProperties(productSaleVO, productSale);
                 productSale = productSaleDAO.save(productSale);
@@ -249,7 +253,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new RuntimeException(e);
             }
         } else {
-            throw new NotFoundException("api.error.API-003");
+            throw new NotFoundException("User này không có quyền");
         }
     }
 
