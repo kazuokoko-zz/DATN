@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 
 
 @Data
-public class CustomerVO {
+public class CustomerVO extends RegexEmail {
 
     private Long id;
     @Pattern(regexp = ValidName, message = "tên sai định dạng")
