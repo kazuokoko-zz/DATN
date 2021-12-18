@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 public class CustomerVO extends RegexEmail {
 
     private Long id;
+
     @Size(min = 3)
     private String fullname;
 

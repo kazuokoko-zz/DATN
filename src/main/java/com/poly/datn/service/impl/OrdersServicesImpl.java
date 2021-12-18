@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.webjars.NotFoundException;
 
 import javax.validation.Valid;
@@ -609,7 +610,7 @@ public class OrdersServicesImpl implements OrdersService {
         return ordersVO;
     }
 
-    private Orders createOders(OrdersVO ordersVO, String changeBy) {
+    private Orders createOders(@Validated OrdersVO ordersVO, String changeBy) {
 
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         Long totalPrice = 0L;
@@ -643,7 +644,7 @@ public class OrdersServicesImpl implements OrdersService {
         return orders;
     }
 
-    private Customer createCustomer(@Valid CustomerVO customerVO) {
+    private Customer createCustomer(@Validated CustomerVO customerVO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerVO, customer);
         return customerDAO.save(customer);
