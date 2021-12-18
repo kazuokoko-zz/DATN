@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 
 @Data
-public class CustomerVO extends RegexEmail {
+public class CustomerVO {
 
     private Long id;
 
@@ -18,7 +18,7 @@ public class CustomerVO extends RegexEmail {
     @Pattern(regexp = RegexEmail.regexE, message = "Email sai")
     private String email;
 
-    @Pattern(regexp = ValidNum,message = "Số điện thoại sai")
+    @Pattern(regexp = RegexEmail.ValidNum, message = "Số điện thoại sai")
     private String phone;
 
     private String address;
