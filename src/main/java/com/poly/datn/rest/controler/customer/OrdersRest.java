@@ -8,9 +8,9 @@ import com.poly.datn.vo.ResponseDTO;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -38,7 +38,7 @@ public class OrdersRest {
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @PostMapping("new")
-    public ResponseEntity<ResponseDTO<Object>> newOrder(@Valid @RequestBody OrdersVO ordersVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> newOrder(@Validated @RequestBody OrdersVO ordersVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.newOrder(ordersVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
