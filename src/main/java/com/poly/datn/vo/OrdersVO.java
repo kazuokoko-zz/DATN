@@ -2,11 +2,13 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Data
 public class OrdersVO {
+
 
     private Integer id;
 
@@ -24,6 +26,7 @@ public class OrdersVO {
 
     private Integer numOfProduct;
 
+    @Valid
     CustomerVO customer;
 
     List<OrderManagementVO> orderManagements;
