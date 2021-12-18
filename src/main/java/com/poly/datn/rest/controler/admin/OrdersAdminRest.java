@@ -2,7 +2,7 @@ package com.poly.datn.rest.controler.admin;
 
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.OrdersService;
-import com.poly.datn.vo.OrdersVO;
+import com.poly.datn.vo.NewOrdersVO;
 import com.poly.datn.vo.ResponseDTO;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class OrdersAdminRest {
     }
 
     @PostMapping("new")
-    public ResponseEntity<ResponseDTO<Object>> newOrder(@Validated @RequestBody OrdersVO ordersVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> newOrder(@Validated @RequestBody NewOrdersVO ordersVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.newOrderAdmin(ordersVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }

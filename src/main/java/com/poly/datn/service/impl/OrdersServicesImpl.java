@@ -15,9 +15,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.webjars.NotFoundException;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -84,7 +84,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     //, OrderDetailsVO orderDetailsVO, CustomerVO customerVO
     @Override
-    public OrdersVO newOrder(OrdersVO ordersVO, Principal principal) {
+    public OrdersVO newOrder(NewOrdersVO ordersVO, Principal principal) {
 
         String changeBy = principal != null ? principal.getName() : "guest";
         if (ordersVO.getOrderDetails() == null) {
@@ -462,11 +462,14 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     @Override
-    public OrdersVO newOrderAdmin(OrdersVO ordersVO, Principal principal) {
+    public OrdersVO newOrderAdmin(NewOrdersVO ordersVO, Principal principal) {
         checkPrincipal(principal);
         String changeBy = principal != null ? principal.getName() : "guest";
         Orders orders = createOders(ordersVO, changeBy);
-        saveDetails(orders, ordersVO);
+        OrdersVO vo = new OrdersVO();
+        vo = ordersVO;
+//        BeanUtils.copyProperties(ordersVO,vo);
+        saveDetails(orders, vo);
         return managerOrderStatus(orders, changeBy, "Đã xác nhận");
     }
 
@@ -609,7 +612,7 @@ public class OrdersServicesImpl implements OrdersService {
         return ordersVO;
     }
 
-    private Orders createOders(@Validated OrdersVO ordersVO, String changeBy) {
+    private Orders createOders(@Valid NewOrdersVO ordersVO, String changeBy) {
 
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         Long totalPrice = 0L;
@@ -643,7 +646,7 @@ public class OrdersServicesImpl implements OrdersService {
         return orders;
     }
 
-    private Customer createCustomer(@Validated CustomerVO customerVO) {
+    private Customer createCustomer(@Valid CustomerVO customerVO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerVO, customer);
         return customerDAO.save(customer);
