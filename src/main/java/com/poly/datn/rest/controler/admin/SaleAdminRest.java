@@ -77,8 +77,8 @@ public class SaleAdminRest {
     }
 
     @PostMapping("stopProductSale")
-    public ResponseEntity<ResponseDTO<Object>> stopProductSale(@RequestParam Integer id, Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.deleteProductSale(id,
+    public ResponseEntity<ResponseDTO<Object>> stopProductSale(@RequestBody ProductSaleVO productSaleVO, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(saleService.deleteProductSale(productSaleVO,
                         principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
