@@ -253,7 +253,7 @@ public class SaleServiceImpl implements SaleService {
     public ProductSaleVO updateProductSale(ProductSaleVO productSaleVO, Principal principal) {
         checkPrincipal(principal);
         try {
-            ProductSale productSale = productSaleDAO.findOneById(productSaleVO.getId());
+            ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId());
             if(productSale == null )
             {
                 throw new NotFoundException("api.error.API-003");
