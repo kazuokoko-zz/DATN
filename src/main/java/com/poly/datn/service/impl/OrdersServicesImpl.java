@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.webjars.NotFoundException;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
