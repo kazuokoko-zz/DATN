@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -626,9 +627,10 @@ public class OrdersServicesImpl implements OrdersService {
             throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
         }
 
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
-        customer = customerDAO.save(customer);
+        Customer customer = createCustomer(ordersVO.getCustomer());
+//        Customer customer = new Customer();
+//        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
+//        customer = customerDAO.save(customer);
         //save order
         Orders orders = new Orders();
         orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
@@ -639,6 +641,12 @@ public class OrdersServicesImpl implements OrdersService {
         orders = ordersDAO.save(orders);
 
         return orders;
+    }
+
+    private Customer createCustomer(@Valid CustomerVO customerVO) {
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerVO, customer);
+        return customerDAO.save(customer);
     }
 
     private List<OrderDetailsVO> saveDetails(Orders orders, OrdersVO ordersVO) {
