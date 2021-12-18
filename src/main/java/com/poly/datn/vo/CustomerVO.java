@@ -18,7 +18,7 @@ public class CustomerVO {
     @Pattern(regexp = RegexEmail.regexE, message = "Email sai")
     private String email;
 
-    @Pattern(regexp = RegexEmail.ValidNum, message = "Số điện thoại sai")
+    @Pattern(regexp = "[0-9]{10}", message = "Số điện thoại sai")
     private String phone;
 
     private String address;
