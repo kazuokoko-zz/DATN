@@ -286,10 +286,10 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public boolean deleteProductSale(Integer id, Principal principal) {
+    public boolean deleteProductSale(ProductSaleVO productSaleVO, Principal principal) {
         checkPrincipal(principal);
         try {
-            ProductSale productSale = productSaleDAO.findOneById(id);
+            ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productSaleVO.getProductId(), productSaleVO.getSaleId());
             if(productSale == null )
             {
                 throw new NotFoundException("api.error.API-003");

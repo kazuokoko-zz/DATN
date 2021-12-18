@@ -29,5 +29,5 @@ public interface SaleService {
 
     ProductSaleVO updateProductSale(ProductSaleVO productSaleVO, Principal principal);
 
-    boolean deleteProductSale(Integer id, Principal principal);
+    boolean deleteProductSale(ProductSaleVO productSaleVO, Principal principal);
 }
