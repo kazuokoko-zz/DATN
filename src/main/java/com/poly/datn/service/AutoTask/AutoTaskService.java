@@ -3,9 +3,11 @@ package com.poly.datn.service.AutoTask;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.BlogDAO;
 import com.poly.datn.dao.ProductDAO;
+import com.poly.datn.dao.SaleDAO;
 import com.poly.datn.entity.Account;
 import com.poly.datn.entity.Blog;
 import com.poly.datn.entity.Product;
+import com.poly.datn.entity.Sale;
 import com.poly.datn.service.impl.SendMail;
 import com.poly.datn.utils.ProductUtils;
 import com.poly.datn.vo.ProductVO;
@@ -34,6 +36,8 @@ public class AutoTaskService {
     static Map<Integer, Boolean> sendBlog = new HashMap<>();
     static Map<String, String> userDetail = new HashMap<>();
     public static List<TrendingVO> trending = new ArrayList<>();
+    public static LocalDateTime nearestEndSaleTime;
+    public static LocalDateTime nearesrStartSaleTime;
 
     @Autowired
     BlogDAO blogDAO;
@@ -41,6 +45,8 @@ public class AutoTaskService {
     @Autowired
     AccountDAO accountDAO;
 
+    @Autowired
+    SaleDAO saleDAO;
 
     @Autowired
     SendMail sendMail;
@@ -119,5 +125,33 @@ public class AutoTaskService {
             trending.add(trendingVO);
         }
         Collections.sort(trending, Comparator.comparingInt(TrendingVO::getQuantity).reversed());
+    }
+
+    @Scheduled(cron = "* * * * * *")
+    @EventListener(ApplicationReadyEvent.class)
+    void changeSaleStatus() {
+        LocalDateTime thisTime = LocalDateTime.now();
+        if (thisTime.equals(AutoTaskService.nearesrStartSaleTime) ||
+                thisTime.equals(AutoTaskService.nearesrStartSaleTime)) {
+            Timestamp nearestStart = saleDAO.getNearestTimeStartSale();
+            Timestamp nearestEnd = saleDAO.getNearestTimeEndSale();
+
+            if (thisTime.equals(AutoTaskService.nearesrStartSaleTime)) {
+                List<Sale> endSale = saleDAO.getAllByEndTimeEquals(Timestamp.valueOf(thisTime));
+                for (Sale sale : endSale) {
+                    sale.setStatus("Đã kết thúc");
+                    saleDAO.save(sale);
+                }
+            }
+            if (thisTime.equals(AutoTaskService.nearesrStartSaleTime)) {
+                List<Sale> startSale = saleDAO.getAllByStartTimeEquals(Timestamp.valueOf(thisTime));
+                for (Sale sale : startSale) {
+                    sale.setStatus("Đang diễn ra");
+                    saleDAO.save(sale);
+                }
+            }
+            AutoTaskService.nearesrStartSaleTime = nearestStart.toLocalDateTime();
+            AutoTaskService.nearestEndSaleTime = nearestEnd.toLocalDateTime();
+        }
     }
 }
