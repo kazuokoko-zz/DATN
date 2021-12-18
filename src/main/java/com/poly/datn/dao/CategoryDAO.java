@@ -22,4 +22,5 @@ public interface CategoryDAO extends JpaRepository<Category, Integer> {
 
     Category findOneById(Integer id);
 
+
 }

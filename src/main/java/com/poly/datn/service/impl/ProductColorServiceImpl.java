@@ -71,4 +71,20 @@ public class ProductColorServiceImpl implements ProductColorService {
         }
         return productColorVOS;
     }
+    public void updateProductColor(Integer id, List<ProductColorVO> productColorVOS) {
+        productColorDAO.deleteAllByProductIdEquals(id);
+        for (ProductColorVO productColorVO : productColorVOS) {
+            ProductColor productColor = new ProductColor();
+            BeanUtils.copyProperties(productColorVO, productColor);
+            productColor.setProductId(id);
+            productColor = productColorDAO.save(productColor);
+            productId = productColor.getProductId();
+        }
+        productColorVOS = new ArrayList<>();
+        for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(id)) {
+            ProductColorVO productColorVO = new ProductColorVO();
+            BeanUtils.copyProperties(productColor, productColorVO);
+            productColorVOS.add(productColorVO);
+        }
+    }
 }
