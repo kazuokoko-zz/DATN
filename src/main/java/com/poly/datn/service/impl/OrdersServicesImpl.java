@@ -10,9 +10,11 @@ import com.poly.datn.vo.*;
 import com.poly.datn.vo.VoBoSung.NoteOrderManagementVo;
 import com.poly.datn.vo.VoBoSung.ShowProductWarrantyVO;
 import com.poly.datn.vo.mailSender.InfoSendOrder;
+import com.poly.datn.vo.mailSender.InfoSendStatusOrder;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -66,8 +68,54 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     SendMail sendMail;
+
     @Autowired
     ProductColorDAO productColorDAO;
+
+    private List<InfoSendStatusOrder> infoSendStatusOrder = new ArrayList<>();
+
+    @Scheduled(cron = "0 0 0/1 1/1 * ?")
+    public void taskSendMailStatus(){
+        try {
+                if(infoSendStatusOrder.size() > 0) {
+                for (InfoSendStatusOrder infoSendStatusOrder2 : infoSendStatusOrder
+                ) {
+                    sendMail.sentMailStatusOrder(infoSendStatusOrder2);
+                }
+                infoSendStatusOrder.clear();
+            } else {
+                return;
+            }
+        }catch (Exception exception){
+            throw  new RuntimeException(exception);
+        }
+    }
+
+    private InfoSendStatusOrder sendMailUpdateStatus(OrderManagement orderManagement){
+        Orders orders = ordersDAO.findMotById(orderManagement.getOrderId());
+        Customer customer = customerDAO.findCustomerById(orders.getCustomerId());
+        InfoSendStatusOrder infoSendStatusOrder3 = new InfoSendStatusOrder();
+        infoSendStatusOrder3.setName(customer.getFullname());
+        infoSendStatusOrder3.setPhone(customer.getPhone());
+        infoSendStatusOrder3.setEmail(customer.getEmail());
+        infoSendStatusOrder3.setAddress(customer.getAddress());
+        infoSendStatusOrder3.setOrderId(orders.getId());
+        List<OrderManagement> orderManagement1 = orderManagementDAO.findByOrderId(orders.getId());
+        List<OrderManagementVO> orderManagementVOS = new ArrayList<>();
+        for (OrderManagement orderManagement2:  orderManagement1 ) {
+            OrderManagementVO orderManagementVO = new OrderManagementVO();
+            BeanUtils.copyProperties(orderManagement2,orderManagementVO );
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            orderManagementVO.setTimeChange(sdf.format(new Date(orderManagement2.getTimeChange().getTime())));
+            orderManagementVOS.add(orderManagementVO);
+        }
+        OrderManagementVO[] voss = new OrderManagementVO[orderManagement1.size()];
+        orderManagementVOS.stream().collect(Collectors.toList()).toArray(voss);
+        infoSendStatusOrder3.setOrderManagementVO(voss);
+        return infoSendStatusOrder3;
+    }
+
+
 
     @Override
     public OrdersVO getByIdAndUserName(Integer id, Principal principal) throws SecurityException, NullPointerException {
@@ -176,7 +224,9 @@ public class OrdersServicesImpl implements OrdersService {
             } else {
                 orderManagement1.setNote(noteOrderManagementVo.getNote());
             }
-            orderManagementDAO.save(orderManagement1);
+            orderManagement1 =orderManagementDAO.save(orderManagement1);
+            InfoSendStatusOrder infoSendStatusOrder1 =sendMailUpdateStatus( orderManagement1);
+            infoSendStatusOrder.add(infoSendStatusOrder1);
         } catch (Exception e) {
             throw new NotImplementedException("Có lỗi khi thay đổi trạng thái đơn hàng");
         }
@@ -303,7 +353,9 @@ public class OrdersServicesImpl implements OrdersService {
             orderManagement1.setOrderId(orders.getId());
             orderManagement1.setStatus(status);
             orderManagement1.setNote(note);
-            orderManagementDAO.save(orderManagement1);
+            orderManagement1 =  orderManagementDAO.save(orderManagement1);
+            InfoSendStatusOrder infoSendStatusOrder1 =sendMailUpdateStatus( orderManagement1);
+            infoSendStatusOrder.add(infoSendStatusOrder1);
         } catch (Exception e) {
             throw new NotImplementedException("Có lỗi khi thay đổi trạng thái đơn hàng");
         }

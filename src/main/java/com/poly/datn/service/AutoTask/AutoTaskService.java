@@ -54,6 +54,8 @@ public class AutoTaskService {
     @Autowired
     ProductUtils productUtils;
 
+
+
     @Scheduled(cron = "0 30 0/1 ? * * ")
 //    @Scheduled(fixedRate = 3000)
     @EventListener(ApplicationReadyEvent.class)

@@ -5,6 +5,7 @@ import com.poly.datn.entity.Blog;
 import com.poly.datn.vo.mailSender.InfoSendBlog;
 import com.poly.datn.vo.mailSender.InfoSendMailRPass;
 import com.poly.datn.vo.mailSender.InfoSendOrder;
+import com.poly.datn.vo.mailSender.InfoSendStatusOrder;
 import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,35 @@ public class SendMail {
 //        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
 
             Template t = config.getTemplate("mailOrder.ftl");
+            String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
+
+
+
+            sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (TemplateNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (MalformedTemplateNameException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void sentMailStatusOrder(InfoSendStatusOrder infoSendOrder) {
+        try {
+
+            String homeLink = "http://150.95.105.29/";
+            String mailSubject = "Cập nhập trạng thái đơn hàng Socstore";
+//        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
+
+            Template t = config.getTemplate("mailOrderStatus.ftl");
             String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
 
 
