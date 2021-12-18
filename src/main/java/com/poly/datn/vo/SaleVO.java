@@ -3,8 +3,9 @@ package com.poly.datn.vo;
 
 import lombok.Data;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
+
 @Data
 public class SaleVO {
 
@@ -17,5 +18,6 @@ public class SaleVO {
 
 
     ProductVO product;
+    List<ProductSaleVO> productSaleVO;
 
 }

@@ -11,7 +11,7 @@
         <div style="display: flex !important; flex-direction: row;width: 1000px !important;">
             <div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem ">
-                    <div style="width: 50px;font-weight: bold">THÔNG TIN CÁ NHÂN</div>
+                    <div style="width: 500px;font-weight: bold">THÔNG TIN CÁ NHÂN</div>
                 </div>
                 <div style="display: flex; margin-top: 1rem; margin-bottom: 1rem ">
                     <div style="width: 200px;font-weight: bold">Họ và tên:</div>

@@ -10,8 +10,11 @@ public interface ProductSaleDAO extends JpaRepository<ProductSale, Integer> {
 
     Optional<ProductSale> findByProductIdEqualsAndSaleIdEquals(Integer productId, Integer saleId);
 
-
     ProductSale findByProductIdAndSaleId(Integer productId, Integer saleId);
+
     List<ProductSale> findByProductId(Integer productId);
-   ProductSale findOneById(Integer id);
+
+    ProductSale findOneById(Integer id);
+
+    List<ProductSale> getAllBySaleIdEquals(Integer saleId);
 }

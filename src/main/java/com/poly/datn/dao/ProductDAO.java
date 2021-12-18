@@ -20,11 +20,11 @@ public interface ProductDAO extends JpaRepository<Product, Integer> {
             "(SELECT order_id \n" +
             "FROM ordermanagement\n" +
             "where `status` = 'Giao hàng thành công'\n" +
-            "ORDER BY time_change DESC\n" +
-            "LIMIT 3 )  m\n" +
+            "ORDER BY time_change DESC) m\n" +
             "where o.order_id = m.order_id\n" +
             "GROUP BY product_id\n" +
-            "ORDER BY 'SL'")
+            "ORDER BY 'SL'\n" +
+            "LIMIT 100")
     List<Integer[]> getTop100ProductSell();
 
     @Query(nativeQuery = true,value = "select * from  product  c where c.status='Đang bán' order by  c.id desc limit 8")
