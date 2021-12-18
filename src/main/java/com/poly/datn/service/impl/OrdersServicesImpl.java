@@ -662,8 +662,8 @@ public class OrdersServicesImpl implements OrdersService {
             orderDetails.setOrderId(orders.getId());
             orderDetails.setDiscount(priceUtils.maxDiscountAtPresentOf(orderDetails.getProductId()));
             ProductColor productColor = productColorDAO.findByProductIdAndColorId(orderDetails.getProductId(), orderDetails.getColorId());
-            if (productColor.getQuantity() - orderDetails.getQuantity() < 0) {
-                throw new NotImplementedException("Số lượng sản phẩm không đủ");
+            if (productColor == null || productColor.getQuantity() - orderDetails.getQuantity() < 0) {
+                throw new NotImplementedException("Sản phẩm không có màu "+orderDetails.getColorId() + "hoặc số lượng sản phẩm màu này không đủ");
             }
             productColor.setQuantity(productColor.getQuantity() - orderDetails.getQuantity());
             productColorDAO.save(productColor);

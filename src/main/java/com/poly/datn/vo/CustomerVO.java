@@ -3,6 +3,9 @@ package com.poly.datn.vo;
 import com.poly.datn.common.RegexEmail;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -20,8 +23,11 @@ public class CustomerVO extends RegexEmail {
     @Pattern(regexp = ValidNum,message = "Số điện thoại sai")
     private String phone;
 
+    @NotNull
+    @NotBlank
     private String address;
-
+    @NotNull
+    @NotBlank
     private String note;
 
     OrdersVO orders;
