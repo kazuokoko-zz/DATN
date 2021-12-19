@@ -3,6 +3,7 @@ package com.poly.datn.rest.controler;
 import com.poly.datn.common.Constant;
 import com.poly.datn.dao.AccountDAO;
 import com.poly.datn.dao.RoleDAO;
+import com.poly.datn.entity.Account;
 import com.poly.datn.jwt.dto.JwtResponse;
 import com.poly.datn.jwt.dto.LoginRequest;
 import com.poly.datn.jwt.JwtUtils;
@@ -10,6 +11,7 @@ import com.poly.datn.jwt.UserDetailsImpl;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.vo.ResponseDTO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,6 +46,13 @@ public class AuthRest {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        Account account = accountDAO.findAccountByUsername(loginRequest.getUsername());
+        if(account == null){
+            throw new NotImplementedException("Tài khoản không tồn tại, vui lòng đăng ký");
+        }
+        if(account.getUserStatus().equals(false)){
+            throw new NotImplementedException("Tài khoản đẫ bị khóa, vui lòng liên hệ quản trị viên để biết lý do");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

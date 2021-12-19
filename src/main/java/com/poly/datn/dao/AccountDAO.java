@@ -24,6 +24,7 @@ public interface AccountDAO extends JpaRepository<Account, Integer> {
     //dong cua sql o duoi
 //    passwordresetkey
 
+    Account findOneById(Integer Id);
     @Query(value = "select a from Account a where a.email=:email")
     Account findOneByEmail(@Param("email") String email);
 

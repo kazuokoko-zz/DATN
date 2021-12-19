@@ -118,6 +118,85 @@ public class AccountServiceImpl implements AccountService {
         accountDAO.save(account);
         return true;
     };
+
+    @Override
+    public boolean deleteAccount(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        Account account1 = accountDAO.findOneById(id);
+        if(account1.getUserStatus().equals(false)){
+            throw  new NotImplementedException("Tài khoản này đã bị khóa rồi");
+        }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if (checkRole.isHavePermition(principal.getName(), "Director")) {
+            if(account.getUsername().equals("admin") && !account1.getUsername().equals(account.getUsername())){
+                account1.setUserStatus(false);
+                accountDAO.save(account1);
+                return true;
+            }
+            if(!account.getUsername().equals("admin") && account1.getUsername().equals("admin")){
+                throw  new NotImplementedException("Không thể xóa tài khoản admin");
+            }
+            else if(checkRole.isHavePermition(account1.getUsername(), "Director")
+                    || account.getUsername().equals(account1.getUsername())){
+                throw  new NotImplementedException("Không thể xóa tài khoản admin này");
+            }
+            else {
+                account1.setUserStatus(false);
+                accountDAO.save(account1);
+                return true;
+            }
+        }
+        else if (checkRole.isHavePermition(principal.getName(), "Staff")) {
+            if(checkRole.isHavePermition(account1.getUsername(), "User")){
+                account1.setUserStatus(false);
+                accountDAO.save(account1);
+                return true;
+            } else {
+                throw  new NotImplementedException("Không có quyền xóa tài khoản admin và staff");
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean openAccount(Integer id, Principal principal) {
+        checkPrincipal(principal);
+        Account account1 = accountDAO.findOneById(id);
+        if(account1.getUserStatus().equals(true)){
+            throw  new NotImplementedException("Tài khoản này không khóa");
+        }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if (checkRole.isHavePermition(principal.getName(), "Director")) {
+            if(account.getUsername().equals("admin") && !account1.getUsername().equals(account.getUsername())){
+                account1.setUserStatus(true);
+                accountDAO.save(account1);
+                return true;
+            }
+            if(!account.getUsername().equals("admin") && account1.getUsername().equals("admin")){
+                throw  new NotImplementedException("Tài khoản admin không thể bị khóa, nếu thấy tk admin bị " +
+                        "                                           khóa, liên hệ ngay kỹ thuật viên");
+            }
+            else if(checkRole.isHavePermition(account1.getUsername(), "Director")
+                    || account.getUsername().equals(account1.getUsername())){
+                throw  new NotImplementedException("Không thể mở tài khoản admin này");
+            }
+            else {
+                account1.setUserStatus(true);
+                accountDAO.save(account1);
+                return true;
+            }
+        }
+        else if (checkRole.isHavePermition(principal.getName(), "Staff")) {
+            if(checkRole.isHavePermition(account1.getUsername(), "User")){
+                account1.setUserStatus(true);
+                accountDAO.save(account1);
+                return true;
+            } else {
+                throw  new NotImplementedException("Không có quyền mở tài khoản admin và staff");
+            }
+        }
+        return true;
+    }
+
     @Override
     public AccountVO updateAccount(JsonNode jsonNode, Principal principal) {
         if (principal == null) {

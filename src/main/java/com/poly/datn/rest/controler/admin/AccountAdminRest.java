@@ -31,4 +31,14 @@ public class AccountAdminRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(accountService.createAdmin(newAccountUserAdmin, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @PutMapping("lockAccount")
+    public ResponseEntity<ResponseDTO<Object>> lockAccount(@RequestParam Integer id, Principal principal){
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.deleteAccount(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+        @PutMapping("openAccount")
+    public ResponseEntity<ResponseDTO<Object>> openAccount(@RequestParam Integer id, Principal principal){
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.openAccount(id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 }
