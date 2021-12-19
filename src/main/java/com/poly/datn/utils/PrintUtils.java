@@ -36,9 +36,9 @@ public class PrintUtils {
      * Print order
      */
     public Resource printOrder(Integer orderId) {
-        try (Path path = Files.createTempFile(null, "pdf")) {
+        try {
+            Path path = Files.createTempFile(null, "pdf");
             Document document = new Document(PageSize.A4, 35, 20, 35, 30);
-
 
 
         } catch (IOException e) {
