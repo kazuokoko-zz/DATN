@@ -13,7 +13,7 @@ public class CartDetailVO extends RegexEmail{
 
     private Integer userId;
 
-    @NotNull
+    @NotNull(message = "Mã sản phẩm không được để trống")
     private Integer productId;
 
 
@@ -21,19 +21,14 @@ public class CartDetailVO extends RegexEmail{
 
     private String photo;
 
-    @NotNull
+    @NotNull(message = "Số lượng sản phẩm không được để trống")
     private Integer quantity;
-
 
     private Long price;
 
-//    @NotNull
-//    private Long priceBefforSale;
-
-
     private Long discount;
 
-    @NotNull
+    @NotNull(message = "Màu sắc sản phẩm không được để trống")
     private Integer colorId;
 
     private String colorName;

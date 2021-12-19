@@ -5,6 +5,7 @@ import com.poly.datn.entity.ProductDetails;
 import com.poly.datn.service.ProductDetailService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductDetailsVO;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDetailDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,10 +62,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         return productDetailsVOS;
 
     }
-    public void updateProductDetail(Integer id, List<ProductDetailsVO> productDetailsVOS) {
+    public void updateProductDetail(Integer id, List<UpdateProductDetailDTO> productDetailsVOS) {
         productDetailsDAO.deleteAllByProductIdEquals(id);
         List<String> photos = new ArrayList<>();
-        for (ProductDetailsVO productDetailsVO : productDetailsVOS) {
+        for (UpdateProductDetailDTO productDetailsVO : productDetailsVOS) {
             if (productDetailsVO.getPropertyName().equalsIgnoreCase("photo")) {
                 photos.add(productDetailsVO.getPropertyValue());
                 continue;
@@ -82,7 +83,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetailsVOS = new ArrayList<>();
 
         for (ProductDetails pd : productDetailsDAO.findAllByProductIdEquals(id)) {
-            ProductDetailsVO productDetailsVO = new ProductDetailsVO();
+            UpdateProductDetailDTO productDetailsVO = new UpdateProductDetailDTO();
             BeanUtils.copyProperties(pd, productDetailsVO);
             productDetailsVOS.add(productDetailsVO);
         }

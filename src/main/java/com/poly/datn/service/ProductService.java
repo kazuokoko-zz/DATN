@@ -3,6 +3,7 @@ package com.poly.datn.service;
 import com.poly.datn.vo.ProductCategoryVO;
 import com.poly.datn.vo.ProductVO;
 import com.poly.datn.entity.Product;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -46,7 +47,7 @@ public interface ProductService {
 
     ProductVO newProduct(ProductVO productVO, Principal principal);
 
-    ProductVO update(ProductVO productVO, Principal principal);
+    ProductVO update(UpdateProductDTO productVO, Principal principal);
 
     List<ProductVO> getByPrice(Optional<Long> start, Optional<Long> end);
 

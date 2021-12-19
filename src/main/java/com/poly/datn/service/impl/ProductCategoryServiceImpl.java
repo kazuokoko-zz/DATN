@@ -5,6 +5,7 @@ import com.poly.datn.entity.ProductCategory;
 import com.poly.datn.service.ProductCategoryService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductCategoryVO;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductCategoryDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,10 +59,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         return productCategoryVOS;
     }
-    public void updateProductCategory(Integer id, List<ProductCategoryVO> productCategoryVOS) {
+    public void updateProductCategory(Integer id, List<UpdateProductCategoryDTO> productCategoryVOS) {
 
         productCategoryDAO.deleteAllByProductIdEquals(id);
-        for (ProductCategoryVO productCategoryVO : productCategoryVOS) {
+        for (UpdateProductCategoryDTO productCategoryVO : productCategoryVOS) {
             ProductCategory productCategory = new ProductCategory();
             BeanUtils.copyProperties(productCategoryVO, productCategory);
             productCategory.setProductId(id);
@@ -69,7 +70,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         productCategoryVOS = new ArrayList<>();
         for (ProductCategory productCategory : productCategoryDAO.findAllByProductIdEquals(id)) {
-            ProductCategoryVO productCategoryVO = new ProductCategoryVO();
+            UpdateProductCategoryDTO productCategoryVO = new UpdateProductCategoryDTO();
             BeanUtils.copyProperties(productCategory, productCategoryVO);
             productCategoryVOS.add(productCategoryVO);
         }

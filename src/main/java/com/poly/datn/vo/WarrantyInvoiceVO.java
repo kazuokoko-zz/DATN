@@ -28,7 +28,7 @@ public class WarrantyInvoiceVO extends RegexEmail {
     @Size(min = 10, message = "địa chỉ tối thiểu 10 ký tự")
     private String address;
 
-    @Size(min = 1, message = "Mã hóa đơn bảo hành không được để trống")
+    @NotNull(message = "Mã hóa đơn bảo hành không được để trống")
     private Integer warrantyId;
 
     @Size(min = 5, message = "địa chỉ tối thiểu 5 ký tự")
