@@ -1,7 +1,6 @@
 package com.poly.datn.vo.VoBoSung.ProductDTO;
 
 import com.poly.datn.common.RegexEmail;
-import com.poly.datn.vo.*;
 import lombok.Data;
 
 import javax.validation.Valid;
