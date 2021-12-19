@@ -17,6 +17,9 @@ import java.util.List;
 
 public interface AccountService {
 
+    boolean deleteAccount(Integer id, Principal principal);
+    boolean openAccount(Integer id, Principal principal);
+
     AccountVO updateAccount(JsonNode jsonNode, Principal principal);
 
     AccountVO findByUsername(Principal principal);
