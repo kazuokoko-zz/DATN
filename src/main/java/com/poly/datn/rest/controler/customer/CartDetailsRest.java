@@ -5,6 +5,7 @@ import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.CartDetailService;
 import com.poly.datn.vo.ResponseDTO;
+import com.poly.datn.vo.VoBoSung.ProductDTO.CheckProductColorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,11 @@ public class CartDetailsRest {
     @PostMapping("new")
     public ResponseEntity<ResponseDTO<Object>> addToCartDetail(@Valid @RequestBody CartDetailVO cartDetailVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.save(cartDetailVO, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PostMapping("checkCartLocal")
+    public ResponseEntity<ResponseDTO<Object>> checkCartLocal(@Valid @RequestBody CheckProductColorDTO checkProductColorDTO) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(cartDetailService.checkProductColor(checkProductColorDTO))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 }

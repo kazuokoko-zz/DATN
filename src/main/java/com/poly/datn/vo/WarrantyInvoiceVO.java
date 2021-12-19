@@ -15,7 +15,7 @@ public class WarrantyInvoiceVO extends RegexEmail {
 
     private Integer id;
 
-    @NotNull
+    @Size(min = 1, message = "Chi phí không được bỏ trống, nhập 0 nếu giá bằng 0")
     private Long price;
 
     @Pattern(regexp = ValidName, message = "tên sai định dạng")
@@ -31,7 +31,7 @@ public class WarrantyInvoiceVO extends RegexEmail {
     @NotNull(message = "Mã hóa đơn bảo hành không được để trống")
     private Integer warrantyId;
 
-    @Size(min = 5, message = "địa chỉ tối thiểu 5 ký tự")
+    @Size(min = 5, message = "số seri tối thiểu 5 ký tự")
     private String productSeri;
 
     private Integer productId;
@@ -45,7 +45,7 @@ public class WarrantyInvoiceVO extends RegexEmail {
 
     private String createBy;
 
-    @NotNull
+    @Size(min = 5, message = "Trạng thái sản phẩm tối thiểu 5 ký tự")
     private String productState;
 
     @NotNull

@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 public class ModifyPassworDTO extends RegexEmail {
     @Size(min = 1,message = "không được bỏ trống mật khẩu cũ")
     public String oldPassWord;
-    @Pattern(regexp = RegexP, message = "Mật khẩu mới phải bao gôm: Chữ hoa, chữ thường, ký tự đặc biệt, tối thiểu 6 ký tự")
+    @Pattern(regexp = RegexP, message = "Mật khẩu mới phải bao gồm: Chữ hoa, chữ thường, ký tự đặc biệt, tối thiểu 6 ký tự")
     @Size(min = 6, message = "Mật khẩu mới phải bao gôm: Chữ hoa, chữ thường, ký tự đặc biệt, tối thiểu 6 ký tự")
     public String newPassWord;
 

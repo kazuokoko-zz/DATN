@@ -7,6 +7,7 @@ import com.poly.datn.service.SaleService;
 import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.vo.CartDetailVO;
 import com.poly.datn.service.CartDetailService;
+import com.poly.datn.vo.VoBoSung.ProductDTO.CheckProductColorDTO;
 import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +85,18 @@ public class CartDetailServiceImpl implements CartDetailService {
             cartDetailVOS.add(vo);
         });
         return cartDetailVOS;
+    }
+
+    @Override
+    public boolean checkProductColor(CheckProductColorDTO checkProductColorDTO) {
+        ProductColor productColor = productColorDAO.findByProductIdAndColorId(checkProductColorDTO.getProductId(), checkProductColorDTO.getColorId());
+        if (productColor == null) {
+            throw new NotImplementedException("Sản phẩm không có màu này");
+        }
+        if (productColor.getQuantity() <= 0) {
+            throw new NotImplementedException("Màu này đã hết hàng");
+        }
+        return true;
     }
 
 

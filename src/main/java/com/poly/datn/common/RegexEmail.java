@@ -85,7 +85,7 @@ public class RegexEmail {
             "*\\>(?:(?:\\r\\n)?[ \\t])*))*)?;\\s*)";
 
   public static final int DISPLAY_NAME_MAX_LENGTH = 100;
-  public static final int DISPLAY_NAME_MIN_LENGTH = 5;
+  public static final int DISPLAY_NAME_MIN_LENGTH = 4;
   public static final int QUANTITY_MAX_LENGTH = 1;
   public static final int QUANTITY_MIN_LENGTH = 1;
   public static final int PRICE_MAX_LENGTH = 10;
