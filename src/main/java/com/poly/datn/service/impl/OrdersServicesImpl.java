@@ -151,7 +151,7 @@ public class OrdersServicesImpl implements OrdersService {
             }
         }
         if (ordersVO.getCustomer().getEmail() == null) {
-            return vo;
+           throw new NotImplementedException("Email không hợp lệ");
         }
 
         List<OrderDetailsVO> vos = vo.getOrderDetails();
@@ -162,7 +162,7 @@ public class OrdersServicesImpl implements OrdersService {
         Long price = 0L;
         for (OrderDetailsVO detailsVO : vos) {
             if (detailsVO.getQuantity() <= 0) {
-                continue;
+              throw new NotImplementedException("Số lượng sản phẩm tên: "+ detailsVO.getProductName() + " đang không hợp lệ( <1), vui lòng kiểm tra lại");
             } else {
                 price += detailsVO.getQuantity() * detailsVO.getPrice();
                 Long discount = detailsVO.getQuantity() * detailsVO.getDiscount();

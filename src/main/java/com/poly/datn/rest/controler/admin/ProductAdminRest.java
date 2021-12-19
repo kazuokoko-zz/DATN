@@ -6,10 +6,12 @@ import com.poly.datn.service.ProductColorService;
 import com.poly.datn.service.ProductDetailService;
 import com.poly.datn.service.ProductService;
 import com.poly.datn.vo.*;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +104,7 @@ public class ProductAdminRest {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseDTO<Object>> update(@RequestBody ProductVO productVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> update(@Valid @RequestBody UpdateProductDTO productVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.update(productVO, principal)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 

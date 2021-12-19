@@ -1,12 +1,11 @@
 package com.poly.datn.service.impl;
 
-import com.poly.datn.dao.CustomerDAO;
+import com.poly.datn.entity.Account;
 import com.poly.datn.entity.Blog;
 import com.poly.datn.vo.mailSender.InfoSendBlog;
 import com.poly.datn.vo.mailSender.InfoSendMailRPass;
 import com.poly.datn.vo.mailSender.InfoSendOrder;
 import com.poly.datn.vo.mailSender.InfoSendStatusOrder;
-import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -33,9 +32,6 @@ public class SendMail {
 
     @Autowired
     private Configuration config;
-
-    @Autowired
-    private CustomerDAO customerDAO;
     //quên pass
     public void sentResetPasswordMail(String email, String resetLink, String name) throws MessagingException, IOException, TemplateException {
         InfoSendMailRPass infoSendMail = new InfoSendMailRPass();
@@ -45,15 +41,6 @@ public class SendMail {
 
         Template t = config.getTemplate("mailRPass.ftl");
         String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendMail);
-//                "<p><b>Xin chào"+ name+"</b></b> </p>"
-//                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
-//                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
-//                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
-//                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
-//                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
-//                +"<p><b>Trân trọng </b> </b></p>"
-//                + "----------------------------------------------------------------------------------</b> </b>"
-//                + "<img src='cid:logoImage'/>";
 
         sendMail(mailContent, mailSubject, email);
     }
@@ -73,35 +60,12 @@ public class SendMail {
             String content = FreeMarkerTemplateUtils.processTemplateIntoString(template, infoSendBlog);
             sendMail(content, "Blog Mới từ socstore", entry.getKey());
         }
-//
-//        String mailSubject = infoSendBlog.getTitle();
-//        Template t = config.getTemplate("mailRPass.ftl");
-//
-//        String email = InfoSendBlog.getEmail();
-////        String EmailAcc;
-////            for(EmailAcc email1 : email){
-//        String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendBlogs);
-////                "<p><b>Xin chào"+ name+"</b></b> </p>"
-////                + "<p>Bạn đã gửi một yêu cầu thay đổi mật khẩu. </p>"
-////                + "<p>Nhấn vào đường dẫn bên dưới để thực hiện thay đổi mật khẩu: </p>"
-////                + "<p><a href=\"" + resetLink + "\">Đổi mật khẩu của bạn</a></b> </p>"
-////                + "<p>Bỏ qua email này nếu bạn đã nhớ mật khẩu của mình hoặc bạn không thực hiện yêu cầu</p>"
-////                + "<p>Link đổi mật khẩu này sẽ hết hạn sau 15 phút </b></b></p>"
-////                +"<p><b>Trân trọng </b> </b></p>"
-////                + "----------------------------------------------------------------------------------</b> </b>"
-////                + "<img src='cid:logoImage'/>";
-//
-//        sendMail(mailContent, mailSubject, email);
-
     }
-//    }
 
     public void sentMailOrder(InfoSendOrder infoSendOrder) {
         try {
 
-            String homeLink = "http://150.95.105.29/";
             String mailSubject = "Đặt hàng thành công Socstore";
-//        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
 
             Template t = config.getTemplate("mailOrder.ftl");
             String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
@@ -109,28 +73,13 @@ public class SendMail {
 
 
             sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (TemplateNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (MalformedTemplateNameException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | TemplateException | IOException e) {
             e.printStackTrace();
         }
     }
     public void sentMailStatusOrder(InfoSendStatusOrder infoSendOrder) {
         try {
-
-            String homeLink = "http://150.95.105.29/";
             String mailSubject = "Cập nhập trạng thái đơn hàng Socstore";
-//        Customer customer = customerDAO.findCustomerById(infoSendOrder.orders.getCustomerId());
 
             Template t = config.getTemplate("mailOrderStatus.ftl");
             String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
@@ -138,19 +87,7 @@ public class SendMail {
 
 
             sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (TemplateNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (MalformedTemplateNameException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | TemplateException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -163,9 +100,21 @@ public class SendMail {
                 + "<p>Hãy thường xuyên kiểm tra email để nhận những tin công nghệ mới nhất nhé</p>"
                 + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
                 + "<p><b>Trân trọng </b> </b></p>"
-                + "----------------------------------------------------------------------------------</b> </b>"
+                + "----------------------------------------------------------------------------------<br/></b> </b>"
                 + "<img src='cid:logoImage'/>";
         sendMail(mailContent, mailSubject, email);
+    }
+    public void sentMailRegisterAdmin(Account account) throws MessagingException, UnsupportedEncodingException {
+        String homeLink = "http://150.95.105.29/";
+        String mailSubject = "Bạn đã được tạo tài khoản trên hệ thống SOCstore";
+        String mailContent = "<p><b>Hello " + account.getFullname() + "</b> </p>"
+                + "<p>Bạn đã được tạo tài khoản trên hệ thống của Socstore</p>"
+                +"<p><b>Mật khẩu đăng nhập của bạn là:     " + account.getPassword() + "</b> </p>"
+                + "<p><a href=\"" + homeLink + "\">Nhấn vào đây để đăng nhập ngay</a></b> </b> </p>"
+                + "<p><b>Trân trọng </b> </b></p>"
+                + "----------------------------------------------------------------------------------<br/></b> </b>"
+                + "<img src='cid:logoImage'/>";
+        sendMail(mailContent, mailSubject, account.getEmail());
     }
 
     private void sendMail(String content, String subject, String email) throws MessagingException, UnsupportedEncodingException {
@@ -180,12 +129,12 @@ public class SendMail {
         javaMailSender.send(message);
     }
 
-    private void sendMail(String content, String subject, List<String> mails) throws MessagingException, UnsupportedEncodingException {
+    private void sendMail(String content, String subject, List<String> mails){
         for (String mail : mails) {
             try {
                 sendMail(content, subject, mail);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (MessagingException | IOException e) {
+                e.printStackTrace();
             }
 
         }
@@ -193,27 +142,13 @@ public class SendMail {
 
     public void sentMailOrderPayOk(InfoSendOrder infoSendOrder) {
         try {
-
-            String homeLink = "http://150.95.105.29/";
             String mailSubject = "Đặt hàng thành công Socstore";
 
             Template t = config.getTemplate("mailOrderPayOk.ftl");
             String mailContent = FreeMarkerTemplateUtils.processTemplateIntoString(t, infoSendOrder);
 
             sendMail(mailContent, mailSubject, infoSendOrder.getEmail());
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (TemplateNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (MalformedTemplateNameException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | TemplateException | IOException e) {
             e.printStackTrace();
         }
     }

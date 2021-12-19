@@ -6,4 +6,5 @@ import java.security.Principal;
 
 public interface AccountRoleService {
     Object grantRole(AccountRoleVO accountRoleVO, Principal principal);
+    Object addRole(AccountRoleVO accountRoleVO);
 }
