@@ -9,6 +9,7 @@ import com.poly.datn.utils.PriceUtils;
 import com.poly.datn.utils.ProductUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDTO;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -401,35 +402,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductVO update(ProductVO productVO, Principal principal) {
+    public ProductVO update(UpdateProductDTO updateProductDTO, Principal principal) {
         checkPrincipal(principal);
-        if(productVO.getProductCategories().size() <=1){
+        if(updateProductDTO.getProductCategories().size() <=1){
             throw new NotImplementedException("thêm tối thiêu 1 danh mục");
         }
-        if(productVO.getProductDetails().size() <=1){
+        if(updateProductDTO.getProductDetails().size() <=1){
             throw new NotImplementedException("thêm tối thiêu 1 thông tin");
         }
-        if(productVO.getProductColors().size() <=1){
+        if(updateProductDTO.getProductColors().size() <=1){
             throw new NotImplementedException("thêm tối thiêu 1 màu");
         }
-        Product product = productDAO.getOneProductById(productVO.getId());
+        Product product = productDAO.getOneProductById(updateProductDTO.getId());
         if (product == null) {
             throw new NotImplementedException("Không tồn tại sản phẩm này, vui lòng thêm mới");
         }
-        BeanUtils.copyProperties(productVO, product);
-        if (productVO.getStatus().equals("Không kinh doanh")
-                || productVO.getStatus().equals("Đang bán")
-                || productVO.getStatus().equals("Hết hàng")
-                || productVO.getStatus().equals("Hàng sắp về")) {
-            product.setStatus(productVO.getStatus());
+        BeanUtils.copyProperties(updateProductDTO, product);
+        if (updateProductDTO.getStatus().equals("Không kinh doanh")
+                || updateProductDTO.getStatus().equals("Đang bán")
+                || updateProductDTO.getStatus().equals("Hết hàng")
+                || updateProductDTO.getStatus().equals("Hàng sắp về")) {
+            product.setStatus(updateProductDTO.getStatus());
         } else {
             product.setStatus(product.getStatus());
         }
         product = productDAO.save(product);
 
-        productCategoryService.updateProductCategory(product.getId(),productVO.getProductCategories());
-        productDetailService.updateProductDetail(product.getId(), productVO.getProductDetails());
-        productColorService.updateProductColor(product.getId(),productVO.getProductColors());
+        productCategoryService.updateProductCategory(product.getId(),updateProductDTO.getProductCategories());
+        productDetailService.updateProductDetail(product.getId(), updateProductDTO.getProductDetails());
+        productColorService.updateProductColor(product.getId(),updateProductDTO.getProductColors());
         return getById(product.getId());
     }
 

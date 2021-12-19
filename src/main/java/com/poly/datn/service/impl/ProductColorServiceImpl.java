@@ -7,6 +7,7 @@ import com.poly.datn.entity.ProductColor;
 import com.poly.datn.service.ProductColorService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductColorVO;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductColorDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,9 +72,9 @@ public class ProductColorServiceImpl implements ProductColorService {
         }
         return productColorVOS;
     }
-    public void updateProductColor(Integer id, List<ProductColorVO> productColorVOS) {
+    public void updateProductColor(Integer id, List<UpdateProductColorDTO> productColorVOS) {
         productColorDAO.deleteAllByProductIdEquals(id);
-        for (ProductColorVO productColorVO : productColorVOS) {
+        for (UpdateProductColorDTO productColorVO : productColorVOS) {
             ProductColor productColor = new ProductColor();
             BeanUtils.copyProperties(productColorVO, productColor);
             productColor.setProductId(id);
@@ -82,7 +83,7 @@ public class ProductColorServiceImpl implements ProductColorService {
         }
         productColorVOS = new ArrayList<>();
         for (ProductColor productColor : productColorDAO.findAllByProductIdEquals(id)) {
-            ProductColorVO productColorVO = new ProductColorVO();
+            UpdateProductColorDTO productColorVO = new UpdateProductColorDTO();
             BeanUtils.copyProperties(productColor, productColorVO);
             productColorVOS.add(productColorVO);
         }
