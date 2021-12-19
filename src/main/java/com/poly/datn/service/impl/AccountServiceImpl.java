@@ -10,11 +10,13 @@ import com.poly.datn.entity.AccountRole;
 import com.poly.datn.entity.Role;
 import com.poly.datn.jwt.JwtUtils;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
+import com.poly.datn.service.AccountRoleService;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.utils.CheckRole;
-import com.poly.datn.vo.VoBoSung.Account.AccountRegisterVO;
-import com.poly.datn.vo.VoBoSung.Account.AccountVO;
+import com.poly.datn.vo.VoBoSung.Account.*;
 import freemarker.template.TemplateException;
+import net.bytebuddy.utility.RandomString;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -30,6 +32,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -51,12 +54,75 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    AccountRoleService accountRoleService;
+
 
     public final List<ResetPassworDTO> resetPassworDTOS = new LinkedList<>();
 
+    public void checkPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
+        }
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
+                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
+        }
+    }
+    @Override
+    public NewAccountUserAdmin createAdmin(NewAccountUserAdmin newAccountUserAdmin, Principal principal) throws MessagingException, UnsupportedEncodingException {
+        checkPrincipal(principal);
+        Account account1 = accountDAO.findAccountByUsername(newAccountUserAdmin.getUsername());
+        if (account1 != null) {
+            throw  new NotImplementedException("Username đã tồn tại");
+        }
+        account1 = accountDAO.findOneByEmail(newAccountUserAdmin.getEmail());
+        if (account1 != null) {
+            throw  new NotImplementedException("Đã có tài khoản cho email mày");
+        }
+        Account account = new Account();
+        String password = RandomString.make(8);
+        BeanUtils.copyProperties(newAccountUserAdmin, account);
+        account.setPassword(password);
+        account.setUserStatus(true);
+        account =accountDAO.save(account);
+        AccountRoleVO accountRoleVO = new AccountRoleVO();
+        accountRoleVO.setAccountId(account.getId());
+        if (checkRole.isHavePermition(principal.getName(), "Director")) {
+            accountRoleVO.setRoleId(2);
+        }
+        else if (  checkRole.isHavePermition(principal.getName(), "Staff")) {
+            accountRoleVO.setRoleId(3);
+        }
+        accountRoleService.addRole(accountRoleVO);
+        sendMail.sentMailRegisterAdmin(account);
+        return newAccountUserAdmin;
+    }
+
+    @Override
+    public boolean updatePassword(ModifyPassworDTO modifyPassworDTO, Principal principal){
+        if (principal == null) {
+            throw  new NotImplementedException("Chưa đăng nhập");
+        }
+        Account account = accountDAO.findAccountByUsername(principal.getName());
+        if(!modifyPassworDTO.getOldPassWord().equals(account.getPassword())){
+            throw  new NotImplementedException("Mật khẩu cũ không chính xác");
+        }
+        if(modifyPassworDTO.getNewPassWord().equals(modifyPassworDTO.getOldPassWord())){
+            throw  new NotImplementedException("Mật khẩu cũ không được trùng với mật khẩu mỡi");
+        }
+        if(!modifyPassworDTO.getReNewPassWord().equals(modifyPassworDTO.getNewPassWord())){
+            throw  new NotImplementedException("Nhập lại mật khẩu không chính xác");
+        }
+        account.setPassword(modifyPassworDTO.getNewPassWord());
+        accountDAO.save(account);
+        return true;
+    };
     @Override
     public AccountVO updateAccount(JsonNode jsonNode, Principal principal) {
-        if (principal == null) return null;
+        if (principal == null) {
+            throw  new NotImplementedException("Chưa đăng nhập");
+        }
         ObjectMapper mapper = new ObjectMapper();
 
         AccountVO accountVO = mapper.convertValue(jsonNode, AccountVO.class);
@@ -71,7 +137,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountVO findByUsername(Principal principal) {
-        if (principal == null) return null;
+        if (principal == null) {
+            throw  new NotImplementedException("Chưa đăng nhập");
+        }
         AccountVO accountVO = new AccountVO();
         Account account = accountDAO.findAccountByUsername(principal.getName());
         BeanUtils.copyProperties(account, accountVO);
@@ -80,14 +148,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountVO> findAll(Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff"))
-        ) {
-            return null;
-        }
+        checkPrincipal(principal);
         List<Account> accounts = accountDAO.findAll();
         List<AccountVO> accountVOS = new ArrayList<>();
         for (Account account : accounts) {
@@ -102,17 +163,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountVO findByUsernameAdmin(Integer id, Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff"))
-        ) {
-            return null;
-        }
+        checkPrincipal(principal);
         Account account = accountDAO.findById(id).orElse(null);
         if (account == null)
-            return null;
+            throw  new NotImplementedException("Không tồn tại tài khoản này");
         AccountVO accountVO = new AccountVO();
         BeanUtils.copyProperties(account, accountVO);
         accountVO.setRoles(getRoleforAccount(account.getId()));
@@ -148,25 +202,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+
+
     @Override
     public void updateResetPasswordToken(String email) throws MessagingException, IOException, TemplateException {
         Account account = accountDAO.findOneByEmail(email);
         if (account == null) {
-            throw new NotFoundException("common.error.not-found");
+            throw  new NotImplementedException("Không tồn tại tài khoản này");
         }
         String token = jwtUtils.getTokenByUserName(account.getEmail(), 15 * 60 * 1000);
         ResetPassworDTO resetPassworDTO = new ResetPassworDTO();
         BeanUtils.copyProperties(account, resetPassworDTO);
         resetPassworDTO.setToken(token);
         if (resetPassworDTO.getToken() == null) {
-            throw new NotFoundException("common.error.not-found");
+            throw  new NotImplementedException("Đã xảy ra lỗi, không thể tạo yêu cầu đổi mật khẩu, vui lòng thử lại sau 15 phút");
         }
         refreshTokenList(resetPassworDTO.getToken());
         resetPassworDTOS.add(resetPassworDTO);
-        String resetLink = "http://localhost:8080/resetpass?token=" + resetPassworDTO.getToken();
-        System.out.println(resetLink);
+        String resetLink = "http://150.85.105.29/resetpass?token=" + resetPassworDTO.getToken();
         sendMail.sentResetPasswordMail(email, resetLink, account.getFullname());
-        System.out.println("list reset" + resetPassworDTOS);
     }
 
     public Boolean checkToken(String token) {
@@ -184,16 +238,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRegisterVO create(@Valid AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException {
-//        if(accountRegisterVO.getUsername() == ""|| accountRegisterVO.getFullname() == ""|| accountRegisterVO.getEmail()== "" || accountRegisterVO.getPassword() == ""){
-//            throw new NotImplementedException("Tham số không đúng");
-//        }
         Account account = accountDAO.findAccountByUsername(accountRegisterVO.getUsername());
         if (account != null) {
-            throw new DuplicateKeyException("common.error.dupplicate");
+            throw  new NotImplementedException("Username đã tồn tại");
         }
         account = accountDAO.findOneByEmail(accountRegisterVO.getEmail());
         if (account != null) {
-            throw new DuplicateKeyException("common.error.dupplicate");
+            throw  new NotImplementedException("Đã có tài khoản cho email mày");
         }
         account = new Account();
         BeanUtils.copyProperties(accountRegisterVO, account);
@@ -209,17 +260,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+
+
     @Override
     public Boolean changePassword(ResetPassworDTO resetPassworDTO) {
-        if (checkToken(resetPassworDTO.getToken())) {
-            String email = jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken());
-            Account account = accountDAO.findOneByEmail(email);
-            account.setPassword(resetPassworDTO.getPassword());
-            accountDAO.save(account);
-            refreshTokenList(resetPassworDTO.getToken());
-            return true;
+        try {
+            if (checkToken(resetPassworDTO.getToken())) {
+                String email = jwtUtils.getUserNameFromJwtToken(resetPassworDTO.getToken());
+                Account account = accountDAO.findOneByEmail(email);
+                account.setPassword(resetPassworDTO.getPassword());
+                accountDAO.save(account);
+                refreshTokenList(resetPassworDTO.getToken());
+                return true;
+            }
+            return false;
+        } catch (Exception e){
+            throw  new NotImplementedException("Đổi mật khẩu không thành công, vui lòng thử lại sau");
         }
-        return false;
+
 
     }
 
@@ -237,10 +295,4 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    public void updatePassword(ResetPassworDTO resetPassworDTO) {
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String encoderPass = passwordEncoder.encode();
-//        resetPassworDTO.setPassword(encoderPass);
-//        resetPassworDTO.setPasswordresetKey(null);
-    }
 }

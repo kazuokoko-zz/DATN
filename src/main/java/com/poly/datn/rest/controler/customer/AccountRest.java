@@ -8,6 +8,7 @@ import com.poly.datn.service.AccountService;
 import com.poly.datn.validation.common.response.SuccessResponse;
 import com.poly.datn.vo.VoBoSung.Account.AccountRegisterVO;
 import com.poly.datn.vo.ResponseDTO;
+import com.poly.datn.vo.VoBoSung.Account.ModifyPassworDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +59,11 @@ public class AccountRest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @PutMapping("updatePass")
+    public  ResponseEntity<ResponseDTO<Object>> updatePass(@Valid @RequestBody ModifyPassworDTO modifyPassworDTO, Principal principal1){
+        return ResponseEntity.ok(ResponseDTO.builder().object(accountService.updatePassword(modifyPassworDTO, principal1))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
     @PutMapping("checkTokenReset")
