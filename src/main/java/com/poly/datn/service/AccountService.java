@@ -3,12 +3,11 @@ package com.poly.datn.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
-import com.poly.datn.vo.AccountRegisterVO;
-import com.poly.datn.vo.AccountVO;
+import com.poly.datn.vo.VoBoSung.Account.AccountRegisterVO;
+import com.poly.datn.vo.VoBoSung.Account.AccountVO;
 import freemarker.template.TemplateException;
 
 import javax.mail.MessagingException;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;

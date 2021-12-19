@@ -265,24 +265,21 @@ public class BlogServiceImpl implements BlogService {
         for (BlogDetails details : blogDetails) {
             blogDetailsDAO.deleteById(details.getId());
         }
+        List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
         for (BlogDetailsVO blogDetailsVO : blogVO.getBlogDetails()) {
             BlogDetails details = new BlogDetails();
             BeanUtils.copyProperties(blogDetailsVO, details);
             details.setBlogId(blogVO.getId());
-            blogDetailsDAO.save(details);
+            details = blogDetailsDAO.save(details);
+            BeanUtils.copyProperties(details, blogDetailsVO);
+            blogDetailsVOS.add(blogDetailsVO);
         }
         Blog blog = new Blog();
         BeanUtils.copyProperties(blogVO, blog);
         blog.setTimeCreated(Timestamp.valueOf(sdf.parse(blogVO.getTimeCreated()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
         blog = blogDAO.save(blog);
-
         BeanUtils.copyProperties(blog, blogVO);
-        List<BlogDetailsVO> blogDetailsVOS = new ArrayList<>();
-        for (BlogDetails details : blogDetailsDAO.findByBlogId(blog.getId())) {
-            BlogDetailsVO blogDetailsVO = new BlogDetailsVO();
-            BeanUtils.copyProperties(details, blogDetailsVO);
-            blogDetailsVOS.add(blogDetailsVO);
-        }
+
         blogVO.setBlogDetails(blogDetailsVOS);
         blogVO.setComments(commentService.getListByBlogId(blog.getId()));
         return blogVO;
