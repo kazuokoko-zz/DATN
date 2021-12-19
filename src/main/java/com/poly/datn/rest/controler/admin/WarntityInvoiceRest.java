@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class WarntityInvoiceRest {
     WarrantyInvoiceService warrantyInvoiceService;
 
     @PostMapping("new")
-    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody WarrantyInvoiceVO invoiceVO, Principal principal) {
+    public ResponseEntity<ResponseDTO<Object>> create(@Valid @RequestBody WarrantyInvoiceVO invoiceVO, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(warrantyInvoiceService.create(invoiceVO, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
