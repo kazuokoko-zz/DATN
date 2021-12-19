@@ -12,7 +12,7 @@ public class CustomerVO extends RegexEmail {
 
     private Long id;
     @Pattern(regexp = ValidName, message = "tên sai định dạng")
-    @Size(min = 3, message = "tên tối thiểu 3 ký tự")
+    @Size(max = DISPLAY_NAME_MAX_LENGTH, min = DISPLAY_NAME_MIN_LENGTH, message = "tên tối thiểu 5 ký tự và tối đa 100 ký tự")
     private String fullname;
 
     @Pattern(regexp = RegexEmail.regexE, message = "Email sai định dạng email@email.email")

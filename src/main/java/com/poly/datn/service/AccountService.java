@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.jwt.dto.ResetPassworDTO;
 import com.poly.datn.vo.VoBoSung.Account.AccountRegisterVO;
 import com.poly.datn.vo.VoBoSung.Account.AccountVO;
+import com.poly.datn.vo.VoBoSung.Account.ModifyPassworDTO;
+import com.poly.datn.vo.VoBoSung.Account.NewAccountUserAdmin;
 import freemarker.template.TemplateException;
 
 import javax.mail.MessagingException;
@@ -28,10 +30,11 @@ public interface AccountService {
     Boolean checkToken(String token);
 
     AccountRegisterVO create(AccountRegisterVO accountRegisterVO) throws MessagingException, UnsupportedEncodingException;
+    NewAccountUserAdmin createAdmin(NewAccountUserAdmin newAccountUserAdmin, Principal principal) throws MessagingException, UnsupportedEncodingException;
 
     AccountVO findByUsernameAdmin(Integer id, Principal principal);
 
     Boolean checkEmail(String email);
     Boolean checkUsername(String username);
-//    void updatePassword(String email);
+    boolean updatePassword(ModifyPassworDTO modifyPassworDTO, Principal principal);
 }
