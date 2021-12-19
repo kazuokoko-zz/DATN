@@ -1,4 +1,4 @@
-package com.poly.datn.vo;
+package com.poly.datn.vo.VoBoSung.Account;
 
 import com.poly.datn.common.RegexEmail;
 import lombok.Getter;

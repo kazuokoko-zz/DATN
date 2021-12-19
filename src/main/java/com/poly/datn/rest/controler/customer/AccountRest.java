@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.poly.datn.common.Constant;
 import com.poly.datn.service.AccountService;
 import com.poly.datn.validation.common.response.SuccessResponse;
-import com.poly.datn.vo.AccountRegisterVO;
+import com.poly.datn.vo.VoBoSung.Account.AccountRegisterVO;
 import com.poly.datn.vo.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

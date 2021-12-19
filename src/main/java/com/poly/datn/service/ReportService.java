@@ -1,6 +1,6 @@
 package com.poly.datn.service;
 
-import com.poly.datn.vo.OrdersVO;
+import com.poly.datn.vo.VoBoSung.OrderDTO.OrdersVO;
 import com.poly.datn.vo.ProductVO;
 
 import java.security.Principal;

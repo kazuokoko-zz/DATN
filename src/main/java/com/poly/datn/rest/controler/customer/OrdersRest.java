@@ -52,11 +52,11 @@ public class OrdersRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.requestCancerOrderUser(noteOrderManagementVo,id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
-//    @PutMapping("confimReturnsUser")
-//    public ResponseEntity<ResponseDTO<Object>> confimReturnsUser(@RequestBody  NoteOrderManagementVo noteOrderManagementVo,Integer id, Principal principal) {
-//        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimReturnsUser(noteOrderManagementVo,id, principal))
-//                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
-//    }
+    @PutMapping("confimReturnsUser")
+    public ResponseEntity<ResponseDTO<Object>> confimReturnsUser(@RequestBody  NoteOrderManagementVo noteOrderManagementVo,Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimReturnsUser(noteOrderManagementVo,id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
 
 
 //    @PostMapping("new")

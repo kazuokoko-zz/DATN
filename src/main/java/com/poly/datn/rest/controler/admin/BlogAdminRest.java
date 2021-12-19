@@ -50,7 +50,7 @@ public class BlogAdminRest {
     }
 
     @PostMapping("update/{id}")
-    public ResponseEntity<ResponseDTO<Object>> create(@RequestBody BlogVO blogVO, @PathVariable("id") Optional<Integer> id, Principal principal) throws ParseException {
+    public ResponseEntity<ResponseDTO<Object>> updateBlog(@RequestBody BlogVO blogVO, @PathVariable("id") Optional<Integer> id, Principal principal) throws ParseException {
         return ResponseEntity.ok(ResponseDTO.builder().object(blogService.update(blogVO, id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
