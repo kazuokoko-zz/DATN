@@ -27,7 +27,7 @@ public interface OrdersService {
     boolean confimTransport(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
     boolean requestReturns(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
     boolean comfimReturns(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
-
+    boolean unCancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
     boolean confimSell(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
     boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo ,Integer id, Principal principal);
 
@@ -40,6 +40,6 @@ public interface OrdersService {
     List<OrdersVO> getList(Principal principal, Optional<Integer> id, Optional<String> email, Optional<String> name, Optional<String> phone);
     boolean cancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
     boolean requestCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
-//    boolean requestModifyOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
-    boolean confimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
+    boolean unCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
+     boolean confimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
 }
