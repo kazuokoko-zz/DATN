@@ -105,7 +105,8 @@ public class AutoTaskService {
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
             Blog blog = blogDAO.findOneById(entry.getKey());
-            blog.setAccount(accountDAO.getById(blog.getCreatedBy()));
+            Account account =accountDAO.getById(blog.getCreatedBy());
+            blog.setAccount(account);
             try {
                 sendMail.sentBlogMail(userDetail, blog);
             } catch (MessagingException | IOException | TemplateException ex) {
