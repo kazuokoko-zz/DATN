@@ -3,8 +3,7 @@ package com.poly.datn.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @Entity

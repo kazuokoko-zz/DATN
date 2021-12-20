@@ -1,6 +1,7 @@
 package com.poly.datn.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,9 +36,14 @@ public class Orders {
 //    Customer customer;
 
     @OneToMany(mappedBy = "orders")
+    @ToString.Exclude
     List<OrderManagement> orderManagements;
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "orders")
     List<OrderDetails> orderDetails;
+
+    @ToString.Exclude
     @OneToOne(mappedBy = "orders")
     Warranty warranty;
 

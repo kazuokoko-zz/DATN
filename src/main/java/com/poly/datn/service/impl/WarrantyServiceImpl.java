@@ -18,6 +18,7 @@ import java.security.Principal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,14 +34,16 @@ public class WarrantyServiceImpl implements WarrantyService {
     OrdersDAO ordersDAO;
     @Autowired
     OrderDetailsDAO orderDetailsDAO;
-@Autowired
+    @Autowired
     CustomerDAO customerDAO;
-   @Autowired
+    @Autowired
     OrderManagementDAO orderManagementDAO;
     @Autowired
     CheckRole checkRole;
     @Autowired
     WarrantyInvoiceDAO warrantyInvoiceDAO;
+    @Autowired
+    ProductDAO productDAO;
 
 
     public void checkPrincipal(Principal principal) {
@@ -56,55 +59,56 @@ public class WarrantyServiceImpl implements WarrantyService {
     @Override
     public List<WarrantyVO> getAll(Principal principal) {
         checkPrincipal(principal);
-        List<Warranty>warranties = warrantyDAO.findAll();
-        List<WarrantyVO>warrantyVOS = new ArrayList<>();
-        for(Warranty warranty : warranties){
+        List<Warranty> warranties = warrantyDAO.findAll();
+        List<WarrantyVO> warrantyVOS = new ArrayList<>();
+        for (Warranty warranty : warranties) {
             WarrantyVO warrantyVO = new WarrantyVO();
             BeanUtils.copyProperties(warranty, warrantyVO);
             warrantyVOS.add(warrantyVO);
         }
         return warrantyVOS;
     }
+
     @Override
-    public WarrantyVO getAllById(Integer id, Principal principal){
+    public WarrantyVO getAllById(Integer id, Principal principal) {
         checkPrincipal(principal);
         try {
-                Warranty warranties = warrantyDAO.getById(id);
-                if(warranties == null){
-                    throw new NotImplementedException("Không tồn tại hóa đơn bảo hành này");
-                }
-                WarrantyVO warrantyVO = new WarrantyVO();
-                BeanUtils.copyProperties(warranties, warrantyVO);
-                List<WarrantyInvoice> warrantyInvoice = warrantyInvoiceDAO.findByWarrantyId(id);
-                List<WarrantyInvoiceVO> warrantyInvoiceVO = new ArrayList<>();
-            for (WarrantyInvoice warrantyInvoice1: warrantyInvoice
-                 ) {
+            Warranty warranties = warrantyDAO.getById(id);
+            if (warranties == null) {
+                throw new NotImplementedException("Không tồn tại hóa đơn bảo hành này");
+            }
+            WarrantyVO warrantyVO = new WarrantyVO();
+            BeanUtils.copyProperties(warranties, warrantyVO);
+            List<WarrantyInvoice> warrantyInvoice = warrantyInvoiceDAO.findByWarrantyId(id);
+            List<WarrantyInvoiceVO> warrantyInvoiceVO = new ArrayList<>();
+            for (WarrantyInvoice warrantyInvoice1 : warrantyInvoice
+            ) {
                 WarrantyInvoiceVO warrantyInvoiceVO1 = new WarrantyInvoiceVO();
                 BeanUtils.copyProperties(warrantyInvoice1, warrantyInvoiceVO1);
                 warrantyInvoiceVO.add(warrantyInvoiceVO1);
             }
             warrantyVO.setWarrantyInvoiceVOS(warrantyInvoiceVO);
             return warrantyVO;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
     @Override
-    public List<WarrantyVO> getByUsername(Principal principal){
+    public List<WarrantyVO> getByUsername(Principal principal) {
         if (principal == null) {
             throw new NotImplementedException("Chưa đăng nhập");
         }
         try {
             List<Orders> orders = ordersDAO.findByUsername(principal.getName());
-            if(orders.size() == 0){
+            if (orders.size() == 0) {
                 throw new NotFoundException("common.error.not-found");
             }
             List<WarrantyVO> warrantyVOS = new ArrayList<>();
             for (Orders orders1 : orders) {
                 Warranty warranties = warrantyDAO.findOneByOrderId(orders1.getId());
-                if(warranties == null){
+                if (warranties == null) {
                     throw new NotFoundException("common.error.not-found");
                 }
                 WarrantyVO warrantyVO = new WarrantyVO();
@@ -112,23 +116,23 @@ public class WarrantyServiceImpl implements WarrantyService {
                 warrantyVOS.add(warrantyVO);
             }
             return warrantyVOS;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
     @Override
-    public WarrantyVO newWarranty(@Valid WarrantyVO warrantyVO, Principal principal)  {
+    public WarrantyVO newWarranty(@Valid WarrantyVO warrantyVO, Principal principal) {
         checkPrincipal(principal);
         try {
             Warranty warranty = new Warranty();
             Orders orders1 = ordersDAO.findMotById(warrantyVO.getOrderId());
-            if(orders1 == null){
+            if (orders1 == null) {
                 throw new NotImplementedException("Không có hóa đơn này");
             }
             Orders orders = ordersDAO.findOneByIdForWarranty(orders1.getId(), warrantyVO.getProductId());
-            if(orders != null){
+            if (orders != null) {
                 throw new NotImplementedException("Đã có hóa đơn cho sản phẩm này");
             }
             OrderDetails orderDetails = orderDetailsDAO.findOneByOrderIdAndProductIdAndColorId(orders1.getId(), warrantyVO.getProductId(), warrantyVO.getColorId());
@@ -142,12 +146,15 @@ public class WarrantyServiceImpl implements WarrantyService {
             warranty.setStatus(1);
             warranty.setCountWarranty(0);
             warranty.setCreateBy(principal.getName());
+            warranty.setExpiredDate(Date.from(LocalDate.now().plusMonths(productDAO.getById(warrantyVO.getProductId()).getWarranty())
+                    .atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
             warranty = warrantyDAO.save(warranty);
             warrantyVO.setId(warranty.getId());
             warrantyVO.setExpiredDate(warranty.getExpiredDate());
             warrantyVO.setStatus(warranty.getStatus());
-            OrderManagement orderManagements = orderManagementDAO.getLastManager(warrantyVO.getOrderId());;
+            OrderManagement orderManagements = orderManagementDAO.getLastManager(warrantyVO.getOrderId());
+            ;
             OrderManagement orderManagement = new OrderManagement();
             orderManagement.setChangedBy(principal.getName());
             orderManagement.setStatus(orderManagements.getStatus());
@@ -159,8 +166,8 @@ public class WarrantyServiceImpl implements WarrantyService {
             orderManagementDAO.save(orderManagement);
             orderDetails.setStatusWarranty(true);
             orderDetailsDAO.save(orderDetails);
-            return  warrantyVO;
-        } catch (Exception e){
+            return warrantyVO;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

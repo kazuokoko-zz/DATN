@@ -33,6 +33,11 @@ public class ProductRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getMostNew()).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
+    @GetMapping("discount")
+    public ResponseEntity<ResponseDTO<Object>> getDiscount() {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getDiscount()).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+
     @GetMapping("/price")
     public ResponseEntity<ResponseDTO<Object>> getByPrice(@RequestParam("start") Optional<Long> start, @RequestParam("end") Optional<Long> end) {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getByPrice(start, end)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());

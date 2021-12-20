@@ -7,7 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,18 +15,19 @@ public class WarrantyVO extends RegexEmail {
 
     private Integer id;
 
-    @Size(min = 1, message = "Mã đơn hàng không được để trống")
+    @NotNull
     private Integer orderId;
 
-    @Size(min = 1, message = "Số seri sản phẩm không được để trống")
+    @NotNull
+    @Size(min = 5, message = "Số seri sản phẩm ít nhất phải có 5 ký tự")
     private String productSeri;
 
     @NotNull
     private Integer productId;
+
     @NotNull
     private Integer colorId;
 
-    @NotNull
     private Date expiredDate;
 
     private String name;

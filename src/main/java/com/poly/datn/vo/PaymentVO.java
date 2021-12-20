@@ -9,6 +9,7 @@ public class PaymentVO {
     private String bankTranNo;
     private String cardType;
     private String createDate;
+    private String payDate;
     private String orderInfo;
     private String transactionNo;
     private String txnRef;

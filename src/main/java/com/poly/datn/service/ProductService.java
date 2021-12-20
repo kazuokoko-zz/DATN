@@ -56,4 +56,6 @@ public interface ProductService {
     Boolean unSelectCate(Integer pid, Integer cid, Principal principal);
 
     Object getBlogLess(Principal principal);
+
+    List<ProductVO> getDiscount();
 }

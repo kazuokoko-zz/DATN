@@ -20,6 +20,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -238,6 +240,13 @@ public class OnlinePayServiceImpl implements OnlinePayService {
 
 
             Payment payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"), ((String) fields.get("vnp_PayDate")).substring(0, 8));
+            if (payment == null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                LocalDateTime localDateTime = sdf.parse((String) fields.get("vnp_PayDate")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                localDateTime.minusMinutes(15);
+                payment = paymentDAO.getByTxnRefToday((String) fields.get("vnp_TxnRef"),
+                        sdf.format(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())).substring(0, 8));
+            }
             Orders orders = ordersDAO.findById(payment.getOrdersId()).get();
 
             // Check checksum
@@ -256,6 +265,7 @@ public class OnlinePayServiceImpl implements OnlinePayService {
                             payment.setTransactionNo((String) fields.get("vnp_TransactionNo"));
                             payment.setCardType((String) fields.get("vnp_CardType"));
                             payment.setBankTranNo((String) fields.get("vnp_BankTranNo"));
+                            payment.setPayDate((String) fields.get("vnp_PayDate"));
                             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                                 payment.setStatus(1);
                             } else {
