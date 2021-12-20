@@ -19,9 +19,7 @@ import org.webjars.NotFoundException;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -209,6 +207,7 @@ public class ProductServiceImpl implements ProductService {
                 productVOS.add(vo);
             }
         }
+        Collections.sort(productVOS, Comparator.comparingLong(ProductVO::getDiscount).reversed());
         return productVOS;
     }
 
