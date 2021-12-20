@@ -18,6 +18,7 @@ public class WarrantyVO extends RegexEmail {
     @NotNull
     private Integer orderId;
 
+    @NotNull
     @Size(min = 5, message = "Số seri sản phẩm ít nhất phải có 5 ký tự")
     private String productSeri;
 
