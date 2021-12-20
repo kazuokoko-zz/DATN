@@ -19,6 +19,8 @@ public class Payment {
     private String cardType;
     @Column(name = "createdate", length = 14, nullable = false)
     private String createDate;
+    @Column(name = "paydate", length = 14)
+    private String payDate;
     @Column(name = "orderinfo", length = 20, nullable = false)
     private String orderInfo;
     @Column(name = "transactionno", length = 20)

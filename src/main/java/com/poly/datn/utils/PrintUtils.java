@@ -335,7 +335,7 @@ public class PrintUtils {
             document.add(new Paragraph("\n"));
             font.setSize(25);
             font.setStyle(Font.BOLD);
-            Paragraph paragraph = new Paragraph("HÓA ĐƠN BÁN HÀNG", font);
+            Paragraph paragraph = new Paragraph("HÓA ĐƠN THANH TOÁN", font);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
             font.setSize(14);
@@ -344,13 +344,17 @@ public class PrintUtils {
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
 
+            table = new PdfPTable(2);
+            cell = createCell("Số giao dịch", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(String.valueOf(payment.getTxnRef()), font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
 
 
+            document.close();
+            File file = new File(path.toString());
 
-
-
-
-            return null;
+            return loadFileAsResource(file);
         } catch (MyFileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
