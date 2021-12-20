@@ -51,7 +51,7 @@ public class AuthRest {
             throw new NotImplementedException("Tài khoản không tồn tại, vui lòng đăng ký");
         }
         if(account.getUserStatus().equals(false)){
-            throw new NotImplementedException("Tài khoản đẫ bị khóa, vui lòng liên hệ quản trị viên để biết lý do");
+            throw new NotImplementedException("Tài khoản đã bị khóa, vui lòng liên hệ quản trị viên để biết lý do!");
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));

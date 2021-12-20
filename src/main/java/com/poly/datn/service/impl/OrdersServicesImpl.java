@@ -328,6 +328,28 @@ public class OrdersServicesImpl implements OrdersService {
         }
     }
 
+    @Override
+    public boolean unCancerOrder(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        Orders orders = checkOrderAdmin(id, principal);
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Đang hoàn hàng")  ) {
+            String status = "Đang giao hàng";
+            String note = "Không thực hiện hoàn hàng, tiếp tục giao hàng";
+            updateStatus(status, note, id, orders, noteOrderManagementVo, principal.getName());
+            updateQuantityForProductBeffoCancerOrder(id);
+            return true;
+        } else if (orderManagement.getStatus().equals("Yêu cầu trả hàng") ) {
+            String status = "Giao hàng thành công";
+            String note = "Không chấp nhận yêu cầu trả hàng";
+            updateStatus(status, note, id, orders, noteOrderManagementVo, principal.getName());
+            updateQuantityForProductBeffoCancerOrder(id);
+            return true;
+        }
+        else {
+            throw new NotImplementedException("Không thể trả hàng đơn hàng này");
+        }
+    }
+
 
     @Override
     public boolean confimSell(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
@@ -406,6 +428,25 @@ public class OrdersServicesImpl implements OrdersService {
                 note = "Yêu cầu hủy đơn hàng do người dùng yêu cầu";
             } else {
                 note = "Yêu cầu hủy đơn hàng do người dùng yêu cầu, lý do: " + noteOrderManagementVo.getNote();
+            }
+            requestStatusUser(status, note, id, orders, noteOrderManagementVo, principal.getName());
+            return true;
+        } else {
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+    }
+
+    @Override
+    public boolean unCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        Orders orders = checkUser(id, principal);
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Yêu cầu trả hàng")) {
+            String status = "Giao hàng thành công";
+            String note;
+            if (noteOrderManagementVo.getNote() == "") {
+                note = "Đã hủy yêu cầu trả hàng";
+            } else {
+                note = "Đã hủy yêu cầu trả hàng, lý do: " + noteOrderManagementVo.getNote();
             }
             requestStatusUser(status, note, id, orders, noteOrderManagementVo, principal.getName());
             return true;
