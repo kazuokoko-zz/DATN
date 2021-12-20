@@ -6,6 +6,7 @@ import com.poly.datn.service.ProductCategoryService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductCategoryVO;
 import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductCategoryDTO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,13 +39,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public List<ProductCategoryVO> newProductCategory(Optional<Integer> id, List<ProductCategoryVO> productCategoryVOS, Principal principal) {
         if (principal == null) {
+            throw new NotImplementedException("Chưa đăng nhập");
         }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff")) || !id.isPresent()) {
-            return null;
+        if (!id.isPresent() || !(checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
+        }
+        if (productCategoryVOS == null) {
+            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
         }
         productCategoryDAO.deleteAllByProductIdEquals(id.get());
-
         for (ProductCategoryVO productCategoryVO : productCategoryVOS) {
             ProductCategory productCategory = new ProductCategory();
             BeanUtils.copyProperties(productCategoryVO, productCategory);

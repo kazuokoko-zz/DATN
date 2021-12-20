@@ -6,6 +6,7 @@ import com.poly.datn.service.ProductDetailService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductDetailsVO;
 import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDetailDTO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     public List<ProductDetailsVO> newProductDetail(Optional<Integer> id, List<ProductDetailsVO> productDetailsVOS, Principal principal) {
         if (principal == null) {
-            return null;
+            throw new NotImplementedException("Chưa đăng nhập");
         }
         if (!id.isPresent() || !(checkRole.isHavePermition(principal.getName(), "Director")
                 || checkRole.isHavePermition(principal.getName(), "Staff"))) {
-            return null;
+            throw new NotImplementedException("User này không có quyền");
+        }
+        if (productDetailsVOS == null) {
+            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
         }
         productDetailsDAO.deleteAllByProductIdEquals(id.get());
         List<String> photos = new ArrayList<>();

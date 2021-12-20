@@ -19,9 +19,7 @@ import org.webjars.NotFoundException;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -388,7 +386,7 @@ public class ProductServiceImpl implements ProductService {
 
             Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
             if (category == null) {
-                throw new NotImplementedException("Không có danh mục bạn vừa chọn");
+                throw new NotImplementedException("Chưa thêm category");
             }
             ProductCategory productCategory = new ProductCategory();
             productCategoryVO1.setProductId(product.getId());
@@ -398,12 +396,6 @@ public class ProductServiceImpl implements ProductService {
         }
         productCategoryDAO.saveAll(productCategories);
         productVO.setId(product.getId());
-        List<ProductDetailsVO> productDetailsVO = productVO.getProductDetails();
-        if (productDetailsVO == null) {
-            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
-        }
-
-
         return productVO;
     }
 
@@ -430,7 +422,6 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(product.getStatus());
         }
         product = productDAO.save(product);
-        productCategoryService.updateProductCategory(product.getId(),updateProductDTO.getProductCategories());
 
         productCategoryService.updateProductCategory(product.getId(), updateProductDTO.getProductCategories());
         productDetailService.updateProductDetail(product.getId(), updateProductDTO.getProductDetails());
