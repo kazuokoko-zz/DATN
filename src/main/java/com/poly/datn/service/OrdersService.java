@@ -42,4 +42,5 @@ public interface OrdersService {
     boolean requestCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
     boolean unCancerOrderUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
      boolean confimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
+     boolean unConfimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal);
 }
