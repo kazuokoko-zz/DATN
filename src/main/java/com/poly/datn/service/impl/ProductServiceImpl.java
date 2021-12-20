@@ -83,18 +83,14 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products;
         if (cate.isPresent() && find.isPresent()) {
             products = getListByCate(cate.get());
-            if (products.size() > 0)
-                products = stringFind.getMatchProduct(products, find.get());
-            else
-                products = new ArrayList<>();
+            if (products.size() > 0) products = stringFind.getMatchProduct(products, find.get());
+            else products = new ArrayList<>();
         } else if (cate.isPresent()) {
             products = getListByCate(cate.get());
         } else if (find.isPresent()) {
             products = productDAO.findAll();
-            if (products.size() > 0)
-                products = stringFind.getMatchProduct(products, find.get());
-            else
-                products = new ArrayList<>();
+            if (products.size() > 0) products = stringFind.getMatchProduct(products, find.get());
+            else products = new ArrayList<>();
         } else {
             products = productDAO.findAll();
         }
@@ -112,8 +108,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductVO> getList(Optional<Integer> cate, Optional<String> find) {
         List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
-        for (ProductVO productVO1 : productVOS
-        ) {
+        for (ProductVO productVO1 : productVOS) {
             if (productVO1.getStatus().equals("Đang bán")) {
                 productVO.add(productVO1);
             } else {
@@ -128,8 +123,7 @@ public class ProductServiceImpl implements ProductService {
         checkPrincipal(principal);
         List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
-        for (ProductVO productVO1 : productVOS
-        ) {
+        for (ProductVO productVO1 : productVOS) {
             if (productVO1.getStatus().equals("Đã xóa")) {
                 continue;
             } else {
@@ -144,8 +138,7 @@ public class ProductServiceImpl implements ProductService {
         checkPrincipal(principal);
         List<ProductVO> productVOS = this.getListP(cate, find);
         List<ProductVO> productVO = new ArrayList<>();
-        for (ProductVO productVO1 : productVOS
-        ) {
+        for (ProductVO productVO1 : productVOS) {
             if (productVO1.getStatus().equals("Đã xóa")) {
                 productVO.add(productVO1);
             } else {
@@ -205,6 +198,18 @@ public class ProductServiceImpl implements ProductService {
             vos.add(vo);
         }
         return vos;
+    }
+
+    @Override
+    public List<ProductVO> getDiscount() {
+        List<ProductVO> productVOS = new ArrayList<>();
+        for (Product product : productDAO.findAll()) {
+            ProductVO vo = productUtils.convertToVO(product);
+            if (vo.getDiscount() > 0) {
+                productVOS.add(vo);
+            }
+        }
+        return productVOS;
     }
 
     @Override
@@ -393,7 +398,7 @@ public class ProductServiceImpl implements ProductService {
         productCategoryDAO.saveAll(productCategories);
         productVO.setId(product.getId());
         List<ProductDetailsVO> productDetailsVO = productVO.getProductDetails();
-        if(productDetailsVO == null){
+        if (productDetailsVO == null) {
             throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
         }
 
@@ -404,13 +409,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductVO update(UpdateProductDTO updateProductDTO, Principal principal) {
         checkPrincipal(principal);
-        if(updateProductDTO.getProductCategories().size() <=1){
+        if (updateProductDTO.getProductCategories().size() <= 1) {
             throw new NotImplementedException("thêm tối thiêu 1 danh mục");
         }
-        if(updateProductDTO.getProductDetails().size() <=1){
+        if (updateProductDTO.getProductDetails().size() <= 1) {
             throw new NotImplementedException("thêm tối thiêu 1 thông tin");
         }
-        if(updateProductDTO.getProductColors().size() <=1){
+        if (updateProductDTO.getProductColors().size() <= 1) {
             throw new NotImplementedException("thêm tối thiêu 1 màu");
         }
         Product product = productDAO.getOneProductById(updateProductDTO.getId());
@@ -418,19 +423,16 @@ public class ProductServiceImpl implements ProductService {
             throw new NotImplementedException("Không tồn tại sản phẩm này, vui lòng thêm mới");
         }
         BeanUtils.copyProperties(updateProductDTO, product);
-        if (updateProductDTO.getStatus().equals("Không kinh doanh")
-                || updateProductDTO.getStatus().equals("Đang bán")
-                || updateProductDTO.getStatus().equals("Hết hàng")
-                || updateProductDTO.getStatus().equals("Hàng sắp về")) {
+        if (updateProductDTO.getStatus().equals("Không kinh doanh") || updateProductDTO.getStatus().equals("Đang bán") || updateProductDTO.getStatus().equals("Hết hàng") || updateProductDTO.getStatus().equals("Hàng sắp về")) {
             product.setStatus(updateProductDTO.getStatus());
         } else {
             product.setStatus(product.getStatus());
         }
         product = productDAO.save(product);
 
-        productCategoryService.updateProductCategory(product.getId(),updateProductDTO.getProductCategories());
+        productCategoryService.updateProductCategory(product.getId(), updateProductDTO.getProductCategories());
         productDetailService.updateProductDetail(product.getId(), updateProductDTO.getProductDetails());
-        productColorService.updateProductColor(product.getId(),updateProductDTO.getProductColors());
+        productColorService.updateProductColor(product.getId(), updateProductDTO.getProductColors());
         return getById(product.getId());
     }
 
@@ -438,8 +440,7 @@ public class ProductServiceImpl implements ProductService {
         if (principal == null) {
             throw new NotImplementedException("Chưa đăng nhập");
         }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
-                checkRole.isHavePermition(principal.getName(), "Staff"))) {
+        if (!(checkRole.isHavePermition(principal.getName(), "Director") || checkRole.isHavePermition(principal.getName(), "Staff"))) {
             throw new NotImplementedException("User này không có quyền");
         }
     }

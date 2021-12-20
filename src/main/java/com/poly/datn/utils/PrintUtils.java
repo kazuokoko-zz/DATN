@@ -15,6 +15,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -51,6 +52,9 @@ public class PrintUtils {
     WarrantyDAO warrantyDAO;
 
     @Autowired
+    PaymentDAO paymentDAO;
+
+    @Autowired
     WarrantyInvoiceDAO warrantyInvoiceDAO;
 
     /**
@@ -74,19 +78,14 @@ public class PrintUtils {
             throw new MyFileNotFoundException("Lỗi khách hàng: ".concat(String.valueOf(orderId)));
         }
         try {
+            Path path = Files.createTempFile(null, "pdf");
             FontFactory.register(loader.getResource("classpath:static/times.ttf").getFile().getPath());
             Font font = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font fonttable = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font fontI = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-            Path path = Files.createTempFile(null, "pdf");
-            Document document = new Document(PageSize.A4, 35, 20, 35, 30);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path.toString()));
-            document.addAuthor("SOC STORE");
-            document.addCreationDate();
-            document.addProducer();
-            document.addCreator("SOCSTORE.XYZ");
-            document.addTitle("HÓA ĐƠN");
+
+            Document document = createDocument(path);
             document.open();
 
 //            font.setColor(BaseColor.RED);
@@ -291,6 +290,88 @@ public class PrintUtils {
         return null;
     }
 
+    /**
+     * print payment
+     */
+    public Resource printPayment(Integer orderId) {
+        try {
+            Payment payment = paymentDAO.getByOrdersIdEquals(orderId);
+            if (payment == null) {
+                throw new MyFileNotFoundException("Không tìm thấy thanh toán");
+            }
+
+            Path path = Files.createTempFile(null, "pdf");
+            FontFactory.register(loader.getResource("classpath:static/times.ttf").getFile().getPath());
+            Font font = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font fonttable = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font fontI = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+            Document document = createDocument(path);
+            document.open();
+            font.setColor(BaseColor.BLACK);
+            /**
+             * add icon and title
+             */
+            PdfPTable table = new PdfPTable(6);
+
+            PdfPCell cell = createCell("\nCỬA HÀNG SOCSTORE\nStyle of computer", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            cell.setColspan(2);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            Image image = Image.getInstance("classpath:static/logoshop.png");
+            image.scaleToFit(100, 100);
+            cell = createCell(image, Rectangle.RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+
+            /**
+             * add title;
+             */
+            document.add(new Paragraph("\n"));
+            font.setSize(25);
+            font.setStyle(Font.BOLD);
+            Paragraph paragraph = new Paragraph("HÓA ĐƠN BÁN HÀNG", font);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+            font.setSize(14);
+            font.setStyle(Font.NORMAL);
+            paragraph = new Paragraph("HD".concat(String.format("%011d", payment.getOrdersId())), font);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+
+
+
+
+
+
+
+            return null;
+        } catch (MyFileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Resource printWarranty(Integer id) {
+        return null;
+    }
+
+    public Resource printWarrantyIv(Integer id) {
+        return null;
+    }
+    /**
+     *  print payment
+     */
+
 
     /**
      * Convert file to resource to response
@@ -313,17 +394,15 @@ public class PrintUtils {
         }
     }
 
-    public Resource printPayment(Integer orderId) {
-        return null;
-    }
-
-    public Resource printWarranty(Integer id) {
-        return null;
-    }
-
-    public Resource printWarrantyIv(Integer id) {
-        return null;
-    }
+    /**
+     * Create cell
+     *
+     * @param text
+     * @param font
+     * @param align
+     * @param border
+     * @return
+     */
 
     PdfPCell createCell(String text, Font font, Integer align, Integer border) {
         Chunk chunk = new Chunk(text, font);
@@ -342,5 +421,16 @@ public class PrintUtils {
         cell.setHorizontalAlignment(align);
         cell.setBorder(border);
         return cell;
+    }
+
+    Document createDocument(Path path) throws FileNotFoundException, DocumentException {
+        Document document = new Document(PageSize.A4, 35, 20, 35, 30);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path.toString()));
+        document.addAuthor("SOC STORE");
+        document.addCreationDate();
+        document.addProducer();
+        document.addCreator("SOCSTORE.XYZ");
+        document.addTitle("HÓA ĐƠN");
+        return document;
     }
 }
