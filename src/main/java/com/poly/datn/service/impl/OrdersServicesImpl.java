@@ -493,6 +493,25 @@ public class OrdersServicesImpl implements OrdersService {
     }
 
     @Override
+    public boolean unConfimReturnsUser(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
+        Orders orders = checkUser(id, principal);
+        OrderManagement orderManagement = orderManagementDAO.getLastManager(orders.getId());
+        if (orderManagement.getStatus().equals("Yêu cầu hủy")) {
+            String status = "Đã xác nhận";
+            String note;
+            if (noteOrderManagementVo.getNote() == "") {
+                note = "Đã hủy yêu cầu hủy đơn";
+            } else {
+                note = "Đã hủy yêu cầu hủy đơn, lý do: " + noteOrderManagementVo.getNote();
+            }
+            requestStatusUser(status, note, id, orders, noteOrderManagementVo, principal.getName());
+            return true;
+        } else {
+            throw new NotImplementedException("Không thể cập nhập đơn hàng này");
+        }
+    }
+
+    @Override
     public boolean updateNoteOrderManagement(NoteOrderManagementVo noteOrderManagementVo, Integer id, Principal principal) {
         checkPrincipal(principal);
         Orders orders = ordersDAO.findMotById(id);
