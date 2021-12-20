@@ -15,14 +15,15 @@ public class WarrantyVO extends RegexEmail {
 
     private Integer id;
 
-    @Size(min = 1, message = "Mã đơn hàng không được để trống")
+    @NotNull
     private Integer orderId;
 
-    @Size(min = 1, message = "Số seri sản phẩm không được để trống")
+    @Size(min = 5, message = "Số seri sản phẩm ít nhất phải có 5 ký tự")
     private String productSeri;
 
     @NotNull
     private Integer productId;
+
     @NotNull
     private Integer colorId;
 
