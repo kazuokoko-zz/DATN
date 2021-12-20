@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,11 +66,11 @@ public class PrintUtils {
         if (orderId == null) {
             throw new MyFileNotFoundException("Lỗi tham số");
         }
-        List<Color> colors = colorDAO.findAll();
         Orders orders = ordersDAO.getById(orderId);
         if (orders == null) {
             throw new MyFileNotFoundException("Không tìm thấy hóa đơn với id: ".concat(String.valueOf(orderId)));
         }
+        List<Color> colors = colorDAO.findAll();
         List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(orderId);
         if (orderDetails.isEmpty()) {
             throw new MyFileNotFoundException("Lỗi chi tiết hóa đơn: ".concat(String.valueOf(orderId)));
@@ -144,117 +146,117 @@ public class PrintUtils {
             paragraph = new Paragraph("\nChi tiết mặt hàng: ", font);
             document.add(paragraph);
 
-            fonttable.setStyle(Font.BOLD);
-            fonttable.setSize(10);
-            table = new PdfPTable(20);
-            table.setWidthPercentage(100);
-            table.setSpacingBefore(10);
-
-            cell = createCell("STT", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            table.addCell(cell);
-
-            cell = createCell("Tên sản phẩm", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(9);
-            table.addCell(cell);
-
-            cell = createCell("Bảo hành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(2);
-            table.addCell(cell);
-
-            cell = createCell("Giá thành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(2);
-            table.addCell(cell);
-
-            cell = createCell("Khuyến mại", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(2);
-            table.addCell(cell);
-
-            cell = createCell("Số lượng", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(2);
-            table.addCell(cell);
-
-            cell = createCell("Thành tiền", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-            cell.setColspan(2);
-            table.addCell(cell);
-
-            fonttable.setStyle(Font.NORMAL);
-            for (int i = 0; i < orderDetails.size(); i++) {
-                cell = createCell(String.valueOf(i + 1), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                table.addCell(cell);
-
-                OrderDetails details = orderDetails.get(i);
-                cell = createCell(productDAO.getById(details.getProductId()).getName().concat("\n\nMàu: ")
-                                .concat(colors.stream().filter(color -> color.getId() == details.getColorId()).collect(Collectors.toList()).get(0).getColorName()),
-                        fonttable, Element.ALIGN_LEFT, Rectangle.BOX);
-                cell.setColspan(9);
-                table.addCell(cell);
-
-                cell = createCell(String.valueOf(productDAO.getById(details.getProductId()).getWarranty()).concat(" tháng"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                cell.setColspan(2);
-                table.addCell(cell);
-
-                cell = createCell(String.valueOf(details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                cell.setColspan(2);
-                table.addCell(cell);
-
-                cell = createCell(String.valueOf(details.getDiscount()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                cell.setColspan(2);
-                table.addCell(cell);
-
-                cell = createCell(String.valueOf(details.getQuantity()), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                cell.setColspan(2);
-                table.addCell(cell);
-
-                cell = createCell(String.valueOf(details.getQuantity() * details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
-                cell.setColspan(2);
-                table.addCell(cell);
-            }
+            table = createTableDetails(fonttable, orderDetails, colors);
+//            table = new PdfPTable(20);
+//            table.setWidthPercentage(100);
+//            table.setSpacingBefore(10);
+//
+//            cell = createCell("STT", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            table.addCell(cell);
+//
+//            cell = createCell("Tên sản phẩm", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(9);
+//            table.addCell(cell);
+//
+//            cell = createCell("Bảo hành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(2);
+//            table.addCell(cell);
+//
+//            cell = createCell("Giá thành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(2);
+//            table.addCell(cell);
+//
+//            cell = createCell("Khuyến mại", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(2);
+//            table.addCell(cell);
+//
+//            cell = createCell("Số lượng", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(2);
+//            table.addCell(cell);
+//
+//            cell = createCell("Thành tiền", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//            cell.setColspan(2);
+//            table.addCell(cell);
+//
+//            fonttable.setStyle(Font.NORMAL);
+//            for (int i = 0; i < orderDetails.size(); i++) {
+//                cell = createCell(String.valueOf(i + 1), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                table.addCell(cell);
+//
+//                OrderDetails details = orderDetails.get(i);
+//                cell = createCell(productDAO.getById(details.getProductId()).getName().concat("\n\nMàu: ")
+//                                .concat(colors.stream().filter(color -> color.getId() == details.getColorId()).collect(Collectors.toList()).get(0).getColorName()),
+//                        fonttable, Element.ALIGN_LEFT, Rectangle.BOX);
+//                cell.setColspan(9);
+//                table.addCell(cell);
+//
+//                cell = createCell(String.valueOf(productDAO.getById(details.getProductId()).getWarranty()).concat(" tháng"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                cell.setColspan(2);
+//                table.addCell(cell);
+//
+//                cell = createCell(String.valueOf(details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                cell.setColspan(2);
+//                table.addCell(cell);
+//
+//                cell = createCell(String.valueOf(details.getDiscount()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                cell.setColspan(2);
+//                table.addCell(cell);
+//
+//                cell = createCell(String.valueOf(details.getQuantity()), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                cell.setColspan(2);
+//                table.addCell(cell);
+//
+//                cell = createCell(String.valueOf(details.getQuantity() * details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+//                cell.setColspan(2);
+//                table.addCell(cell);
+//            }
             document.add(table);
-            table = new PdfPTable(20);
             document.add(new Paragraph("\n"));
-            font.setSize(14);
-            cell = new PdfPCell();
-            cell.setColspan(20);
-            cell.setBorder(Rectangle.NO_BORDER);
-            table.addCell(cell);
-            cell = new PdfPCell();
-            cell.setColspan(20);
-            cell.setBorder(Rectangle.NO_BORDER);
-            table.addCell(cell);
-            cell = new PdfPCell();
-            cell.setColspan(20);
-            cell.setBorder(Rectangle.NO_BORDER);
-            table.addCell(cell);
-
-            cell = createCell("Tổng tiền: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-            cell.setColspan(16);
-            table.addCell(cell);
-            Long sum = 0L;
-            for (OrderDetails details : orderDetails) {
-                sum += details.getQuantity() * details.getPrice();
-            }
-            cell = createCell(String.valueOf(sum).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
-            cell.setColspan(4);
-            table.addCell(cell);
-
-
-            cell = createCell("Giảm giá: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-            cell.setColspan(16);
-            table.addCell(cell);
-            Long dis = 0L;
-            for (OrderDetails details : orderDetails) {
-                dis += details.getQuantity() * details.getDiscount();
-            }
-            cell = createCell(String.valueOf(dis).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
-            cell.setColspan(4);
-            table.addCell(cell);
-
-            cell = createCell("Số tiền phải trả: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-            cell.setColspan(16);
-            table.addCell(cell);
-            cell = createCell(String.valueOf(sum - dis).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
-            cell.setColspan(4);
-            table.addCell(cell);
+            table = createTableFooter(font, orderDetails, null);
+//            table = new PdfPTable(20);
+//            font.setSize(14);
+//            cell = new PdfPCell();
+//            cell.setColspan(20);
+//            cell.setBorder(Rectangle.NO_BORDER);
+//            table.addCell(cell);
+//            cell = new PdfPCell();
+//            cell.setColspan(20);
+//            cell.setBorder(Rectangle.NO_BORDER);
+//            table.addCell(cell);
+//            cell = new PdfPCell();
+//            cell.setColspan(20);
+//            cell.setBorder(Rectangle.NO_BORDER);
+//            table.addCell(cell);
+//
+//            cell = createCell("Tổng tiền: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+//            cell.setColspan(16);
+//            table.addCell(cell);
+//            Long sum = 0L;
+//            for (OrderDetails details : orderDetails) {
+//                sum += details.getQuantity() * details.getPrice();
+//            }
+//            cell = createCell(String.valueOf(sum).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+//            cell.setColspan(4);
+//            table.addCell(cell);
+//
+//
+//            cell = createCell("Giảm giá: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+//            cell.setColspan(16);
+//            table.addCell(cell);
+//            Long dis = 0L;
+//            for (OrderDetails details : orderDetails) {
+//                dis += details.getQuantity() * details.getDiscount();
+//            }
+//            cell = createCell(String.valueOf(dis).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+//            cell.setColspan(4);
+//            table.addCell(cell);
+//
+//            cell = createCell("Số tiền phải trả: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+//            cell.setColspan(16);
+//            table.addCell(cell);
+//            cell = createCell(String.valueOf(sum - dis).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+//            cell.setColspan(4);
+//            table.addCell(cell);
             document.add(table);
 
             document.add(new Paragraph("\n\n"));
@@ -299,7 +301,15 @@ public class PrintUtils {
             if (payment == null) {
                 throw new MyFileNotFoundException("Không tìm thấy thanh toán");
             }
-
+            Orders orders = ordersDAO.getById(orderId);
+            if (payment == null) {
+                throw new MyFileNotFoundException("Không tìm thấy hóa đơn");
+            }
+            List<Color> colors = colorDAO.findAll();
+            List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(orderId);
+            if (orderDetails.isEmpty()) {
+                throw new MyFileNotFoundException("Lỗi chi tiết hóa đơn: ".concat(String.valueOf(orderId)));
+            }
             Path path = Files.createTempFile(null, "pdf");
             FontFactory.register(loader.getResource("classpath:static/times.ttf").getFile().getPath());
             Font font = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -309,6 +319,7 @@ public class PrintUtils {
             Document document = createDocument(path);
             document.open();
             font.setColor(BaseColor.BLACK);
+
             /**
              * add icon and title
              */
@@ -345,10 +356,49 @@ public class PrintUtils {
             document.add(paragraph);
 
             table = new PdfPTable(2);
-            cell = createCell("Số giao dịch", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+
+            cell = createCell("Mã giao dịch: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
             table.addCell(cell);
-            cell = createCell(String.valueOf(payment.getTxnRef()), font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            cell = createCell(String.valueOf(payment.getTxnRef()), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
             table.addCell(cell);
+
+            cell = createCell("Mã hóa giao dịch tại vnpay: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(payment.getTransactionNo() == null ? "" : String.valueOf(payment.getTransactionNo()), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = createCell("Thời gian giao dịch: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(payment.getPayDate() == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+                    .format(new SimpleDateFormat("yyyyMMddHHmmss").parse(payment.getPayDate())), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = createCell("Loại thanh toán: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(payment.getCardType() == null ? "" : payment.getCardType(), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = createCell("Số tiền: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(String.valueOf(orders.getSumprice()).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = createCell("Trạng thái: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell(payment.getStatus() == 1 ? "Thành công" : payment.getStatus() == 0 ? "Chờ thanh toán" : "Lỗi", font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+            document.add(new Paragraph("\n\n"));
+
+            document.add(new Paragraph("Chi tiết mặt hàng", font));
+
+            table = createTableDetails(fonttable, orderDetails, colors);
+            document.add(table);
+
+            document.add(new Paragraph("\n"));
+
+            table = createTableFooter(font, orderDetails, orders.getSumprice());
+            document.add(table);
 
 
             document.close();
@@ -360,6 +410,8 @@ public class PrintUtils {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
@@ -437,4 +489,136 @@ public class PrintUtils {
         document.addTitle("HÓA ĐƠN");
         return document;
     }
+
+    PdfPTable createTableDetails(Font fonttable, List<OrderDetails> orderDetails, List<Color> colors) {
+        PdfPTable table;
+        PdfPCell cell;
+
+        fonttable.setStyle(Font.BOLD);
+        fonttable.setSize(10);
+        table = new PdfPTable(20);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10);
+
+        cell = createCell("STT", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        table.addCell(cell);
+
+        cell = createCell("Tên sản phẩm", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(9);
+        table.addCell(cell);
+
+        cell = createCell("Bảo hành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        cell = createCell("Giá thành", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        cell = createCell("Khuyến mại", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        cell = createCell("Số lượng", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        cell = createCell("Thành tiền", fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        fonttable.setStyle(Font.NORMAL);
+        for (int i = 0; i < orderDetails.size(); i++) {
+            cell = createCell(String.valueOf(i + 1), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            table.addCell(cell);
+
+            OrderDetails details = orderDetails.get(i);
+            cell = createCell(productDAO.getById(details.getProductId()).getName().concat("\n\nMàu: ")
+                            .concat(colors.stream().filter(color -> color.getId() == details.getColorId()).collect(Collectors.toList()).get(0).getColorName()),
+                    fonttable, Element.ALIGN_LEFT, Rectangle.BOX);
+            cell.setColspan(9);
+            table.addCell(cell);
+
+            cell = createCell(String.valueOf(productDAO.getById(details.getProductId()).getWarranty()).concat(" tháng"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            cell.setColspan(2);
+            table.addCell(cell);
+
+            cell = createCell(String.valueOf(details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            cell.setColspan(2);
+            table.addCell(cell);
+
+            cell = createCell(String.valueOf(details.getDiscount()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            cell.setColspan(2);
+            table.addCell(cell);
+
+            cell = createCell(String.valueOf(details.getQuantity()), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            cell.setColspan(2);
+            table.addCell(cell);
+
+            cell = createCell(String.valueOf(details.getQuantity() * details.getPrice()).concat(" đ"), fonttable, Element.ALIGN_CENTER, Rectangle.BOX);
+            cell.setColspan(2);
+            table.addCell(cell);
+        }
+        return table;
+    }
+
+    PdfPTable createTableFooter(Font font, List<OrderDetails> orderDetails, Long alreadyPay) {
+        PdfPTable table;
+        PdfPCell cell;
+        table = new PdfPTable(20);
+        font.setSize(14);
+        cell = new PdfPCell();
+        cell.setColspan(20);
+        cell.setBorder(Rectangle.NO_BORDER);
+        table.addCell(cell);
+        cell = new PdfPCell();
+        cell.setColspan(20);
+        cell.setBorder(Rectangle.NO_BORDER);
+        table.addCell(cell);
+        cell = new PdfPCell();
+        cell.setColspan(20);
+        cell.setBorder(Rectangle.NO_BORDER);
+        table.addCell(cell);
+
+        cell = createCell("Tổng tiền: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+        cell.setColspan(16);
+        table.addCell(cell);
+        Long sum = 0L;
+        for (OrderDetails details : orderDetails) {
+            sum += details.getQuantity() * details.getPrice();
+        }
+        cell = createCell(String.valueOf(sum).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+        cell.setColspan(4);
+        table.addCell(cell);
+
+
+        cell = createCell("Giảm giá: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+        cell.setColspan(16);
+        table.addCell(cell);
+        Long dis = 0L;
+        for (OrderDetails details : orderDetails) {
+            dis += details.getQuantity() * details.getDiscount();
+        }
+        cell = createCell(String.valueOf(dis).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+        cell.setColspan(4);
+        table.addCell(cell);
+        Long priceneed = sum - dis;
+        if (alreadyPay != null) {
+            cell = createCell("Số tiền đã thanh toán: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            cell.setColspan(16);
+            table.addCell(cell);
+            cell = createCell(String.valueOf(alreadyPay).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            cell.setColspan(4);
+            table.addCell(cell);
+            priceneed -= alreadyPay;
+        }
+        cell = createCell("Số tiền phải trả: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+        cell.setColspan(16);
+        table.addCell(cell);
+        cell = createCell(String.valueOf(priceneed).concat(" đ"), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+        cell.setColspan(4);
+        table.addCell(cell);
+        return table;
+    }
+
 }
