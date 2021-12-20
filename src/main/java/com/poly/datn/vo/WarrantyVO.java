@@ -26,7 +26,6 @@ public class WarrantyVO extends RegexEmail {
     @NotNull
     private Integer colorId;
 
-    @NotNull
     private Date expiredDate;
 
     private String name;

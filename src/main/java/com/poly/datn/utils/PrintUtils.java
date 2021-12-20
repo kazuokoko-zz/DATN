@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.poly.datn.config.MyFileNotFoundException;
 import com.poly.datn.dao.*;
 import com.poly.datn.entity.*;
@@ -87,7 +88,7 @@ public class PrintUtils {
             Font fontI = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
 
-            Document document = createDocument(path);
+            Document document = createDocument(path, PageSize.A4, true);
             document.open();
 
 //            font.setColor(BaseColor.RED);
@@ -316,7 +317,7 @@ public class PrintUtils {
             Font fonttable = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font fontI = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-            Document document = createDocument(path);
+            Document document = createDocument(path, PageSize.A4, true);
             document.open();
             font.setColor(BaseColor.BLACK);
 
@@ -343,7 +344,7 @@ public class PrintUtils {
             /**
              * add title;
              */
-            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("\n\n"));
             font.setSize(25);
             font.setStyle(Font.BOLD);
             Paragraph paragraph = new Paragraph("HÓA ĐƠN THANH TOÁN", font);
@@ -354,6 +355,7 @@ public class PrintUtils {
             paragraph = new Paragraph("HD".concat(String.format("%011d", payment.getOrdersId())), font);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
+            document.add(new Paragraph("\n"));
 
             table = new PdfPTable(2);
 
@@ -369,8 +371,7 @@ public class PrintUtils {
 
             cell = createCell("Thời gian giao dịch: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
             table.addCell(cell);
-            cell = createCell(payment.getPayDate() == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-                    .format(new SimpleDateFormat("yyyyMMddHHmmss").parse(payment.getPayDate())), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
+            cell = createCell(payment.getPayDate() == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new SimpleDateFormat("yyyyMMddHHmmss").parse(payment.getPayDate())), font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
             table.addCell(cell);
 
             cell = createCell("Loại thanh toán: ", font, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
@@ -388,7 +389,7 @@ public class PrintUtils {
             cell = createCell(payment.getStatus() == 1 ? "Thành công" : payment.getStatus() == 0 ? "Chờ thanh toán" : "Lỗi", font, Element.ALIGN_RIGHT, Rectangle.NO_BORDER);
             table.addCell(cell);
             document.add(table);
-            document.add(new Paragraph("\n\n"));
+            document.add(new Paragraph("\n"));
 
             document.add(new Paragraph("Chi tiết mặt hàng", font));
 
@@ -417,16 +418,205 @@ public class PrintUtils {
         return null;
     }
 
+    /**
+     * print warranty
+     */
     public Resource printWarranty(Integer id) {
+        try {
+            Warranty warranty = warrantyDAO.getById(id);
+            if (warranty == null) {
+                throw new MyFileNotFoundException("Không tìm thấy phiếu.");
+            }
+            Orders orders = ordersDAO.getById(warranty.getOrderId());
+            if (orders == null) {
+                throw new MyFileNotFoundException("Không tìm thấy hóa đơn");
+            }
+            Customer customer = customerDAO.getById(orders.getCustomerId());
+            if (customer == null) {
+                throw new MyFileNotFoundException("Không tìm thấy thông tin khách hàng");
+            }
+            Path path = Files.createTempFile(null, "pdf");
+            FontFactory.register(loader.getResource("classpath:static/times.ttf").getFile().getPath());
+            Font font = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font fonttable = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font fontI = FontFactory.getFont("Times New Roman", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            fontI.setStyle(Font.ITALIC);
+
+            Document document = createDocument(path, PageSize.A5.rotate(), false);
+            document.open();
+            font.setColor(BaseColor.BLACK);
+
+            /**
+             * add icon and title
+             */
+            PdfPTable table = new PdfPTable(6);
+
+            PdfPCell cell = createCell("\nCỬA HÀNG SOCSTORE\nStyle of computer", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            cell.setColspan(2);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            Image image = Image.getInstance("classpath:static/logoshop.png");
+            image.scaleToFit(100, 100);
+            cell = createCell(image, Rectangle.RIGHT, Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+
+            /**
+             * add title;
+             */
+            font.setSize(25);
+            font.setStyle(Font.BOLD);
+            Paragraph paragraph = new Paragraph("PHIẾU BẢO HÀNH", font);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+            font.setStyle(Font.NORMAL);
+            table = new PdfPTable(5);
+            table.setWidthPercentage(95);
+            document.add(new Paragraph("\n"));
+
+            font.setSize(13);
+            Product product = productDAO.getById(warranty.getProductId());
+
+            String value = warranty.getName();
+            cell = createCellWarranty("Tên khách hàng:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value, 2, font);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(new Chunk("Chữ ký nhân viên", fontI)));
+            cell.setRowspan(8);
+            cell.setColspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            value = warranty.getAddress();
+            cell = createCellWarranty("Địa chỉ:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value, 2, font);
+            table.addCell(cell);
+
+            value = warranty.getPhone();
+            cell = createCellWarranty("Số điện thoại:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value, 2, font);
+            table.addCell(cell);
+
+            value = product.getName();
+            cell = createCellWarranty("Tên sản phẩm:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value, 2, font);
+            table.addCell(cell);
+
+            value = new SimpleDateFormat("dd-MM-yyyy").format(warranty.getExpiredDate());
+            cell = createCellWarranty("Thời hạn bảo hành:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value.concat(" (").concat(String.valueOf(product.getWarranty())).concat(" tháng)"), 2, font);
+            table.addCell(cell);
+
+            List<OrderDetails> orderDetails = orderDetailsDAO.findAllByOrderIdEquals(warranty.getOrderId());
+            List<OrderDetails> detailss = orderDetails.stream().filter(detail -> detail.getProductId().equals(warranty.getProductId()) && detail.getColorId().equals(warranty.getColorId())).collect(Collectors.toList());
+            OrderDetails details = detailss.get(0);
+            value = String.valueOf(details.getPrice() - details.getDiscount());
+            cell = createCellWarranty("Giá sản phẩm:", 1, font);
+            table.addCell(cell);
+            cell = createCellWarranty(value, 2, font);
+            table.addCell(cell);
+
+            cell = createCellWarranty("", 3, font);
+            table.addCell(cell);
+
+            cell = createCellWarranty("", 3, font);
+            table.addCell(cell);
+
+            document.add(table);
+
+            Chunk chunk = new Chunk(new DottedLineSeparator());
+            document.add(chunk);
+
+            table = new PdfPTable(1);
+            table.setWidthPercentage(95);
+            cell = new PdfPCell(new Paragraph("Điều kiện bảo hành:", fontI));
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+
+            table = new PdfPTable(40);
+            table.setWidthPercentage(90);
+            cell = new PdfPCell();
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("- Bảo hành theo tiêu chuẩn của nhà sản xuất.\n" + "- Những trường hợp không được bảo hành:", fontI));
+            cell.setColspan(39);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(new Chunk("+", fontI)));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setColspan(3);
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase(new Chunk("Hết hạn bảo hành.", fontI)));
+            cell.setColspan(37);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(new Chunk("+", fontI)));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setColspan(3);
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase(new Chunk("Tem bảo hành của nhà sản xuất và cửa hàng bị rách, hỏng. " + "Phiếu bảo hành bị mất, bị sửa đổi, sai S/N hoặc ngày bảo hành trên tem và phiếu không trùng nhau.", fontI)));
+            cell.setColspan(37);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(new Chunk("+", fontI)));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setColspan(3);
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase(new Chunk("Hư hỏng do các lỗi không phải thuộc về nhà sản xuất (Chập điện, rơi, nước vào...).", fontI)));
+            cell.setColspan(37);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(new Chunk("+", fontI)));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setColspan(3);
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase(new Chunk("Các lỗi do phần mềm, phụ kiện trong quá trình sử dụng.", fontI)));
+            cell.setColspan(37);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+
+
+            document.close();
+            File file = new File(path.toString());
+
+            return loadFileAsResource(file);
+        } catch (MyFileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
+    /**
+     * print warranty invoice
+     */
     public Resource printWarrantyIv(Integer id) {
         return null;
     }
-    /**
-     *  print payment
-     */
 
 
     /**
@@ -479,8 +669,13 @@ public class PrintUtils {
         return cell;
     }
 
-    Document createDocument(Path path) throws FileNotFoundException, DocumentException {
-        Document document = new Document(PageSize.A4, 35, 20, 35, 30);
+    Document createDocument(Path path, Rectangle pageSize, Boolean border) throws FileNotFoundException, DocumentException {
+        Document document;
+        if (border) {
+            document = new Document(pageSize, 35, 20, 35, 30);
+        } else {
+            document = new Document(pageSize, 10, 10, 10, 10);
+        }
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path.toString()));
         document.addAuthor("SOC STORE");
         document.addCreationDate();
@@ -533,9 +728,7 @@ public class PrintUtils {
             table.addCell(cell);
 
             OrderDetails details = orderDetails.get(i);
-            cell = createCell(productDAO.getById(details.getProductId()).getName().concat("\n\nMàu: ")
-                            .concat(colors.stream().filter(color -> color.getId() == details.getColorId()).collect(Collectors.toList()).get(0).getColorName()),
-                    fonttable, Element.ALIGN_LEFT, Rectangle.BOX);
+            cell = createCell(productDAO.getById(details.getProductId()).getName().concat("\n\nMàu: ").concat(colors.stream().filter(color -> color.getId() == details.getColorId()).collect(Collectors.toList()).get(0).getColorName()), fonttable, Element.ALIGN_LEFT, Rectangle.BOX);
             cell.setColspan(9);
             table.addCell(cell);
 
@@ -619,6 +812,13 @@ public class PrintUtils {
         cell.setColspan(4);
         table.addCell(cell);
         return table;
+    }
+
+    PdfPCell createCellWarranty(String value, Integer span, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(new Chunk(value, font)));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setColspan(span);
+        return cell;
     }
 
 }
