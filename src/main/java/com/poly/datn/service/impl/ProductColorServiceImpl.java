@@ -8,6 +8,7 @@ import com.poly.datn.service.ProductColorService;
 import com.poly.datn.utils.CheckRole;
 import com.poly.datn.vo.ProductColorVO;
 import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductColorDTO;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,17 +36,17 @@ public class ProductColorServiceImpl implements ProductColorService {
 
     @Override
     public List<ProductColorVO> newProductColor(Optional<Integer> id, List<ProductColorVO> productColorVOS, Optional<String> statusProduct, Principal principal) {
-
         if (principal == null) {
-            return null;
+            throw new NotImplementedException("Chưa đăng nhập");
         }
-        if (!(checkRole.isHavePermition(principal.getName(), "Director")
-                || checkRole.isHavePermition(principal.getName(), "Staff")) || !id.isPresent()) {
-            return null;
+        if (!id.isPresent() || !(checkRole.isHavePermition(principal.getName(), "Director")
+                || checkRole.isHavePermition(principal.getName(), "Staff"))) {
+            throw new NotImplementedException("User này không có quyền");
         }
-
+        if (productColorVOS == null) {
+            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
+        }
         productColorDAO.deleteAllByProductIdEquals(id.get());
-
         for (ProductColorVO productColorVO : productColorVOS) {
             ProductColor productColor = new ProductColor();
             BeanUtils.copyProperties(productColorVO, productColor);

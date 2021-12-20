@@ -396,12 +396,6 @@ public class ProductServiceImpl implements ProductService {
         }
         productCategoryDAO.saveAll(productCategories);
         productVO.setId(product.getId());
-        List<ProductDetailsVO> productDetailsVO = productVO.getProductDetails();
-        if (productDetailsVO == null) {
-            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
-        }
-
-
         return productVO;
     }
 
