@@ -10,6 +10,7 @@ import com.poly.datn.utils.ProductUtils;
 import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.*;
 import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDTO;
+import com.poly.datn.vo.VoBoSung.ProductDTO.UpdateProductDetailDTO;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -382,7 +383,7 @@ public class ProductServiceImpl implements ProductService {
 
             Category category = categoryDAO.findOneById(productCategoryVO1.getCategoryId());
             if (category == null) {
-                throw new NotImplementedException("Chưa thêm category");
+                throw new NotImplementedException("Không có danh mục bạn vừa chọn");
             }
             ProductCategory productCategory = new ProductCategory();
             productCategoryVO1.setProductId(product.getId());
@@ -392,12 +393,6 @@ public class ProductServiceImpl implements ProductService {
         }
         productCategoryDAO.saveAll(productCategories);
         productVO.setId(product.getId());
-        List<ProductDetailsVO> productDetailsVO = productVO.getProductDetails();
-        if(productDetailsVO == null){
-            throw new NotImplementedException("Chưa thêm chi tiết sản phẩm");
-        }
-
-
         return productVO;
     }
 
@@ -427,7 +422,6 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(product.getStatus());
         }
         product = productDAO.save(product);
-
         productCategoryService.updateProductCategory(product.getId(),updateProductDTO.getProductCategories());
         productDetailService.updateProductDetail(product.getId(), updateProductDTO.getProductDetails());
         productColorService.updateProductColor(product.getId(),updateProductDTO.getProductColors());
