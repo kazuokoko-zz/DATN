@@ -155,7 +155,9 @@ public class AccountServiceImpl implements AccountService {
                 throw  new NotImplementedException("Không có quyền xóa tài khoản admin và staff");
             }
         }
-        return true;
+        else {
+            throw  new NotImplementedException("Không có quyền xóa tài khoản admin và staff");
+        }
     }
     @Override
     public boolean openAccount(Integer id, Principal principal) {
@@ -194,7 +196,9 @@ public class AccountServiceImpl implements AccountService {
                 throw  new NotImplementedException("Không có quyền mở tài khoản admin và staff");
             }
         }
-        return true;
+        else {
+            throw  new NotImplementedException("Không có quyền mở tài khoản admin và staff");
+        }
     }
 
     @Override
