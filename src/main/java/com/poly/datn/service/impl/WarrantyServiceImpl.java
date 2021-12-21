@@ -57,14 +57,19 @@ public class WarrantyServiceImpl implements WarrantyService {
     }
 
     @Override
-    public List<WarrantyVO> getAll(Principal principal) {
+    public List<WarrantyVO> getAll(Integer id,Principal principal) {
         checkPrincipal(principal);
-        List<Warranty> warranties = warrantyDAO.findAll();
         List<WarrantyVO> warrantyVOS = new ArrayList<>();
-        for (Warranty warranty : warranties) {
-            WarrantyVO warrantyVO = new WarrantyVO();
-            BeanUtils.copyProperties(warranty, warrantyVO);
-            warrantyVOS.add(warrantyVO);
+        if(id == null){
+            List<Warranty> warranties = warrantyDAO.findAll();
+            for (Warranty warranty : warranties) {
+                WarrantyVO warrantyVO = new WarrantyVO();
+                BeanUtils.copyProperties(warranty, warrantyVO);
+                warrantyVOS.add(warrantyVO);
+            }
+        } else {
+            Warranty warranty = warrantyDAO.findOneByOrderId(id);
+            BeanUtils.copyProperties(warranty, warrantyVOS);
         }
         return warrantyVOS;
     }
