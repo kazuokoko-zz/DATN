@@ -254,8 +254,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductVO getById(Integer id) throws NullPointerException {
-        Product product = productDAO.findById(id).orElseThrow(() -> new NullPointerException("Product not found with id: " + id));
+        Product product = productDAO.findById(id).orElseThrow(() -> new NotImplementedException("Product not found with id: " + id));
         ProductVO productVO = productUtils.convertToVO(product);
+        List<ProductCategoryVO> productCategoryVOS = new ArrayList<>();
+        for (ProductCategory category : productCategoryDAO.findAllByProductIdEquals(productVO.getId())
+        ) {
+            ProductCategoryVO productCategoryVO = new ProductCategoryVO();
+            BeanUtils.copyProperties(category, productCategoryVO);
+            productCategoryVOS.add(productCategoryVO);
+        }
+        productVO.setProductCategories(productCategoryVOS);
         try {
             productVO.setBlogs(getBlogByProductIdAndType(productVO.getId(), 1));
         } catch (NullPointerException e) {
