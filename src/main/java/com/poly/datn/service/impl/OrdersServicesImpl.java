@@ -72,7 +72,6 @@ public class OrdersServicesImpl implements OrdersService {
 
     @Autowired
     SendMail sendMail;
-
     @Autowired
     ColorDAO colorDAO;
     @Autowired
