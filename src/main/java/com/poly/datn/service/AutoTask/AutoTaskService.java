@@ -97,8 +97,6 @@ public class AutoTaskService {
             }
         }
     }
-
-
     @Scheduled(cron = "0 0 0/1 1/1 * ? ")
 //    @Scheduled(fixedRate = 20000)
     @EventListener(ApplicationReadyEvent.class)
@@ -129,7 +127,6 @@ public class AutoTaskService {
         }
         Collections.sort(trending, Comparator.comparingInt(TrendingVO::getQuantity).reversed());
     }
-
     @Scheduled(cron = "* * * * * *")
     @EventListener(ApplicationReadyEvent.class)
     void changeSaleStatus() {
