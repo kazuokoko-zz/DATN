@@ -50,6 +50,9 @@ public class OrdersServicesImpl implements OrdersService {
     CheckRole checkRole;
 
     @Autowired
+    ColorDAO colorDAO;
+
+    @Autowired
     ProductDAO productDAO;
 
     @Autowired
@@ -716,6 +719,7 @@ public class OrdersServicesImpl implements OrdersService {
             OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
             BeanUtils.copyProperties(orderDetails, orderDetailsVO);
             orderDetailsVO.setProductName(productDAO.getById(orderDetails.getProductId()).getName());
+            orderDetailsVO.setColorName(colorDAO.getById(orderDetailsVO.getColorId()).getColorName());
             orderDetailsVOS.add(orderDetailsVO);
         }
         ordersVO.setOrderDetails(orderDetailsVOS);
@@ -910,4 +914,8 @@ public class OrdersServicesImpl implements OrdersService {
         return vo;
     }
 
+    Boolean checkOderDetailPrice(List<OrderDetailsVO> orderDetailsVOS, Principal principal) {
+
+        return true;
+    }
 }
