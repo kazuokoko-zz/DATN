@@ -222,15 +222,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
-        if (AutoTaskService.trending.size() < 8) {
-            for (TrendingVO trendingVO : AutoTaskService.trending) {
-                productVOS.add(trendingVO.getProductVO());
-            }
-        } else {
-            for (int i = 0; i < 8; i++) {
+        int i = 0;
+        int j = 0;
+        while (i < 8 && j < AutoTaskService.trending.size()) {
+            if (AutoTaskService.trending.get(i).getProductVO().getProductColors()
+                    .stream().reduce(0, (sub, pro) -> sub + pro.getQuantity(), Integer::sum) > 0) {
                 productVOS.add(AutoTaskService.trending.get(i).getProductVO());
+                i++;
             }
+            j++;
         }
+
         return productVOS;
     }
 
