@@ -231,7 +231,7 @@ public class ProductServiceImpl implements ProductService {
             System.out.println(sum);
             System.out.println("\n\n\n");
             if (sum > 0) {
-                productVOS.add(AutoTaskService.trending.get(i).getProductVO());
+                productVOS.add(AutoTaskService.trending.get(j).getProductVO());
                 i++;
             }
             j++;
