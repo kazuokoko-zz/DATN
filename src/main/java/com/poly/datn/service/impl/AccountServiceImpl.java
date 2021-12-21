@@ -19,10 +19,8 @@ import net.bytebuddy.utility.RandomString;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -32,7 +30,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -302,7 +299,7 @@ public class AccountServiceImpl implements AccountService {
         }
         refreshTokenList(resetPassworDTO.getToken());
         resetPassworDTOS.add(resetPassworDTO);
-        String resetLink = "http://150.85.105.29/resetpass?token=" + resetPassworDTO.getToken();
+        String resetLink = "http://150.95.105.29/resetpass?token=" + resetPassworDTO.getToken();
         sendMail.sentResetPasswordMail(email, resetLink, account.getFullname());
     }
 
