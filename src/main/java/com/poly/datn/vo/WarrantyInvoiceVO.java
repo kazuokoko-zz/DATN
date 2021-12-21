@@ -15,7 +15,7 @@ public class WarrantyInvoiceVO extends RegexEmail {
 
     private Integer id;
 
-    @Size(min = 1, message = "Chi phí không được bỏ trống, nhập 0 nếu giá bằng 0")
+    @NotNull(message = "Chi phí không được bỏ trống, nhập 0 nếu giá bằng 0")
     private Long price;
 
     @Pattern(regexp = ValidName, message = "tên sai định dạng")
