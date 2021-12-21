@@ -73,8 +73,6 @@ public class OrdersServicesImpl implements OrdersService {
     @Autowired
     SendMail sendMail;
     @Autowired
-    ColorDAO colorDAO;
-    @Autowired
     ProductColorDAO productColorDAO;
 
     private List<InfoSendStatusOrder> infoSendStatusOrder = new ArrayList<>();
