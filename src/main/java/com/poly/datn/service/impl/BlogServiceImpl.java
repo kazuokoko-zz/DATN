@@ -12,7 +12,6 @@ import com.poly.datn.utils.StringFind;
 import com.poly.datn.vo.BlogDetailsVO;
 import com.poly.datn.vo.BlogVO;
 import org.apache.commons.lang.NotImplementedException;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -54,15 +51,15 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Object getById(Integer id) {
         Blog blog = blogDAO.getOneByIdAndStatus(id);
-        if (blog == null  || blog.getType() == 1 || blog.getStatus().equals(false)){
-           throw new NotImplementedException("Không có blog này");
+        if (blog == null || blog.getType() == 1 || blog.getStatus().equals(false)) {
+            throw new NotImplementedException("Không có blog này");
         }
         return getBlog(blog);
     }
 
     @Override
     public Object getOneByIdAdmin(Integer id, Principal principal) {
-        if (principal == null){
+        if (principal == null) {
             throw new NotImplementedException("Chưa đăng nhập");
 
         }
@@ -72,7 +69,7 @@ public class BlogServiceImpl implements BlogService {
 
         }
         Blog blog = blogDAO.getOneByIdAndStatusAdmin(id);
-        if (blog == null ){
+        if (blog == null) {
             throw new NotImplementedException("Không có blog này");
         }
         return getBlog(blog);
@@ -104,21 +101,22 @@ public class BlogServiceImpl implements BlogService {
             blogVO.setTimeCreated(sdf.format(blog.getTimeCreated()));
             blogVOS.add(blogVO);
         }
+        Collections.sort(blogVOS, Comparator.comparing(BlogVO::getTimeCreated).reversed());
         return blogVOS;
     }
 
     @Override
     public BlogVO getABlog(Integer id, Principal principal) {
-        if (principal == null){
+        if (principal == null) {
             throw new NotImplementedException("Chưa đăng nhập");
 
         }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
-          throw new NotImplementedException("User này không có quyền");
+            throw new NotImplementedException("User này không có quyền");
 
         }
-        Blog blog = blogDAO.findById(id).orElseThrow(() ->new NotImplementedException("Chưa truyền id"));
+        Blog blog = blogDAO.findById(id).orElseThrow(() -> new NotImplementedException("Chưa truyền id"));
         return getBlog(blog);
     }
 
@@ -130,7 +128,7 @@ public class BlogServiceImpl implements BlogService {
         }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
-           throw new NotImplementedException("User này không có quyền");
+            throw new NotImplementedException("User này không có quyền");
         }
         Boolean status = true;
         List<Blog> blogs = blogDAO.getAllByStatus(status);
@@ -150,8 +148,10 @@ public class BlogServiceImpl implements BlogService {
                 blogVOS.add(blogVO);
             }
         }
+        Collections.sort(blogVOS, Comparator.comparing(BlogVO::getTimeCreated).reversed());
         return blogVOS;
     }
+
     @Override
     public List<BlogVO> getListDeleteAdmin(Optional<Integer> pid, Optional<String> title, Principal principal) {
         if (principal == null) {
@@ -196,7 +196,7 @@ public class BlogServiceImpl implements BlogService {
         }
         try {
             Blog blog = blogDAO.getById(id.get());
-            if(blog == null || blog.getType() == 1 || blog.getStatus().equals(false)){
+            if (blog == null || blog.getType() == 1 || blog.getStatus().equals(false)) {
                 throw new NotImplementedException("Không tồn tại blog này");
             }
             blog.setStatus(false);
@@ -216,7 +216,7 @@ public class BlogServiceImpl implements BlogService {
         }
         if (!(checkRole.isHavePermition(principal.getName(), "Director") ||
                 checkRole.isHavePermition(principal.getName(), "Staff"))) {
-          throw new NotImplementedException("User này không có quyền");
+            throw new NotImplementedException("User này không có quyền");
         }
         Blog blog = new Blog();
         BeanUtils.copyProperties(blogVO, blog);
@@ -229,13 +229,13 @@ public class BlogServiceImpl implements BlogService {
         }
         blog.setStatus(true);
         List<BlogDetailsVO> blogDetails = blogVO.getBlogDetails();
-        if(blogDetails.size() <=0){
+        if (blogDetails.size() <= 0) {
             blog.setStatus(false);
         }
         blog = blogDAO.save(blog);
         List<BlogDetails> blogDetails1 = new ArrayList<>();
-        for (BlogDetailsVO blogDetailsVO: blogDetails
-             ) {
+        for (BlogDetailsVO blogDetailsVO : blogDetails
+        ) {
             BlogDetails blogDetailsVO1 = new BlogDetails();
             BeanUtils.copyProperties(blogDetailsVO, blogDetailsVO1);
             blogDetailsVO1.setBlogId(blog.getId());
@@ -259,7 +259,7 @@ public class BlogServiceImpl implements BlogService {
             throw new NotImplementedException("User này không có quyền");
         }
         if (id.get() != blogVO.getId()) {
-           throw new NotImplementedException("Chưa truyền id");
+            throw new NotImplementedException("Chưa truyền id");
         }
         List<BlogDetails> blogDetails = blogDetailsDAO.findByBlogId(id.get());
         for (BlogDetails details : blogDetails) {

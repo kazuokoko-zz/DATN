@@ -129,7 +129,7 @@ public class AutoTaskService {
         Collections.sort(trending, Comparator.comparingInt(TrendingVO::getQuantity).reversed());
     }
 
-    @Scheduled(cron = "* * * * * *")
+    @Scheduled(cron = "* * * * * ?")
     @EventListener(ApplicationReadyEvent.class)
     void changeSaleStatus() {
         LocalDateTime thisTime = LocalDateTime.now();
@@ -157,6 +157,7 @@ public class AutoTaskService {
         }
     }
 
+    @Scheduled(cron = "0 0 * * * ?")
     @EventListener(ApplicationReadyEvent.class)
     void updateSale() {
         List<Sale> salesStarted = saleDAO.getStartedSaleButNotChangeStatus();
