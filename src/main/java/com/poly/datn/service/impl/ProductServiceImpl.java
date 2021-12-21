@@ -410,13 +410,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductVO update(UpdateProductDTO updateProductDTO, Principal principal) {
         checkPrincipal(principal);
-        if (updateProductDTO.getProductCategories().size() <= 1) {
+        if (updateProductDTO.getProductCategories().size() < 1) {
             throw new NotImplementedException("thêm tối thiêu 1 danh mục");
         }
-        if (updateProductDTO.getProductDetails().size() <= 1) {
+        if (updateProductDTO.getProductDetails().size() < 1) {
             throw new NotImplementedException("thêm tối thiêu 1 thông tin");
         }
-        if (updateProductDTO.getProductColors().size() <= 1) {
+        if (updateProductDTO.getProductColors().size() < 1) {
             throw new NotImplementedException("thêm tối thiêu 1 màu");
         }
         Product product = productDAO.getOneProductById(updateProductDTO.getId());
