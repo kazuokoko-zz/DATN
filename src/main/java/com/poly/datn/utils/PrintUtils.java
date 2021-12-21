@@ -461,7 +461,7 @@ public class PrintUtils {
             cell = createCell("", font, Element.ALIGN_CENTER, Rectangle.NO_BORDER);
             table.addCell(cell);
             Image image = Image.getInstance("classpath:static/logoshop.png");
-            image.scaleToFit(100, 100);
+            image.scaleToFit(100, 80);
             cell = createCell(image, Rectangle.RIGHT, Rectangle.NO_BORDER);
             table.addCell(cell);
             document.add(table);
@@ -477,6 +477,7 @@ public class PrintUtils {
             font.setStyle(Font.NORMAL);
             table = new PdfPTable(5);
             table.setWidthPercentage(95);
+            document.add(new Paragraph("\n"));
 
             font.setSize(13);
             Product product = productDAO.getById(warranty.getProductId());
@@ -534,7 +535,7 @@ public class PrintUtils {
 
             document.add(table);
 
-            Chunk chunk = new Chunk(new DottedLineSeparator() );
+            Chunk chunk = new Chunk(new DottedLineSeparator());
             document.add(chunk);
 
             table = new PdfPTable(1);
