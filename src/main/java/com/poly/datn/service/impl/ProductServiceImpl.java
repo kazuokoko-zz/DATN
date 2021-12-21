@@ -225,8 +225,10 @@ public class ProductServiceImpl implements ProductService {
         int i = 0;
         int j = 0;
         while (i < 8 && j < AutoTaskService.trending.size()) {
-            if (AutoTaskService.trending.get(i).getProductVO().getProductColors()
-                    .stream().reduce(0, (sub, pro) -> sub + pro.getQuantity(), Integer::sum) > 0) {
+            int sum =AutoTaskService.trending.get(i).getProductVO().getProductColors()
+                    .stream().reduce(0, (sub, pro) -> sub + pro.getQuantity(), Integer::sum);
+            System.out.println(sum);
+            if ( sum> 0) {
                 productVOS.add(AutoTaskService.trending.get(i).getProductVO());
                 i++;
             }
