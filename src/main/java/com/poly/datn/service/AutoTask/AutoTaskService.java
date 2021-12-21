@@ -55,7 +55,6 @@ public class AutoTaskService {
     ProductUtils productUtils;
 
 
-
     @Scheduled(cron = "0 30 0/1 ? * * ")
 //    @Scheduled(fixedRate = 3000)
     @EventListener(ApplicationReadyEvent.class)
@@ -103,7 +102,7 @@ public class AutoTaskService {
     protected void add2DBJob() throws ParseException {
         for (Map.Entry<Integer, Boolean> entry : sendBlog.entrySet()) {
             Blog blog = blogDAO.findOneById(entry.getKey());
-            Account account =accountDAO.getById(blog.getCreatedBy());
+            Account account = accountDAO.getById(blog.getCreatedBy());
             blog.setAccount(account);
             try {
                 sendMail.sentBlogMail(userDetail, blog);
@@ -127,7 +126,8 @@ public class AutoTaskService {
         }
         Collections.sort(trending, Comparator.comparingInt(TrendingVO::getQuantity).reversed());
     }
-    @Scheduled(cron = "* * * * * *")
+
+    @Scheduled(cron = "* * * * * ?")
     @EventListener(ApplicationReadyEvent.class)
     void changeSaleStatus() {
         LocalDateTime thisTime = LocalDateTime.now();
@@ -152,6 +152,21 @@ public class AutoTaskService {
             }
             AutoTaskService.nearesrStartSaleTime = nearestStart.toLocalDateTime();
             AutoTaskService.nearestEndSaleTime = nearestEnd.toLocalDateTime();
+        }
+    }
+
+    @Scheduled(cron = "0 0 * * * ?")
+    @EventListener(ApplicationReadyEvent.class)
+    void updateSale() {
+        List<Sale> salesStarted = saleDAO.getStartedSaleButNotChangeStatus();
+        List<Sale> salesEnded = saleDAO.getExpSaleButNotChangeStatus();
+        for (Sale sale : salesStarted) {
+            sale.setStatus("Đang diễn ra");
+            saleDAO.save(sale);
+        }
+        for (Sale sale : salesEnded) {
+            sale.setStatus("Đã kết thúc");
+            saleDAO.save(sale);
         }
     }
 }

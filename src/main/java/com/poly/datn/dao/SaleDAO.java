@@ -12,7 +12,7 @@ public interface SaleDAO extends JpaRepository<Sale, Integer> {
 
     Sale getOneById(Integer id);
 
-    @Query(nativeQuery = true,value = "select * from sale s where :currtime between s.start_time and s.end_time")
+    @Query(nativeQuery = true, value = "select * from sale s where :currtime between s.start_time and s.end_time")
     List<Sale> findSalesAt(@Param("currtime") Timestamp time);
 
     @Query(nativeQuery = true, value = "select * from sale s where :currtime < s.start_time")
@@ -30,6 +30,12 @@ public interface SaleDAO extends JpaRepository<Sale, Integer> {
             "INNER JOIN (select id ,TIME_TO_SEC(TIMEDIFF(end_time,NOW())) as mini" +
             " FROM sale having mini > 0 ORDER BY mini asc LIMIT 1) as e on s.id=e.id")
     Timestamp getNearestTimeEndSale();
+
+    @Query(nativeQuery = true, value = "select * from sale as s where s.end_time < NOW() and ( s.status = 'Đang diễn ra' or s.status = 'Đã dừng' )")
+    List<Sale> getExpSaleButNotChangeStatus();
+
+    @Query(nativeQuery = true, value = "select * from sale as s where ( NOW() between s.start_time and s.end_time )  and s.status = 'Sắp diễn ra'")
+    List<Sale> getStartedSaleButNotChangeStatus();
 
 
     List<Sale> getAllByStartTimeEquals(Timestamp startTime);
