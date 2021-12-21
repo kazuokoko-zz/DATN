@@ -48,6 +48,9 @@ public class ProductRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(productService.getById(id)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
 
-//    @GetMapping("")
+    @GetMapping("getbycolorofid")
+    public ResponseEntity<ResponseDTO<Object>> getByColorOfID(@RequestParam("id") Integer id,@RequestParam("colorId") Integer cid) throws NullPointerException {
+        return ResponseEntity.ok(ResponseDTO.builder().object(productService.getByIdAndColor(id,cid)).code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
     //End MAH CODE
 }

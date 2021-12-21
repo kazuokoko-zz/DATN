@@ -58,4 +58,6 @@ public interface ProductService {
     Object getBlogLess(Principal principal);
 
     List<ProductVO> getDiscount();
+
+    Integer getByIdAndColor(Integer id, Integer cid);
 }

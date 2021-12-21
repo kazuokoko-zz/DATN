@@ -212,6 +212,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Integer getByIdAndColor(Integer id, Integer cid) {
+        ProductColor productColor = productColorDAO.findByProductIdAndColorId(id, cid);
+        if (productColor == null)
+            return 0;
+        return productColor.getQuantity();
+    }
+
+    @Override
     public List<ProductVO> getTrending() {
         List<ProductVO> productVOS = new ArrayList<>();
         if (AutoTaskService.trending.size() < 8) {
