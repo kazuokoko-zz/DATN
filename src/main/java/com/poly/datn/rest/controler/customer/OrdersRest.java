@@ -52,6 +52,16 @@ public class OrdersRest {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.requestCancerOrderUser(noteOrderManagementVo,id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
+    @PutMapping("unCancerOrderUser")
+    public ResponseEntity<ResponseDTO<Object>> unCancerOrderUser(@RequestBody  NoteOrderManagementVo noteOrderManagementVo,Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.unCancerOrderUser(noteOrderManagementVo,id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
+    @PutMapping("unConfimReturnsUser")
+    public ResponseEntity<ResponseDTO<Object>> unConfimReturnsUser(@RequestBody  NoteOrderManagementVo noteOrderManagementVo,Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.unConfimReturnsUser(noteOrderManagementVo,id, principal))
+                .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
+    }
     @PutMapping("confimReturnsUser")
     public ResponseEntity<ResponseDTO<Object>> confimReturnsUser(@RequestBody  NoteOrderManagementVo noteOrderManagementVo,Integer id, Principal principal) {
         return ResponseEntity.ok(ResponseDTO.builder().object(ordersService.confimReturnsUser(noteOrderManagementVo,id, principal))
