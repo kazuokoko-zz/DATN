@@ -477,7 +477,6 @@ public class PrintUtils {
             font.setStyle(Font.NORMAL);
             table = new PdfPTable(5);
             table.setWidthPercentage(95);
-            document.add(new Paragraph("\n"));
 
             font.setSize(13);
             Product product = productDAO.getById(warranty.getProductId());
@@ -535,7 +534,7 @@ public class PrintUtils {
 
             document.add(table);
 
-            Chunk chunk = new Chunk(new DottedLineSeparator());
+            Chunk chunk = new Chunk(new DottedLineSeparator() );
             document.add(chunk);
 
             table = new PdfPTable(1);
