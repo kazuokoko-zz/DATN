@@ -24,7 +24,7 @@ public class OrderDetailsVO {
 
     private Integer colorId;
 
-    private Integer colorName;
+    private String colorName;
 
     private Integer warranty;
 
