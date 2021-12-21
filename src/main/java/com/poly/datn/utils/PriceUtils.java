@@ -41,6 +41,8 @@ public class PriceUtils {
         for (SaleVO saleVO : saleVOList) {
             if (saleVO.getStatus().equals("Đã kết thúc"))
                 continue;
+            if (saleVO.getStatus().equals("Đã dừng"))
+                continue;
             ProductSale productSale = productSaleDAO.findByProductIdAndSaleId(productId, saleVO.getId());
             if (productSale == null)
                 continue;
