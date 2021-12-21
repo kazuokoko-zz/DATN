@@ -141,6 +141,12 @@ public class OrdersServicesImpl implements OrdersService {
         if (ordersVO.getOrderDetails() == null) {
             throw new NotImplementedException("Không có sản phẩm trong hóa đơn");
         }
+        List<OrderDetailsVO> orderDetailsVOS = ordersVO.getOrderDetails();
+        for (OrderDetailsVO orderDetailsVO: orderDetailsVOS ) {
+            if(orderDetailsVO.getQuantity() <=0){
+                 throw new NotImplementedException("Sản phẩm: "+ orderDetailsVO.getProductName() + " đang có số lượng nhỏ hơn 1, vui lòng chỉnh sửa lại");
+            }
+        }
         // save customer
         Orders orders = createOders(ordersVO, changeBy);
 
