@@ -77,6 +77,7 @@ public class OrdersServicesImpl implements OrdersService {
 
     private List<InfoSendStatusOrder> infoSendStatusOrder = new ArrayList<>();
 
+
     @Scheduled(cron = "0 0 0/1 1/1 * ?")
     public void taskSendMailStatus() {
         try {
