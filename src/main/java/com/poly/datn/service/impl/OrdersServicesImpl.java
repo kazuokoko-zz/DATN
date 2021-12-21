@@ -71,6 +71,8 @@ public class OrdersServicesImpl implements OrdersService {
     SendMail sendMail;
 
     @Autowired
+    ColorDAO colorDAO;
+    @Autowired
     ProductColorDAO productColorDAO;
 
     private List<InfoSendStatusOrder> infoSendStatusOrder = new ArrayList<>();
@@ -721,18 +723,21 @@ public class OrdersServicesImpl implements OrdersService {
         return ordersVO;
     }
 
+    //new
     private Orders createOders(@Valid NewOrdersVO ordersVO, String changeBy) {
 
         List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
         Long totalPrice = 0L;
-        Long totalDiscount = 0L;
+//        Long totalDiscount = 0L;
+//        totalDiscount += discount;
+//        Long discount = orderDetailsVO1.getQuantity() * maxDiscount;
         for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
             if (orderDetailsVO1.getQuantity() <= 0) {
                 continue;
             } else {
-                Long discount = orderDetailsVO1.getQuantity() * orderDetailsVO1.getDiscount();
-                totalDiscount += discount;
-                totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
+                Product product = productDAO.getOneProductById(orderDetailsVO1.getProductId());
+               Long maxDiscount = priceUtils.maxDiscountAtPresentOf(product.getId());
+                totalPrice += orderDetailsVO1.getQuantity() * (product.getPrice() - maxDiscount);
             }
         }
         if (!totalPrice.equals(ordersVO.getSumprice())) {
@@ -755,6 +760,42 @@ public class OrdersServicesImpl implements OrdersService {
         return orders;
     }
 
+//old
+
+//    private Orders createOders(@Valid NewOrdersVO ordersVO, String changeBy) {
+//
+//        List<OrderDetailsVO> orderDetailsVO = ordersVO.getOrderDetails();
+//        Long totalPrice = 0L;
+//        Long totalDiscount = 0L;
+//        for (OrderDetailsVO orderDetailsVO1 : orderDetailsVO) {
+//            if (orderDetailsVO1.getQuantity() <= 0) {
+//                continue;
+//            } else {
+//                Long discount = orderDetailsVO1.getQuantity() * orderDetailsVO1.getDiscount();
+//                totalDiscount += discount;
+//                totalPrice += orderDetailsVO1.getQuantity() * (orderDetailsVO1.getPrice() - orderDetailsVO1.getDiscount());
+//            }
+//        }
+//        if (!totalPrice.equals(ordersVO.getSumprice())) {
+//            throw new NotImplementedException("Giá sản phẩm đã thay đổi. xin mời xem lại chương trình khuyến mại");
+//        }
+//
+//        Customer customer = createCustomer(ordersVO.getCustomer());
+////        Customer customer = new Customer();
+////        BeanUtils.copyProperties(ordersVO.getCustomer(), customer);
+////        customer = customerDAO.save(customer);
+//        //save order
+//        Orders orders = new Orders();
+//        orders.setDateCreated(Timestamp.valueOf(LocalDateTime.now()));
+//        orders.setUsername(changeBy);
+//        orders.setCustomerId(customer.getId());
+//        orders.setTypePayment(false);
+//        orders.setSumprice(totalPrice);
+//        orders = ordersDAO.save(orders);
+//
+//        return orders;
+//    }
+
     private Customer createCustomer(@Valid CustomerVO customerVO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerVO, customer);
@@ -775,7 +816,7 @@ public class OrdersServicesImpl implements OrdersService {
             orderDetails.setDiscount(priceUtils.maxDiscountAtPresentOf(orderDetails.getProductId()));
             ProductColor productColor = productColorDAO.findByProductIdAndColorId(orderDetails.getProductId(), orderDetails.getColorId());
             if (productColor == null || productColor.getQuantity() - orderDetails.getQuantity() < 0) {
-                throw new NotImplementedException("Sản phẩm không có màu " + orderDetails.getColorId() + "hoặc số lượng sản phẩm màu này không đủ");
+                throw new NotImplementedException("Sản phẩm không có màu " + colorDAO.findColorById(orderDetails.getColorId()).getColorName() + " hoặc số lượng sản phẩm màu này không đủ");
             }
             productColor.setQuantity(productColor.getQuantity() - orderDetails.getQuantity());
             productColorDAO.save(productColor);
