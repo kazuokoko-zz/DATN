@@ -22,8 +22,8 @@ public class WarrantyRest {
 
 
     @GetMapping("get")
-    public ResponseEntity<ResponseDTO<Object>> getListWarranty(Principal principal) {
-        return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.getAll(principal))
+    public ResponseEntity<ResponseDTO<Object>> getListWarranty(@RequestParam Integer id, Principal principal) {
+        return ResponseEntity.ok(ResponseDTO.builder().object(warrantyService.getAll(id, principal))
                 .code(Constant.RESPONSEDTO_CODE).message(Constant.RESPONSEDTO_MESS).build());
     }
     @GetMapping("get/{id}")
